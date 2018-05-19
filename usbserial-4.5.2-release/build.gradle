@@ -1,0 +1,2 @@
+configurations.maybeCreate("default")
+artifacts.add("default", file('usbserial-4.5.2-release.aar'))
