@@ -2,6 +2,8 @@ package mobi.omegacentauri.vectordisplay;
 
 import mobi.omegacentauri.vectordisplay.VectorAPI.Buffer;
 import mobi.omegacentauri.vectordisplay.VectorAPI.DisplayState;
+
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
@@ -12,23 +14,19 @@ public class Point extends Command {
 	public Point(DisplayState state) {
 		super(state);
 	}
-	
-	@Override 
-	public DisplayState parse(Buffer buffer, byte c) {
-		buffer.put(c);
-		if (buffer.length() >= 4) {
-			x1 = buffer.getInteger(0, 2);
-			y1 = buffer.getInteger(2, 2);
-			return state;
-		}
-		return null;
-	}
-	
+
 	@Override
-	public DisplayState parse(Buffer buffer) {
-		return null;
+	public int fixedArgumentsLength() {
+		return 4;
 	}
 
+	@Override
+	public DisplayState parseArguments(Context context, Buffer buffer) {
+		x1 = buffer.getInteger(0, 2);
+		y1 = buffer.getInteger(2, 2);
+		return state;
+	}
+	
 	@Override
 	public void draw(Canvas c) {
 		Paint p = new Paint();

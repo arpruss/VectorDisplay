@@ -1,6 +1,5 @@
 package mobi.omegacentauri.vectordisplay;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,6 +21,7 @@ import java.util.Map;
  * T n(1) x(2) y(2) : number of touches and touch locations
  */
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.util.Log;
@@ -33,9 +33,12 @@ public class VectorAPI {
 	Buffer buffer = new Buffer();
 	static final int TIMEOUT = 5000;
 	long commandStartTime;
+	Context context;
+	byte lastChar = 0;
 		
-	public VectorAPI() {	
-		state = new DisplayState();
+	public VectorAPI(Context context) {
+	    this.context = context;
+		this.state = new DisplayState();
 		map.put((byte) 'C', Clear.class);
 		map.put((byte) 'L', Line.class);
 		map.put((byte) 'R', Rectangle.class);
@@ -45,44 +48,58 @@ public class VectorAPI {
 		map.put((byte) 'F', ForeColor.class);
 		map.put((byte) 'B', BackColor.class);
 		map.put((byte) 'Z', CoordinateSystem.class);
+		map.put((byte) 'M', PopupMessage.class);
+		map.put((byte) 'E', Reset.class);
 	}
 	
 	public Command parse(byte ch) {
 		DisplayState newState;
+
 		if (currentCommand != null && System.currentTimeMillis() < commandStartTime + TIMEOUT) {
-			newState = currentCommand.parse(buffer, ch);
+			if (!buffer.put(ch)) {
+				currentCommand = null;
+				return null;
+			}
+			newState = currentCommand.parse(context, buffer);
 			if (newState != null) {
 				Command c = currentCommand;
 				currentCommand = null;
 				state = newState;
 				return c.doesDraw() ? c : null;
 			}
+			else if (currentCommand.errorState) {
+				currentCommand = null;
+			    return null;
+            }
 		}
 		else {
-			Class<? extends Command> cl = map.get(ch);
-			if (cl != null) {
-				Log.v("VectorDisplay", cl.toString());
-				Command c;
-				try {
-					c = (Command) cl.getConstructor(DisplayState.class).newInstance(state);
-				} catch (Exception e) {
-					Log.e("VectorDisplay", e.toString());
-					c = null;
-				}
-				if (c != null) {
-					currentCommand = c;
-					commandStartTime = System.currentTimeMillis();
-					buffer.clear();
-					newState = currentCommand.parse(buffer);
-					if (newState != null) {
-						state = newState;
-						currentCommand = null;
-						return c.doesDraw() ? c : null;
-					}
-				}
+		    Log.v("VectorDisplay", "current "+(int)lastChar+" "+(int)ch);
+			if (lastChar != 0 && (0xFF & ch) == (lastChar ^ 0xFF)) {
+                Class<? extends Command> cl = map.get(lastChar);
+                lastChar = 0;
+                if (cl != null) {
+                    Log.v("VectorDisplay", cl.toString());
+                    Command c;
+                    try {
+                        c = (Command) cl.getConstructor(DisplayState.class).newInstance(state);
+                    } catch (Exception e) {
+                        Log.e("VectorDisplay", e.toString());
+                        c = null;
+                    }
+                    if (c != null) {
+                        currentCommand = c;
+                        commandStartTime = System.currentTimeMillis();
+                        buffer.clear();
+                    }
+                }
 			}
 			else {
-				Log.v("VectorDisplay", "unparsed "+ch);
+			    if ('A' <= ch && ch <= 'Z') {
+			        lastChar = ch;
+                }
+                else {
+			        lastChar = 0;
+                }
 			}
 		}
 		return null;
@@ -97,13 +114,27 @@ public class VectorAPI {
 			inBuffer = 0;
 		}
 		
-		void put(byte b) {
-			if (inBuffer < MAX_BUFFER)
+		boolean put(byte b) {
+			if (inBuffer < MAX_BUFFER) {
 				data[inBuffer++] = b;
+				return true;
+			}
+			else {
+				return false;
+			}
 		}
 		
 		int length() {
 			return inBuffer;
+		}
+
+		boolean checksum() {
+			int sum = 0;
+			for (int i=0; i<inBuffer-1; i++) {
+				sum = ((data[i] & 0xFF) + sum) & 0xFF;
+			}
+			sum ^= 0xFF;
+			return data[inBuffer-1] == (byte)sum;
 		}
 		
 		int getInteger(int start, int length) {
@@ -133,19 +164,39 @@ public class VectorAPI {
 				return "";
 			}
 		}
+
+		public byte getByte(int i) {
+			return data[i];
+		}
 	}
 	
 	static class DisplayState {
-		int width = 84;
-		int height = 48;
-		boolean fit = true;
-		int foreColor = Color.WHITE;
-		int backColor = Color.BLACK;
-		float thickness = 1f;
-		int textSize = 12;
-		char align = 'l';
-		boolean bold = false;
-		
+		int width;
+		int height;
+		boolean fit;
+		int foreColor;
+		int backColor;
+		float thickness;
+		int textSize;
+		char hAlign;
+		boolean bold;
+
+		public void reset() {
+			width = 640;
+			height = 480;
+			fit = true;
+			foreColor = Color.WHITE;
+			backColor = Color.BLACK;
+			thickness = 1f;
+			textSize = 12;
+			hAlign = 'l';
+			bold = false;
+		}
+
+		public DisplayState() {
+			reset();
+		}
+
 		public Coords getScale(Canvas c) {
 			int cw = c.getWidth();
 			int ch = c.getHeight();

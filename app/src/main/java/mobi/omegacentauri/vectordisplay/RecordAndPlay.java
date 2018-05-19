@@ -1,5 +1,6 @@
 package mobi.omegacentauri.vectordisplay;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.util.Log;
 
@@ -13,26 +14,35 @@ import java.util.List;
 public class RecordAndPlay {
     private static final int MAX_ITEMS = 500000;
     private Command commands[] = new Command[MAX_ITEMS];
-    private VectorAPI parser = new VectorAPI();
+    public VectorAPI parser;
     private int head;
     private int tail;
     private int len;
     private int playOffset;
 
-    public RecordAndPlay() {
+    public RecordAndPlay(Context c) {
         head = 0;
         len = 0;
         playOffset = 0;
+        parser = new VectorAPI(c);
+    }
+
+    public void feed(Command c) {
+        if (c.needToClearHistory()) {
+            head = 0;
+            len = 0;
+        }
+        commands[(head+len) % MAX_ITEMS] = c;
+        if (len == MAX_ITEMS)
+            head = (head + 1) % MAX_ITEMS;
+        else
+            len++;
     }
 
     public void feed(byte datum) {
         Command c = parser.parse(datum);
         if (c != null) {
-            commands[(head+len) % MAX_ITEMS] = c;
-            if (len == MAX_ITEMS)
-                head = (head + 1) % MAX_ITEMS;
-            else
-                len++;
+            feed(c);
         }
         else {
             Log.v("VectorView", "unknown "+datum);

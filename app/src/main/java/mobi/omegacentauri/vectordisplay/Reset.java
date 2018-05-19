@@ -1,13 +1,13 @@
 package mobi.omegacentauri.vectordisplay;
 
-import mobi.omegacentauri.vectordisplay.VectorAPI.DisplayState;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Log;
 
-public class Clear extends Command {
-	public Clear(DisplayState state) {
+import mobi.omegacentauri.vectordisplay.VectorAPI.DisplayState;
+
+public class Reset extends Command {
+	public Reset(DisplayState state) {
 		super(state);
 	}
 
@@ -19,6 +19,7 @@ public class Clear extends Command {
 
 	@Override
 	public void draw(Canvas c) {
+		state.reset();
 		Paint paint = new Paint();
 		paint.setColor(state.backColor);
 		Log.v("VectorDisplay", "clearing to "+state.backColor+ " "+c.getWidth()+" "+c.getHeight());

@@ -2,6 +2,8 @@ package mobi.omegacentauri.vectordisplay;
 
 import mobi.omegacentauri.vectordisplay.VectorAPI.Buffer;
 import mobi.omegacentauri.vectordisplay.VectorAPI.DisplayState;
+
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
@@ -11,25 +13,21 @@ public class Rectangle extends Command {
 	public Rectangle(DisplayState state) {
 		super(state);
 	}
-	
-	@Override 
-	public DisplayState parse(Buffer buffer, byte c) {
-		buffer.put(c);
-		if (buffer.length() >= 8) {
-			x1 = buffer.getInteger(0, 2);
-			y1 = buffer.getInteger(2, 2);
-			x2 = buffer.getInteger(4, 2);
-			y2 = buffer.getInteger(6, 2);
-			return state;
-		}
-		return null;
-	}
-	
+
 	@Override
-	public DisplayState parse(Buffer buffer) {
-		return null;
+	public int fixedArgumentsLength() {
+		return 8;
 	}
 
+	@Override
+	public DisplayState parseArguments(Context context, Buffer buffer) {
+		x1 = buffer.getInteger(0, 2);
+		y1 = buffer.getInteger(2, 2);
+		x2 = buffer.getInteger(4, 2);
+		y2 = buffer.getInteger(6, 2);
+		return state;
+	}
+	
 	@Override
 	public void draw(Canvas c) {
 		Paint p = new Paint();

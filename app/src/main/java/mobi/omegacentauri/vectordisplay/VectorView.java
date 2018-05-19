@@ -15,7 +15,7 @@ public class VectorView extends View {
     RecordAndPlay record;
     boolean redraw = false;
     Bitmap bitmap;
-    Canvas savedCanvas;
+    Canvas savedCanvas = null;
 
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         if (bitmap != null) {
@@ -36,6 +36,10 @@ public class VectorView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        if (savedCanvas == null) {
+            Log.v("VectorDisplay", "creating savedCanvas");
+            onSizeChanged(0,0, canvas.getWidth(), canvas.getHeight());
+        }
         if (redraw) {
             Log.v("VectorDisplay", "redrawing");
             record.redraw(savedCanvas);
