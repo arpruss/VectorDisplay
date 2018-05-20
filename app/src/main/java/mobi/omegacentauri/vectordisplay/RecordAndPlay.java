@@ -31,12 +31,14 @@ public class RecordAndPlay {
         if (c.needToClearHistory()) {
             head = 0;
             len = 0;
+            playOffset = 0;
         }
         commands[(head+len) % MAX_ITEMS] = c;
         if (len == MAX_ITEMS)
             head = (head + 1) % MAX_ITEMS;
         else
             len++;
+        Log.v("VectorView", "fed "+c.getClass()+" "+head+" "+len);
     }
 
     public void feed(byte datum) {
@@ -68,6 +70,7 @@ public class RecordAndPlay {
     }
 
     public void draw(Canvas canvas) {
+        Log.v("VectorView", "draw "+playOffset+" "+len);
         for (int i=playOffset; i<len; i++) {
             Log.v("VectorView", commands[(head + i) % MAX_ITEMS].getClass().toString());
             commands[(head + i) % MAX_ITEMS].draw(canvas);

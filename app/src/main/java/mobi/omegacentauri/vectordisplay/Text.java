@@ -5,6 +5,7 @@ import mobi.omegacentauri.vectordisplay.DisplayState;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
@@ -48,9 +49,9 @@ public class Text extends Command {
 		p.setTextSize(size);
 		p.setFakeBoldText(state.bold);
 		Coords xy = state.scale(c, x1, y1, false);
-		xy.y = 	state.vAlignText == DisplayState.ALIGN_TOP ? xy.y - p.ascent() :
+		xy.y = 	state.vAlignText == DisplayState.ALIGN_TOP ? xy.y + p.ascent() :
                 state.vAlignText == DisplayState.ALIGN_BOTTOM ? xy.y + p.descent() :
-                state.vAlignText == DisplayState.ALIGN_CENTER ? xy.y - p.ascent() * 0.5f :
+                state.vAlignText == DisplayState.ALIGN_CENTER ? xy.y + p.ascent() * 0.5f :
                                 xy.y;
 
         float w = p.measureText(text);
@@ -58,14 +59,14 @@ public class Text extends Command {
                 state.hAlignText == DisplayState.ALIGN_RIGHT ? xy.x - w :
                 xy.x - w * 0.5f;
 		if (state.opaqueTextBackground) {
-            float h = p.descent() + p.ascent();
+            float h = p.descent() - p.ascent();
             Paint fill = new Paint();
             fill.setColor(state.backColor);
             fill.setStyle(Paint.Style.FILL);
             fill.setStrokeWidth(0);
-            c.drawRect(xy.x, xy.y - p.ascent(), xy.x + w, xy.y - p.ascent() + h, fill);
+
+            c.drawRect(xy.x, xy.y + p.ascent(), xy.x + w, xy.y + p.ascent() + h, fill);
         }
 		c.drawText(text, xy.x, xy.y, p);
-		Log.v("VectorDisplay", "text "+size+" "+xy.x+" "+xy.y+" "+text);
 	}
 }

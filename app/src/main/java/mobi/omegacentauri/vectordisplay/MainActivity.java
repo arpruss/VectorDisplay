@@ -206,10 +206,15 @@ public class MainActivity extends AppCompatActivity {
         // TODO Auto-generated method stub
         int id = item.getItemId();
         if (id == R.id.clear) {
+            Log.v("VectorView", "need to clear");
             record.feed(new Clear(record.parser.state));
+            if (view != null)
+                view.invalidate();
         }
-        if (id == R.id.reset) {
+        else if (id == R.id.reset) {
             record.feed(new Reset(record.parser.state));
+            if (view != null)
+                view.invalidate();
         }
         return super.onOptionsItemSelected(item);
     }
