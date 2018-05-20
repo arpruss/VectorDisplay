@@ -20,16 +20,18 @@ public class Attribute32 extends Command {
 
 	@Override
 	public DisplayState parseArguments(Activity context, Buffer buffer) {
+        Log.v("VectorDisplay", "Attr32 "+(char)buffer.data[0]);
 		switch((char)buffer.data[0]) {
 			case 'b':
 				state.backColor = buffer.getInteger(1, 4);
 				break;
 			case 'f':
 				state.foreColor = buffer.getInteger(1, 4);
+				Log.v("VectorDisplay", "set foreColor to "+state.foreColor);
 				break;
 			case 'c':
-                state.width = buffer.getInteger(0, 2);
-                state.height = buffer.getInteger(2, 2);
+                state.width = buffer.getInteger(1, 2);
+                state.height = buffer.getInteger(3, 2);
  				break;
 		}
 		return state;

@@ -20,9 +20,6 @@ public class Reset extends Command {
 	@Override
 	public void draw(Canvas c) {
 		state.reset();
-		Paint paint = new Paint();
-		paint.setColor(state.backColor);
-		Log.v("VectorDisplay", "clearing to "+state.backColor+ " "+c.getWidth()+" "+c.getHeight());
-		c.drawRect(0,0,c.getWidth(),c.getHeight(), paint);
+		Clear.clearCanvas(c, state);
 	}
 }
