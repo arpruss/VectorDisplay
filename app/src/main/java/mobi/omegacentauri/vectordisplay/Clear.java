@@ -17,11 +17,14 @@ public class Clear extends Command {
 	@Override
 	public int fixedArgumentsLength() { return 0; }
 
-	@Override
-	public void draw(Canvas c) {
+	public static void clearCanvas(Canvas c, DisplayState state) {
 		Paint paint = new Paint();
 		paint.setColor(state.backColor);
 		Log.v("VectorDisplay", "clearing to "+state.backColor+ " "+c.getWidth()+" "+c.getHeight());
 		c.drawRect(0,0,c.getWidth(),c.getHeight(), paint);
+	}
+	@Override
+	public void draw(Canvas c) {
+		clearCanvas(c, state);
 	}
 }

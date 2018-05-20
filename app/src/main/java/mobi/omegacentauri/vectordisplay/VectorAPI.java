@@ -21,6 +21,7 @@ import java.util.Map;
  * T n(1) x(2) y(2) : number of touches and touch locations
  */
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -33,10 +34,10 @@ public class VectorAPI {
 	Buffer buffer = new Buffer();
 	static final int TIMEOUT = 5000;
 	long commandStartTime;
-	Context context;
+	Activity context;
 	byte lastChar = 0;
 		
-	public VectorAPI(Context context) {
+	public VectorAPI(Activity context) {
 	    this.context = context;
 		this.state = new DisplayState();
 		map.put((byte) 'C', Clear.class);
@@ -169,6 +170,10 @@ public class VectorAPI {
 		public byte getByte(int i) {
 			return data[i];
 		}
-	}
+
+        public float getFixed16(int i) {
+			return getInteger(i, 2) / 256f;
+        }
+    }
 
 }

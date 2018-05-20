@@ -1,12 +1,8 @@
 package mobi.omegacentauri.vectordisplay;
 
 import mobi.omegacentauri.vectordisplay.VectorAPI.Buffer;
-import mobi.omegacentauri.vectordisplay.DisplayState;
 
-import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Paint.Style;
+import android.app.Activity;
 
 public class BackColor extends Command {
 	public BackColor(DisplayState state) {
@@ -19,7 +15,7 @@ public class BackColor extends Command {
 	}
 	
 	@Override 
-	public DisplayState parseArguments(Context context, Buffer buffer) {
+	public DisplayState parseArguments(Activity context, Buffer buffer) {
 		state.backColor = buffer.getInteger(0,4);
 		return state;
 	}

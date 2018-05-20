@@ -7,11 +7,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -24,15 +27,16 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.support.constraint.ConstraintLayout;
 
 import java.lang.ref.WeakReference;
 import java.util.Set;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RecordAndPlay.Resetter {
     public int physicalWidth = -1;
     public int physicalHeight = -1;
-    static VectorView view;
-    static private RecordAndPlay record;
+    static public RecordAndPlay record;
+    SharedPreferences prefs;
 
     /*
      * Notifications from UsbService will be received here.
@@ -81,19 +85,23 @@ public class MainActivity extends AppCompatActivity {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         Log.v("VectorDisplay", "onConfigurationChanged");
-        view = new VectorView(this, record);
-        view.redraw = true;
-        setContentView(view);
+    }
+
+    void setOrientation() {
+        setRequestedOrientation(prefs.getBoolean(Options.PREF_LANDSCAPE, true) ?
+                ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE : ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //record = new RecordAndPlay();
-        record = new RecordAndPlay(this);
-        view = new VectorView(this, record);
-        setContentView(view);
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        setOrientation();
+        record = new RecordAndPlay(this, this);
+        setContentView(R.layout.activity_main);
+        resetVectorView(record.parser.state);
         mHandler = new MyHandler(this);
 
         Log.v("VectorDisplay", "OnCreate");
@@ -101,7 +109,6 @@ public class MainActivity extends AppCompatActivity {
 /*        record.feed(b);
 
 
-        setContentView(R.layout.activity_main);
 
         mHandler = new MyHandler(this);
 
@@ -208,16 +215,28 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.clear) {
             Log.v("VectorView", "need to clear");
             record.feed(new Clear(record.parser.state));
-            if (view != null)
-                view.invalidate();
         }
         else if (id == R.id.reset) {
             record.feed(new Reset(record.parser.state));
-            if (view != null)
-                view.invalidate();
+        }
+        else if (id == R.id.rotate) {
+            boolean landscape = ! prefs.getBoolean(Options.PREF_LANDSCAPE, true);
+            prefs.edit().putBoolean(Options.PREF_LANDSCAPE, landscape).commit();
+            setOrientation();
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void resetVectorView(DisplayState state) {
+        VectorView v = (VectorView)findViewById(R.id.vector);
+/*        ConstraintLayout.LayoutParams lp = (ConstraintLayout.LayoutParams)v.getLayoutParams();
+        float ratio = state.width*state.pixelAspectRatio/state.height;
+        lp.dimensionRatio = ""+ratio;
+        v.setLayoutParams(lp); */
+        v.aspectRatio = state.width*state.pixelAspectRatio/state.height;
+    }
+
     /*
      * This handler will be passed to UsbService. Data received from serial port is displayed through this handler
      */
@@ -235,8 +254,6 @@ public class MainActivity extends AppCompatActivity {
                     byte[] data = (byte[]) msg.obj;
                     Log.v("VectorDisplay", "a:"+new String(data));
                     record.feed(data);
-                    if (view != null)
-                        view.invalidate();
 //                    mActivity.get().display.append(data);
                     break;
 /*                case UsbService.CTS_CHANGE:
@@ -251,8 +268,6 @@ public class MainActivity extends AppCompatActivity {
 //                    byte[] b = { 'C', 'L', 0, 0, 0,0, (byte)0xFF, 0x01, (byte)0xFF, 0x01, 'T', 10, 0, 10, 0, 'A', 'B', 'C', 0, 'M', 'H', 'e', 'l', 'l', 'o', 0};
 //                    record.feed(b);
                     record.feed(buffer);
-                    if (view != null)
-                        view.invalidate();
 //                    mActivity.get().display.append(buffer);
                     break;
             }

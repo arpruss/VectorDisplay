@@ -3,6 +3,7 @@ package mobi.omegacentauri.vectordisplay;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
@@ -16,7 +17,23 @@ public class VectorView extends View {
     boolean redraw = false;
     Bitmap bitmap;
     Canvas savedCanvas = null;
+    float aspectRatio = 4f/3f;
 
+    @Override
+    protected void onMeasure(int wspec, int hspec) {
+        int w = View.MeasureSpec.getSize(wspec);
+        int h = View.MeasureSpec.getSize(hspec);
+        Log.v("VectorDisplay", "onmeasure "+w+" "+h );
+        if ((float)w/h >= aspectRatio) {
+            w = (int) (h * aspectRatio);
+        }
+        else {
+            h = (int) (w / aspectRatio);
+        }
+        setMeasuredDimension(w, h);
+    }
+
+    @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         if (bitmap != null) {
             bitmap.recycle();
@@ -24,14 +41,15 @@ public class VectorView extends View {
         savedCanvas = new Canvas();
         bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
         savedCanvas.setBitmap(bitmap);
+        Log.v("VectorDisplay", "size "+w+" "+h+" "+(double)w/h);
         redraw = true;
     }
 
-    public VectorView(Context c, RecordAndPlay r) {
-        super(c);
+    public VectorView(Context c, AttributeSet set) {
+        super(c,set);
 
-        this.record = r;
-        this.redraw = false;
+        this.redraw = true;
+        this.record = ((MainActivity)c).record;
     }
 
     @Override

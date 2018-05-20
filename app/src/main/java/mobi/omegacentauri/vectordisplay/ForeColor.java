@@ -1,12 +1,9 @@
 package mobi.omegacentauri.vectordisplay;
 
 import mobi.omegacentauri.vectordisplay.VectorAPI.Buffer;
-import mobi.omegacentauri.vectordisplay.DisplayState;
 
-import android.content.Context;
+import android.app.Activity;
 import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Paint.Style;
 
 public class ForeColor extends Command {
 	public ForeColor(DisplayState state) {
@@ -19,7 +16,7 @@ public class ForeColor extends Command {
     }
 
     @Override
-	public DisplayState parseArguments(Context context, Buffer buffer) {
+	public DisplayState parseArguments(Activity context, Buffer buffer) {
 		state.foreColor = buffer.getInteger(0,4);
 		return state;
 	}

@@ -2,12 +2,11 @@ package mobi.omegacentauri.vectordisplay;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.util.Log;
 
 class DisplayState {
     int width;
     int height;
-    boolean fit;
+    float pixelAspectRatio;
     int foreColor;
     int backColor;
     float thickness;
@@ -24,13 +23,13 @@ class DisplayState {
     static final char ALIGN_BASELINE = 'l';
 
     public void reset() {
-        width = 640;
-        height = 480;
-        fit = true;
+        width = 320;
+        height = 240;
+        pixelAspectRatio = 1.0f;
         foreColor = Color.WHITE;
         backColor = Color.BLACK;
         thickness = 1f;
-        textSize = 32;
+        textSize = 8;
         hAlignText = 'l';
         vAlignText = 'b';
         bold = false;
@@ -44,20 +43,7 @@ class DisplayState {
     public Coords getScale(Canvas c) {
         int cw = c.getWidth();
         int ch = c.getHeight();
-        if (fit) {
-            float s;
-            if (cw * height > ch * width) {
-                s = ((float)ch)/height;
-                Log.v("VectorDisplay", "s1 "+ch+" "+height+" "+s);
-            }
-            else {
-                s = ((float)cw)/width;
-                Log.v("VectorDisplay", "s2 "+cw+" "+width+" "+s);
-            }
-            return new Coords(s,s);
-        }
-        else
-            return new Coords((float)cw/width, (float)ch/height);
+        return new Coords((float)cw/width, (float)ch/height);
     }
 
     public Coords scale(Canvas c, int x, int y, boolean centerInPixel) {

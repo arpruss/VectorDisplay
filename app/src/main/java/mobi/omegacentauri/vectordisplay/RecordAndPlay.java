@@ -1,44 +1,48 @@
 package mobi.omegacentauri.vectordisplay;
 
-import android.content.Context;
+import android.app.Activity;
 import android.graphics.Canvas;
 import android.util.Log;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Alexander_Pruss on 10/13/2017.
  */
 
 public class RecordAndPlay {
-    private static final int MAX_ITEMS = 500000;
+    private static final int MAX_ITEMS = 50000;
     private Command commands[] = new Command[MAX_ITEMS];
     public VectorAPI parser;
     private int head;
     private int tail;
-    private int len;
-    private int playOffset;
+    Activity context;
+    Resetter resetter;
 
-    public RecordAndPlay(Context c) {
+    public RecordAndPlay(Activity c, Resetter r) {
         head = 0;
-        len = 0;
-        playOffset = 0;
+        tail = 0;
         parser = new VectorAPI(c);
+        context = c;
+        resetter = r;
     }
 
     public void feed(Command c) {
         if (c.needToClearHistory()) {
-            head = 0;
-            len = 0;
-            playOffset = 0;
+            head = tail;
         }
-        commands[(head+len) % MAX_ITEMS] = c;
-        if (len == MAX_ITEMS)
+
+        if (c.needToResetView()) {
+            resetter.resetVectorView(c.state);
+        }
+
+        commands[tail] = c;
+        tail = (tail + 1) % MAX_ITEMS;
+        if (tail == head)
             head = (head + 1) % MAX_ITEMS;
-        else
-            len++;
-        Log.v("VectorView", "fed "+c.getClass()+" "+head+" "+len);
+
+        try {
+            context.findViewById(R.id.vector).invalidate();
+        }
+        catch(Exception e) {}
     }
 
     public void feed(byte datum) {
@@ -57,24 +61,24 @@ public class RecordAndPlay {
     }
 
     public void redraw(Canvas canvas) {
-        if (len == 0) {
-            new Clear(parser.state).draw(canvas);
+        if (head == tail) {
+            Clear.clearCanvas(canvas, parser.state);
         }
         else {
-            new Clear(commands[head].state).draw(canvas);
+            Clear.clearCanvas(canvas, commands[head].state);
         }
-
-        playOffset = 0;
 
         draw(canvas);
     }
 
     public void draw(Canvas canvas) {
-        Log.v("VectorView", "draw "+playOffset+" "+len);
-        for (int i=playOffset; i<len; i++) {
-            Log.v("VectorView", commands[(head + i) % MAX_ITEMS].getClass().toString());
-            commands[(head + i) % MAX_ITEMS].draw(canvas);
+        while (head != tail) {
+            commands[head].draw(canvas);
+            head = (head + 1) % MAX_ITEMS;
         }
-        playOffset = len;
+    }
+
+    public interface Resetter {
+        void resetVectorView(DisplayState state);
     }
 }

@@ -2,7 +2,7 @@ package mobi.omegacentauri.vectordisplay;
 
 import mobi.omegacentauri.vectordisplay.VectorAPI.Buffer;
 
-import android.content.Context;
+import android.app.Activity;
 import android.graphics.Canvas;
 
 public class Command {
@@ -19,11 +19,11 @@ public class Command {
 
 	public int fixedArgumentsLength() { return 0; }
 
-	public DisplayState parseArguments(Context context, Buffer buffer) {
+	public DisplayState parseArguments(Activity context, Buffer buffer) {
 		return state;
 	}
 
-	final public DisplayState parse(Context context, Buffer buffer) {
+	final public DisplayState parse(Activity context, Buffer buffer) {
 		if (! haveStringArgument()) {
 			if (buffer.length() < fixedArgumentsLength()+1)
 				return null;
@@ -49,4 +49,6 @@ public class Command {
 	}
 
 	public boolean needToClearHistory() { return false; }
+
+	public boolean needToResetView() { return false; }
 }
