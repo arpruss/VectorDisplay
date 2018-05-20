@@ -8,7 +8,7 @@ import android.graphics.Paint.Style;
 import android.widget.Toast;
 
 import mobi.omegacentauri.vectordisplay.VectorAPI.Buffer;
-import mobi.omegacentauri.vectordisplay.VectorAPI.DisplayState;
+import mobi.omegacentauri.vectordisplay.DisplayState;
 
 public class PopupMessage extends Command {
 	public PopupMessage(DisplayState state) {

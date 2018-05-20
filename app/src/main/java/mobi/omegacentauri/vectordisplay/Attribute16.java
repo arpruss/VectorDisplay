@@ -1,14 +1,13 @@
 package mobi.omegacentauri.vectordisplay;
 
 import mobi.omegacentauri.vectordisplay.VectorAPI.Buffer;
-import mobi.omegacentauri.vectordisplay.VectorAPI.DisplayState;
+import mobi.omegacentauri.vectordisplay.DisplayState;
 
 import android.content.Context;
+import android.util.Log;
 
-public class TextStyle extends Command {
-	int x1,y1;
-	
-	public TextStyle(DisplayState state) {
+public class Attribute16 extends Command {
+	public Attribute16(DisplayState state) {
 		super(state);
 	}
 
@@ -20,11 +19,9 @@ public class TextStyle extends Command {
 	@Override
 	public DisplayState parseArguments(Context context, Buffer buffer) {
 		switch((char)buffer.data[0]) {
-			case 'a':
-				state.hAlign = (char)buffer.data[1];
-				break;
 			case 's':
 				state.textSize = buffer.getInteger(1, 2);
+				Log.v("VectorDisplay", ""+state.textSize);
 				break;
 		}
 		return state;

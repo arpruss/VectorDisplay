@@ -6,11 +6,11 @@ import android.content.Context;
 import android.graphics.Canvas;
 
 public class Command {
-	VectorAPI.DisplayState state;
+	DisplayState state;
 
 	public boolean errorState;
 
-	public Command(VectorAPI.DisplayState state) {
+	public Command(DisplayState state) {
 		this.errorState = false;
 		this.state = state;
 	}
@@ -19,11 +19,11 @@ public class Command {
 
 	public int fixedArgumentsLength() { return 0; }
 
-	public VectorAPI.DisplayState parseArguments(Context context, Buffer buffer) {
+	public DisplayState parseArguments(Context context, Buffer buffer) {
 		return state;
 	}
 
-	final public VectorAPI.DisplayState parse(Context context, Buffer buffer) {
+	final public DisplayState parse(Context context, Buffer buffer) {
 		if (! haveStringArgument()) {
 			if (buffer.length() < fixedArgumentsLength()+1)
 				return null;

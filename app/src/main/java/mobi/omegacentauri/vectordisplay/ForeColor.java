@@ -1,7 +1,7 @@
 package mobi.omegacentauri.vectordisplay;
 
 import mobi.omegacentauri.vectordisplay.VectorAPI.Buffer;
-import mobi.omegacentauri.vectordisplay.VectorAPI.DisplayState;
+import mobi.omegacentauri.vectordisplay.DisplayState;
 
 import android.content.Context;
 import android.graphics.Canvas;

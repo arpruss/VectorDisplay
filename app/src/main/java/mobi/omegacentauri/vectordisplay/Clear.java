@@ -1,6 +1,6 @@
 package mobi.omegacentauri.vectordisplay;
 
-import mobi.omegacentauri.vectordisplay.VectorAPI.DisplayState;
+import mobi.omegacentauri.vectordisplay.DisplayState;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
