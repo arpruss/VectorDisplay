@@ -45,6 +45,7 @@ public class VectorAPI {
 		map.put((byte) 'R', Rectangle.class);
 		map.put((byte) 'T', Text.class);
 		map.put((byte) 'P', Point.class);
+		map.put((byte) 'B', Attribute32.class);
 		map.put((byte) 'A', Attribute16.class);
 		map.put((byte) 'Y', Attribute8.class);
 		map.put((byte) 'F', ForeColor.class);
