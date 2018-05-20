@@ -73,12 +73,10 @@ public class VectorAPI {
             }
 		}
 		else {
-		    Log.v("VectorDisplay", "current "+(int)lastChar+" "+(int)ch);
 			if (lastChar != 0 && (0xFF & ch) == (lastChar ^ 0xFF)) {
                 Class<? extends Command> cl = map.get(lastChar);
                 lastChar = 0;
                 if (cl != null) {
-                    Log.v("VectorDisplay", cl.toString());
                     Command c;
                     try {
                         c = (Command) cl.getConstructor(DisplayState.class).newInstance(state);

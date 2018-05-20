@@ -62,7 +62,7 @@ public class Text extends Command {
             fill.setStyle(Paint.Style.FILL);
             fill.setStrokeWidth(0);
 
-            c.drawRect(xy.x, xy.y + p.ascent(), xy.x + w, xy.y + p.ascent() + h, fill);
+            c.drawRect(xy.x, xy.y + p.ascent(), xy.x + w + 0.5f, xy.y + p.ascent() + h, fill);
         }
 		c.drawText(text, xy.x, xy.y, p);
 	}
