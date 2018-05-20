@@ -27,7 +27,6 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.support.constraint.ConstraintLayout;
 
 import java.lang.ref.WeakReference;
 import java.util.Set;
