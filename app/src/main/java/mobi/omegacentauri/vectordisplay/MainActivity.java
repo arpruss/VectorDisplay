@@ -21,22 +21,35 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class MainActivity extends AppCompatActivity implements RecordAndPlay.Resetter {
+    public static final String KEY_COMMAND = "cmd";
+    public static final String KEY_LABEL = "label";
     public int physicalWidth = -1;
     public int physicalHeight = -1;
-    public RecordAndPlay record = new RecordAndPlay(this, this);
+    public RecordAndPlay record;
     SharedPreferences prefs;
+    List<Byte> userCommands;
+    List<String> userLabels;
+    ArrayAdapter<String> commandListAdapter = null;
     static final boolean DEBUG = false;
+    ListView commandList;
+    MyHandler commandHandler;
+    static final int ADD_COMMAND = 1;
+    static final int DELETE_COMMAND = 2;
 
     static public void log(String s) {
         if (DEBUG)
@@ -107,66 +120,27 @@ public class MainActivity extends AppCompatActivity implements RecordAndPlay.Res
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
+        userCommands = new ArrayList<Byte>();
+        userLabels = new ArrayList<String>();
+
+        commandHandler = new MyHandler(this);
+        record = new RecordAndPlay(this, this, commandHandler);
+
+        setContentView(R.layout.activity_main);
+
+        commandList = (ListView)findViewById(R.id.commands);
+        commandListAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1,
+                android.R.id.text1,
+                userLabels);
+        commandList.setAdapter(commandListAdapter);
+
         setOrientation();
 //        record = new RecordAndPlay(this, this);
-        setContentView(R.layout.activity_main);
         resetVectorView(record.parser.state);
 
         MainActivity.log( "OnCreate");
 
-/*        record.feed(b);
-
-
-
-        mHandler = new MyHandler(this);
-
-        display = (TextView) findViewById(R.id.textView1);
-        editText = (EditText) findViewById(R.id.editText1);
-        Button sendButton = (Button) findViewById(R.id.buttonSend);
-        sendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!editText.getText().toString().equals("")) {
-                    String data = editText.getText().toString();
-                    if (usbService != null) { // if UsbService was correctly binded, Send data
-                        usbService.write(data.getBytes());
-                    }
-                }
-            }
-        });
-
-        box9600 = (CheckBox) findViewById(R.id.checkBox);
-        box9600.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(box9600.isChecked())
-                    box38400.setChecked(false);
-                else
-                    box38400.setChecked(true);
-            }
-        });
-
-        box38400 = (CheckBox) findViewById(R.id.checkBox2);
-        box38400.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(box38400.isChecked())
-                    box9600.setChecked(false);
-                else
-                    box9600.setChecked(true);
-            }
-        });
-
-        Button baudrateButton = (Button) findViewById(R.id.buttonBaudrate);
-        baudrateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(box9600.isChecked())
-                    usbService.changeBaudRate(9600);
-                else
-                    usbService.changeBaudRate(38400);
-            }
-        }); */
     }
 
     @Override
@@ -247,4 +221,36 @@ public class MainActivity extends AppCompatActivity implements RecordAndPlay.Res
         v.setLayoutParams(lp); */
         v.aspectRatio = state.width*state.pixelAspectRatio/state.height;
     }
+
+    private static class MyHandler extends Handler {
+        private final WeakReference<MainActivity> mActivity;
+
+        public MyHandler(MainActivity activity) {
+            mActivity = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            MainActivity main = mActivity.get();
+
+            if (main == null || main.commandListAdapter == null)
+                return;
+
+            if (msg.what == MainActivity.ADD_COMMAND || msg.what == MainActivity.DELETE_COMMAND) {
+                byte cmd = msg.getData().getByte(MainActivity.KEY_COMMAND);
+                for (int i=0; i<main.userCommands.size(); i++) {
+                    if (main.userCommands.get(i) == cmd) {
+                        main.commandListAdapter.remove(main.userLabels.get(i));
+                        main.userCommands.remove(i);
+                    }
+                }
+                if (msg.what == MainActivity.ADD_COMMAND) {
+                    main.userCommands.add(cmd);
+                    main.commandListAdapter.add((String) msg.getData().getString(MainActivity.KEY_LABEL));
+                }
+                main.commandList.setVisibility(main.userCommands.size() > 0 ? View.VISIBLE : View.GONE);
+            }
+        }
+    }
 }
+

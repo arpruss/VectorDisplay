@@ -4,6 +4,7 @@ import mobi.omegacentauri.vectordisplay.VectorAPI.Buffer;
 
 import android.app.Activity;
 import android.graphics.Canvas;
+import android.os.Handler;
 import android.util.Log;
 
 public class Command {
@@ -56,4 +57,6 @@ public class Command {
 	public boolean needToClearHistory() { return false; }
 
 	public boolean needToResetView() { return false; }
+
+	public void handleCommand(Handler h) {}
 }

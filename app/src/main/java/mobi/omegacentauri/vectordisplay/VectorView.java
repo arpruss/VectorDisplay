@@ -26,7 +26,7 @@ public class VectorView extends View {
     static final byte[] DOWN = new byte[] { 'D', 'N'};
     static final byte[] MOVE = new byte[] { 'M', 'V'};
     long lastEvent = -MOTION_TIMING;
-    byte[] outBuf = new byte[4];
+    byte[] outBuf = new byte[6];
 
     @Override
     protected void onMeasure(int wspec, int hspec) {
@@ -86,6 +86,8 @@ public class VectorView extends View {
                             outBuf[1] = (byte) (xy.x >> 8);
                             outBuf[2] = (byte) (xy.y & 0xFF);
                             outBuf[3] = (byte) (xy.y >> 8);
+                            outBuf[4] = 0;
+                            outBuf[5] = 0;
                             main.usbService.write(outBuf);
                         }
                     }

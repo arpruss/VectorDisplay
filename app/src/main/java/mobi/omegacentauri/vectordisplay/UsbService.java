@@ -45,7 +45,6 @@ public class UsbService extends Service {
     private IBinder binder = new UsbBinder();
 
     private Context context;
-    private Handler mHandler;
     private UsbManager usbManager;
     private UsbDevice device;
     private UsbDeviceConnection connection;
@@ -73,27 +72,6 @@ public class UsbService extends Service {
         }
     };
 
-    /*
-     * State changes in the CTS line will be received here
-     */
-    private UsbSerialInterface.UsbCTSCallback ctsCallback = new UsbSerialInterface.UsbCTSCallback() {
-        @Override
-        public void onCTSChanged(boolean state) {
-            if(mHandler != null)
-                mHandler.obtainMessage(CTS_CHANGE).sendToTarget();
-        }
-    };
-
-    /*
-     * State changes in the DSR line will be received here
-     */
-    private UsbSerialInterface.UsbDSRCallback dsrCallback = new UsbSerialInterface.UsbDSRCallback() {
-        @Override
-        public void onDSRChanged(boolean state) {
-            if(mHandler != null)
-                mHandler.obtainMessage(DSR_CHANGE).sendToTarget();
-        }
-    };
     /*
      * Different notifications from OS will be received here (USB attached, detached, permission responses...)
      * About BroadcastReceiver: http://developer.android.com/reference/android/content/BroadcastReceiver.html

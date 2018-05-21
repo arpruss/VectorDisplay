@@ -24,13 +24,15 @@ public class RecordAndPlay {
     long updateTimeMillis = 60;
     long lastUpdate = 0;
     boolean posted = false;
+    Handler commandHandler;
 
-    public RecordAndPlay(Activity c, Resetter r) {
+    public RecordAndPlay(Activity c, Resetter r, Handler h) {
         head = 0;
         tail = 0;
         parser = new VectorAPI(c);
         context = c;
         resetter = r;
+        commandHandler = h;
     }
 
     synchronized public void feed(Command c) {
@@ -41,6 +43,8 @@ public class RecordAndPlay {
         if (c.needToResetView()) {
             resetter.resetVectorView(c.state);
         }
+
+        c.handleCommand(commandHandler);
 
         commands[tail] = c;
         tail = (tail + 1) % MAX_ITEMS;
@@ -57,11 +61,7 @@ public class RecordAndPlay {
     }
 
     public void feed(byte[] data) {
-        for(byte datum: data) {
-            Command c = parser.parse(datum);
-            if (c != null)
-                feed(c);
-        }
+        feed(data, data.length);
     }
 
     public void feed(byte[] data, int n) {
