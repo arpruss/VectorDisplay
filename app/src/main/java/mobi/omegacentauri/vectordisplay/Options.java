@@ -6,6 +6,7 @@ import android.preference.PreferenceActivity;
 
 public class Options extends PreferenceActivity {
     public static final String PREF_LANDSCAPE = "landscape";
+    public static final String PREF_RESET_ON_CONNECT = "resetOnConnect";
 
     @Override
     public void onCreate(Bundle icicle) {

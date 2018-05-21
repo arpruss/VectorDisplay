@@ -59,13 +59,13 @@ public class UsbService extends Service {
     private UsbSerialInterface.UsbReadCallback mCallback = new UsbSerialInterface.UsbReadCallback() {
         @Override
         public void onReceivedData(byte[] arg0) {
-            try {
+            if (mHandler != null)
+                mHandler.obtainMessage(MESSAGE_FROM_SERIAL_PORT, arg0).sendToTarget();
+/*            try {
                 String data = new String(arg0, "UTF-8");
-                if (mHandler != null)
-                    mHandler.obtainMessage(MESSAGE_FROM_SERIAL_PORT, data).sendToTarget();
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
-            }
+            } */
         }
     };
 
@@ -257,7 +257,7 @@ public class UsbService extends Service {
                      * UsbSerialInterface.FLOW_CONTROL_RTS_CTS only for CP2102 and FT232
                      * UsbSerialInterface.FLOW_CONTROL_DSR_DTR only for CP2102 and FT232
                      */
-                    serialPort.setFlowControl(UsbSerialInterface.FLOW_CONTROL_DSR_DTR);
+                    serialPort.setFlowControl(UsbSerialInterface.FLOW_CONTROL_OFF);//DSR_DTR);
                     serialPort.read(mCallback);
                     //serialPort.getCTS(ctsCallback);
                     //serialPort.getDSR(dsrCallback);

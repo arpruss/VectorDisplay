@@ -2,20 +2,28 @@ package mobi.omegacentauri.vectordisplay;
 
 import android.app.Activity;
 import android.graphics.Canvas;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.util.Log;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by Alexander_Pruss on 10/13/2017.
  */
 
 public class RecordAndPlay {
-    private static final int MAX_ITEMS = 50000;
+    private static final int MAX_ITEMS = 2000;
     private Command commands[] = new Command[MAX_ITEMS];
     public VectorAPI parser;
     private int head;
     private int tail;
     Activity context;
     Resetter resetter;
+    static final long updateTimeMillis = 50;
+    long lastUpdate = 0;
+    boolean posted = false;
 
     public RecordAndPlay(Activity c, Resetter r) {
         head = 0;
@@ -25,7 +33,7 @@ public class RecordAndPlay {
         resetter = r;
     }
 
-    public void feed(Command c) {
+    synchronized public void feed(Command c) {
         if (c.needToClearHistory()) {
             head = tail;
         }
@@ -39,10 +47,13 @@ public class RecordAndPlay {
         if (tail == head)
             head = (head + 1) % MAX_ITEMS;
 
-        try {
-            context.findViewById(R.id.vector).invalidate();
+        if (!posted) {
+            try {
+                context.findViewById(R.id.vector).postInvalidateDelayed(updateTimeMillis);
+                posted = true;
+            } catch (Exception e) {
+            }
         }
-        catch(Exception e) {}
     }
 
     public void feed(byte datum) {
@@ -50,9 +61,9 @@ public class RecordAndPlay {
         if (c != null) {
             feed(c);
         }
-        else {
-            Log.v("VectorView", "unknown "+datum);
-        }
+//        else {
+//            Log.v("VectorView", "unknown "+datum);
+//        }
     }
 
     public void feed(byte[] data) {
@@ -71,11 +82,13 @@ public class RecordAndPlay {
         draw(canvas);
     }
 
-    public void draw(Canvas canvas) {
+    synchronized public void draw(Canvas canvas) {
         while (head != tail) {
             commands[head].draw(canvas);
+            commands[head] = null;
             head = (head + 1) % MAX_ITEMS;
         }
+        posted = false;
     }
 
     public interface Resetter {

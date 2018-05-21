@@ -23,7 +23,7 @@ public class VectorView extends View {
     protected void onMeasure(int wspec, int hspec) {
         int w = View.MeasureSpec.getSize(wspec);
         int h = View.MeasureSpec.getSize(hspec);
-        Log.v("VectorDisplay", "onmeasure "+w+" "+h );
+        MainActivity.log( "onmeasure "+w+" "+h );
         if ((float)w/h >= aspectRatio) {
             w = (int) (h * aspectRatio);
         }
@@ -41,7 +41,7 @@ public class VectorView extends View {
         savedCanvas = new Canvas();
         bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
         savedCanvas.setBitmap(bitmap);
-        Log.v("VectorDisplay", "size "+w+" "+h+" "+(double)w/h);
+        MainActivity.log( "size "+w+" "+h+" "+(double)w/h);
         redraw = true;
     }
 
@@ -55,19 +55,20 @@ public class VectorView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         if (savedCanvas == null) {
-            Log.v("VectorDisplay", "creating savedCanvas");
+            MainActivity.log( "creating savedCanvas");
             onSizeChanged(0,0, canvas.getWidth(), canvas.getHeight());
         }
         if (redraw) {
-            Log.v("VectorDisplay", "redrawing");
+            MainActivity.log( "redrawing");
             record.redraw(savedCanvas);
             redraw = false;
         }
         else {
             Log.v("VectorDisplay", "drawing");
+            MainActivity.log( "drawing");
             record.draw(savedCanvas);
         }
-        Log.v("VectorDisplay", "bitmap "+bitmap.getWidth()+" "+bitmap.getHeight());
+        MainActivity.log( "bitmap "+bitmap.getWidth()+" "+bitmap.getHeight());
         canvas.drawBitmap(bitmap, 0f, 0f, null);
     }
 }

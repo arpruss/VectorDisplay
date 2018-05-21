@@ -31,13 +31,13 @@ public class Text extends Command {
 		x1 = buffer.getInteger(0, 2);
 		y1 = buffer.getInteger(2, 2);
 		text = buffer.getString(4, buffer.length()-1-4);
-        Log.v("VectorDisplay", "parsing text: "+text);
+        MainActivity.log("parsing text: "+text);
 		return state;
 	}
 	
 	@Override
 	public void draw(Canvas c) {
-        Log.v("VectorDisplay", "drawing text");
+        MainActivity.log( "drawing text");
 		Paint p = new Paint();
 		p.setStyle(Style.FILL);
 		p.setColor(state.foreColor);

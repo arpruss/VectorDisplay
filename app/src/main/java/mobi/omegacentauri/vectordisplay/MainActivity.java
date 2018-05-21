@@ -36,6 +36,12 @@ public class MainActivity extends AppCompatActivity implements RecordAndPlay.Res
     public int physicalHeight = -1;
     static public RecordAndPlay record;
     SharedPreferences prefs;
+    static final boolean DEBUG = false;
+
+    static public void log(String s) {
+        if (DEBUG)
+            Log.v("VectorDisplay", s);
+    }
 
     /*
      * Notifications from UsbService will be received here.
@@ -46,6 +52,8 @@ public class MainActivity extends AppCompatActivity implements RecordAndPlay.Res
             switch (intent.getAction()) {
                 case UsbService.ACTION_USB_PERMISSION_GRANTED: // USB PERMISSION GRANTED
                     Toast.makeText(context, "USB Ready", Toast.LENGTH_SHORT).show();
+                    if (prefs.getBoolean(Options.PREF_RESET_ON_CONNECT, true))
+                        record.feed(new Reset(record.parser.state));
                     break;
                 case UsbService.ACTION_USB_PERMISSION_NOT_GRANTED: // USB PERMISSION NOT GRANTED
                     Toast.makeText(context, "USB Permission not granted", Toast.LENGTH_SHORT).show();
@@ -83,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements RecordAndPlay.Res
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        Log.v("VectorDisplay", "onConfigurationChanged");
+        MainActivity.log( "onConfigurationChanged");
     }
 
     void setOrientation() {
@@ -103,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements RecordAndPlay.Res
         resetVectorView(record.parser.state);
         mHandler = new MyHandler(this);
 
-        Log.v("VectorDisplay", "OnCreate");
+        MainActivity.log( "OnCreate");
 
 /*        record.feed(b);
 
@@ -212,7 +220,6 @@ public class MainActivity extends AppCompatActivity implements RecordAndPlay.Res
         // TODO Auto-generated method stub
         int id = item.getItemId();
         if (id == R.id.clear) {
-            Log.v("VectorView", "need to clear");
             record.feed(new Clear(record.parser.state));
         }
         else if (id == R.id.reset) {
@@ -251,9 +258,7 @@ public class MainActivity extends AppCompatActivity implements RecordAndPlay.Res
             switch (msg.what) {
                 case UsbService.MESSAGE_FROM_SERIAL_PORT:
                     byte[] data = (byte[]) msg.obj;
-                    Log.v("VectorDisplay", "a:"+new String(data));
                     record.feed(data);
-//                    mActivity.get().display.append(data);
                     break;
 /*                case UsbService.CTS_CHANGE:
                     Toast.makeText(mActivity.get(), "CTS_CHANGE",Toast.LENGTH_LONG).show();
@@ -263,11 +268,7 @@ public class MainActivity extends AppCompatActivity implements RecordAndPlay.Res
                     break; */
                 case UsbService.SYNC_READ:
                     byte[] buffer = (byte[]) msg.obj;
-                    Log.v("VectorDisplay", "b:"+new String(buffer));
-//                    byte[] b = { 'C', 'L', 0, 0, 0,0, (byte)0xFF, 0x01, (byte)0xFF, 0x01, 'T', 10, 0, 10, 0, 'A', 'B', 'C', 0, 'M', 'H', 'e', 'l', 'l', 'o', 0};
-//                    record.feed(b);
                     record.feed(buffer);
-//                    mActivity.get().display.append(buffer);
                     break;
             }
         }

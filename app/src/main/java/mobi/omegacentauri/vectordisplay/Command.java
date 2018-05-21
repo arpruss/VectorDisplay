@@ -4,6 +4,7 @@ import mobi.omegacentauri.vectordisplay.VectorAPI.Buffer;
 
 import android.app.Activity;
 import android.graphics.Canvas;
+import android.util.Log;
 
 public class Command {
 	DisplayState state;
@@ -12,8 +13,11 @@ public class Command {
 
 	public Command(DisplayState state) {
 		this.errorState = false;
-		this.state = state;
-	}
+        try {
+            this.state = (DisplayState)state.clone();
+        } catch (CloneNotSupportedException e) {
+        }
+    }
 
 	public boolean haveStringArgument() { return false; }
 
@@ -36,6 +40,7 @@ public class Command {
 		if (buffer.checksum())
 			return parseArguments(context, buffer);
 		else {
+			MainActivity.log( "bad checksum");
 			errorState = true;
 			return null;
 		}

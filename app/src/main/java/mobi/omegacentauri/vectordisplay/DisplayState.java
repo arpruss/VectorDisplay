@@ -3,7 +3,7 @@ package mobi.omegacentauri.vectordisplay;
 import android.graphics.Canvas;
 import android.graphics.Color;
 
-class DisplayState {
+class DisplayState implements Cloneable {
     int width;
     int height;
     float pixelAspectRatio;
@@ -21,6 +21,12 @@ class DisplayState {
     static final char ALIGN_TOP = 't';
     static final char ALIGN_BOTTOM = 'b';
     static final char ALIGN_BASELINE = 'l';
+
+    public Object clone() throws
+            CloneNotSupportedException
+    {
+        return super.clone();
+    }
 
     public void reset() {
         width = 320;
@@ -63,4 +69,5 @@ class DisplayState {
         Coords s = getScale(c);
         return (float) (s.y * thickness);
     }
+
 }

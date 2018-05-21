@@ -37,7 +37,7 @@ public class Line extends Command {
 		p.setStrokeWidth(state.getThickness(c));
 		Coords start = state.scale(c, x1, y1, true);
 		Coords end = state.scale(c, x2, y2, true);
-		Log.v("VectorDisplay", "foreColor "+state.foreColor);
+		MainActivity.log( "foreColor "+state.foreColor);
 		c.drawLine(start.x, start.y, end.x, end.y, p);
 	}
 }

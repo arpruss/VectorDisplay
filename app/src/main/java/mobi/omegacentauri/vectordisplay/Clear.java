@@ -20,7 +20,7 @@ public class Clear extends Command {
 	public static void clearCanvas(Canvas c, DisplayState state) {
 		Paint paint = new Paint();
 		paint.setColor(state.backColor);
-		Log.v("VectorDisplay", "clearing to "+state.backColor+ " "+c.getWidth()+" "+c.getHeight());
+		MainActivity.log( "clearing to "+state.backColor+ " "+c.getWidth()+" "+c.getHeight());
 		c.drawRect(0,0,c.getWidth(),c.getHeight(), paint);
 	}
 	@Override
