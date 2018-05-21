@@ -21,7 +21,7 @@ public class RecordAndPlay {
     private int tail;
     Activity context;
     Resetter resetter;
-    static final long updateTimeMillis = 50;
+    static final long updateTimeMillis = 100;
     long lastUpdate = 0;
     boolean posted = false;
 
@@ -71,7 +71,7 @@ public class RecordAndPlay {
             feed(datum);
     }
 
-    public void redraw(Canvas canvas) {
+    synchronized public void redraw(Canvas canvas) {
         if (head == tail) {
             Clear.clearCanvas(canvas, parser.state);
         }

@@ -64,7 +64,6 @@ public class VectorView extends View {
             redraw = false;
         }
         else {
-            Log.v("VectorDisplay", "drawing");
             MainActivity.log( "drawing");
             record.draw(savedCanvas);
         }
