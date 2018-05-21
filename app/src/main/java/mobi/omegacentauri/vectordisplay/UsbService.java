@@ -12,6 +12,7 @@ import android.hardware.usb.UsbManager;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
+import android.util.Log;
 
 import com.felhr.usbserial.CDCSerialDevice;
 import com.felhr.usbserial.UsbSerialDevice;
@@ -49,8 +50,9 @@ public class UsbService extends Service {
     private UsbDevice device;
     private UsbDeviceConnection connection;
     private UsbSerialDevice serialPort;
+    private RecordAndPlay record;
 
-    private boolean serialPortConnected;
+    public boolean serialPortConnected;
     /*
      *  Data received from serial port will be received here. Just populate onReceivedData with your code
      *  In this particular example. byte stream is converted to String and send to UI thread to
@@ -59,8 +61,10 @@ public class UsbService extends Service {
     private UsbSerialInterface.UsbReadCallback mCallback = new UsbSerialInterface.UsbReadCallback() {
         @Override
         public void onReceivedData(byte[] arg0) {
-            if (mHandler != null)
-                mHandler.obtainMessage(MESSAGE_FROM_SERIAL_PORT, arg0).sendToTarget();
+            if (record != null)
+                record.feed(arg0);
+//            if (mHandler != null)
+//                mHandler.obtainMessage(MESSAGE_FROM_SERIAL_PORT, arg0).sendToTarget();
 /*            try {
                 String data = new String(arg0, "UTF-8");
             } catch (UnsupportedEncodingException e) {
@@ -117,10 +121,12 @@ public class UsbService extends Service {
                 // Usb device was disconnected. send an intent to the Main Activity
                 Intent intent = new Intent(ACTION_USB_DISCONNECTED);
                 arg0.sendBroadcast(intent);
-                if (serialPortConnected) {
-                    serialPort.syncClose();
+                synchronized (this) {
+                    if (serialPortConnected) {
+                        serialPort.syncClose();
+                    }
+                    serialPortConnected = false;
                 }
-                serialPortConnected = false;
             }
         }
     };
@@ -176,8 +182,8 @@ public class UsbService extends Service {
             serialPort.setBaudRate(baudRate);
     }
 
-    public void setHandler(Handler mHandler) {
-        this.mHandler = mHandler;
+    public void setRecord(RecordAndPlay r) {
+        this.record = r;
     }
 
     private void findSerialPortDevice() {
@@ -295,13 +301,24 @@ public class UsbService extends Service {
         @Override
         public void run() {
             while(true){
-                byte[] buffer = new byte[100];
+                synchronized(UsbService.this) {
+                    if (! UsbService.this.serialPortConnected)
+                        return;
+                }
+                byte[] buffer = new byte[128];
                 int n = serialPort.syncRead(buffer, 0);
                 if(n > 0) {
-                    byte[] received = new byte[n];
+                    if (record != null) {
+//                        Log.e("VectorDisplay", "n="+n);
+                        record.feed(buffer, n);
+                    }
+/*                    byte[] received = new byte[n];
                     System.arraycopy(buffer, 0, received, 0, n);
                     //String receivedStr = new String(received);
-                    mHandler.obtainMessage(SYNC_READ, received).sendToTarget();
+                    record.feed(received);
+                    Log.v("VectorDisplay", "sync "+n);
+//                    mHandler.obtainMessage(SYNC_READ, received).sendToTarget();
+*/
                 }
             }
         }

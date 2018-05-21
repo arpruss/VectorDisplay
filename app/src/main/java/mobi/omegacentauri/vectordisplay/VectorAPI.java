@@ -28,14 +28,14 @@ import android.graphics.Color;
 import android.util.Log;
 
 public class VectorAPI {
-	DisplayState state;
-	Map<Byte,Class<? extends Command>> map = new HashMap<Byte,Class<? extends Command>>();
-	Command currentCommand = null;
-	Buffer buffer = new Buffer();
-	static final int TIMEOUT = 5000;
-	long commandStartTime;
-	Activity context;
-	byte lastChar = 0;
+	public DisplayState state;
+    private Map<Byte,Class<? extends Command>> map = new HashMap<Byte,Class<? extends Command>>();
+    private Command currentCommand = null;
+    private Buffer buffer = new Buffer();
+    private static final int TIMEOUT = 5000;
+    private long commandStartTime;
+    private Activity context;
+    private byte lastChar = 0;
 		
 	public VectorAPI(Activity context) {
 	    this.context = context;
@@ -51,8 +51,8 @@ public class VectorAPI {
 		map.put((byte) 'M', PopupMessage.class);
 		map.put((byte) 'E', Reset.class);
 	}
-	
-	public Command parse(byte ch) {
+
+	synchronized public Command parse(byte ch) {
 		DisplayState newState;
 
 		if (currentCommand != null && System.currentTimeMillis() < commandStartTime + TIMEOUT) {

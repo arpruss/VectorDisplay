@@ -34,7 +34,7 @@ import java.util.Set;
 public class MainActivity extends AppCompatActivity implements RecordAndPlay.Resetter {
     public int physicalWidth = -1;
     public int physicalHeight = -1;
-    static public RecordAndPlay record;
+    public RecordAndPlay record = new RecordAndPlay(this, this);
     SharedPreferences prefs;
     static final boolean DEBUG = false;
 
@@ -73,12 +73,11 @@ public class MainActivity extends AppCompatActivity implements RecordAndPlay.Res
     private UsbService usbService;
     private TextView display;
     private EditText editText;
-    private MyHandler mHandler;
     private final ServiceConnection usbConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName arg0, IBinder arg1) {
             usbService = ((UsbService.UsbBinder) arg1).getService();
-            usbService.setHandler(mHandler);
+            usbService.setRecord(record);
             usbService.changeBaudRate(115200);
         }
 
@@ -106,10 +105,9 @@ public class MainActivity extends AppCompatActivity implements RecordAndPlay.Res
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         setOrientation();
-        record = new RecordAndPlay(this, this);
+//        record = new RecordAndPlay(this, this);
         setContentView(R.layout.activity_main);
         resetVectorView(record.parser.state);
-        mHandler = new MyHandler(this);
 
         MainActivity.log( "OnCreate");
 
@@ -171,6 +169,7 @@ public class MainActivity extends AppCompatActivity implements RecordAndPlay.Res
     @Override
     public void onResume() {
         super.onResume();
+        record.updateTimeMillis = (long)Integer.parseInt(prefs.getString(Options.PREF_UPDATE_SPEED, "60"));
         setFilters();  // Start listening notifications from UsbService
         startService(UsbService.class, usbConnection, null); // Start UsbService(if it was not started before) and Bind it
     }
@@ -230,6 +229,9 @@ public class MainActivity extends AppCompatActivity implements RecordAndPlay.Res
             prefs.edit().putBoolean(Options.PREF_LANDSCAPE, landscape).commit();
             setOrientation();
         }
+        else if (id == R.id.settings) {
+            startActivity(new Intent(this, Options.class));
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -241,36 +243,5 @@ public class MainActivity extends AppCompatActivity implements RecordAndPlay.Res
         lp.dimensionRatio = ""+ratio;
         v.setLayoutParams(lp); */
         v.aspectRatio = state.width*state.pixelAspectRatio/state.height;
-    }
-
-    /*
-     * This handler will be passed to UsbService. Data received from serial port is displayed through this handler
-     */
-    private static class MyHandler extends Handler {
-        private final WeakReference<MainActivity> mActivity;
-
-        public MyHandler(MainActivity activity) {
-            mActivity = new WeakReference<>(activity);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case UsbService.MESSAGE_FROM_SERIAL_PORT:
-                    byte[] data = (byte[]) msg.obj;
-                    record.feed(data);
-                    break;
-/*                case UsbService.CTS_CHANGE:
-                    Toast.makeText(mActivity.get(), "CTS_CHANGE",Toast.LENGTH_LONG).show();
-                    break;
-                case UsbService.DSR_CHANGE:
-                    Toast.makeText(mActivity.get(), "DSR_CHANGE",Toast.LENGTH_LONG).show();
-                    break; */
-                case UsbService.SYNC_READ:
-                    byte[] buffer = (byte[]) msg.obj;
-                    record.feed(buffer);
-                    break;
-            }
-        }
     }
 }

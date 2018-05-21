@@ -21,7 +21,7 @@ public class RecordAndPlay {
     private int tail;
     Activity context;
     Resetter resetter;
-    static final long updateTimeMillis = 100;
+    long updateTimeMillis = 60;
     long lastUpdate = 0;
     boolean posted = false;
 
@@ -56,19 +56,20 @@ public class RecordAndPlay {
         }
     }
 
-    public void feed(byte datum) {
-        Command c = parser.parse(datum);
-        if (c != null) {
-            feed(c);
+    public void feed(byte[] data) {
+        for(byte datum: data) {
+            Command c = parser.parse(datum);
+            if (c != null)
+                feed(c);
         }
-//        else {
-//            Log.v("VectorView", "unknown "+datum);
-//        }
     }
 
-    public void feed(byte[] data) {
-        for(byte datum: data)
-            feed(datum);
+    public void feed(byte[] data, int n) {
+        for(int i=0; i<n; i++) {
+            Command c = parser.parse(data[i]);
+            if (c != null)
+                feed(c);
+        }
     }
 
     synchronized public void redraw(Canvas canvas) {

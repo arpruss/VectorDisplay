@@ -8,4 +8,6 @@
         android:title="Rotate" />
     <item android:id="@+id/reset"
         android:title="Reset" />
+    <item android:id="@+id/settings"
+        android:title="Settings" />
 </menu>
