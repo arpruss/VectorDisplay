@@ -21,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -50,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements RecordAndPlay.Res
     MyHandler commandHandler;
     static final int ADD_COMMAND = 1;
     static final int DELETE_COMMAND = 2;
+    byte[] outBuf = new byte[8];
 
     static public void log(String s) {
         if (DEBUG)
@@ -134,8 +136,21 @@ public class MainActivity extends AppCompatActivity implements RecordAndPlay.Res
                 android.R.id.text1,
                 userLabels);
         commandList.setAdapter(commandListAdapter);
+        commandList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+               @Override
+               public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    synchronized(MainActivity.this) {
+                        outBuf[0] = 'C';
+                        outBuf[1] = 'M';
+                        outBuf[2] = userCommands.get(position);
+                        for (int i=3; i<8; i++)
+                            outBuf[i] = 0;
+                        usbService.write(outBuf);
+                    }
+               }
+        });
 
-        setOrientation();
+                setOrientation();
 //        record = new RecordAndPlay(this, this);
         resetVectorView(record.parser.state);
 
