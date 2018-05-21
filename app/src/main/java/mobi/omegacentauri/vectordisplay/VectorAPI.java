@@ -22,9 +22,6 @@ import java.util.Map;
  */
 
 import android.app.Activity;
-import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
 import android.util.Log;
 
 public class VectorAPI {
@@ -42,7 +39,7 @@ public class VectorAPI {
 		this.state = new DisplayState();
 		map.put((byte) 'C', Clear.class);
 		map.put((byte) 'L', Line.class);
-		map.put((byte) 'R', Rectangle.class);
+		map.put((byte) 'R', FillRectangle.class);
 		map.put((byte) 'T', Text.class);
 		map.put((byte) 'P', Point.class);
 		map.put((byte) 'B', Attribute32.class);
@@ -50,6 +47,8 @@ public class VectorAPI {
 		map.put((byte) 'Y', Attribute8.class);
 		map.put((byte) 'M', PopupMessage.class);
 		map.put((byte) 'E', Reset.class);
+        map.put((byte) 'I', Circle.class);
+        map.put((byte) 'J', FillCircle.class);
 	}
 
 	synchronized public Command parse(byte ch) {

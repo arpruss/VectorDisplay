@@ -6,10 +6,10 @@ import android.app.Activity;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-public class Rectangle extends Command {
-	int x1,y1,x2,y2;
+public class FillRectangle extends Command {
+	short x1,y1,x2,y2;
 	
-	public Rectangle(DisplayState state) {
+	public FillRectangle(DisplayState state) {
 		super(state);
 	}
 
@@ -20,10 +20,10 @@ public class Rectangle extends Command {
 
 	@Override
 	public DisplayState parseArguments(Activity context, Buffer buffer) {
-		x1 = buffer.getInteger(0, 2);
-		y1 = buffer.getInteger(2, 2);
-		x2 = buffer.getInteger(4, 2);
-		y2 = buffer.getInteger(6, 2);
+		x1 = (short)buffer.getInteger(0, 2);
+		y1 = (short)buffer.getInteger(2, 2);
+		x2 = (short)buffer.getInteger(4, 2);
+		y2 = (short)buffer.getInteger(6, 2);
 		return state;
 	}
 	

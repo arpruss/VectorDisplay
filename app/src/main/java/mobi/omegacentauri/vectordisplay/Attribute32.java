@@ -29,6 +29,9 @@ public class Attribute32 extends Command {
                 state.width = buffer.getInteger(1, 2);
                 state.height = buffer.getInteger(3, 2);
  				break;
+			case 's':
+				state.textSize = buffer.getInteger(1, 4)/65536f;
+				break;
 		}
 		return state;
 	}

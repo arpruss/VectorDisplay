@@ -29,9 +29,6 @@ public class Attribute16 extends Command {
 			case 'f':
 				state.foreColor = buffer.getColor565(1);
 				break;
-			case 's':
-				state.textSize = buffer.getInteger(1, 2);
-				break;
             case 'a':
                 state.pixelAspectRatio = buffer.getFixed16(1);
                 resetView = true;

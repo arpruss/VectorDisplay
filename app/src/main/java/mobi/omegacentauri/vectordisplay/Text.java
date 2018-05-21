@@ -6,6 +6,8 @@ import android.app.Activity;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
+import android.graphics.Typeface;
+import android.text.TextPaint;
 import android.util.Log;
 
 public class Text extends Command {
@@ -38,12 +40,14 @@ public class Text extends Command {
 	@Override
 	public void draw(Canvas c) {
         MainActivity.log( "drawing text");
-		Paint p = new Paint();
+		TextPaint p = new TextPaint();
 		p.setStyle(Style.FILL);
 		p.setColor(state.foreColor);
+		p.setTypeface(Typeface.MONOSPACE);
 
-		float size = state.scale(c, 0, state.textSize, false).y;
-		p.setTextSize(size);
+		float size = state.scaleY(c, state.textSize);
+		p.setTextSize(size*state.monoFontScale);
+		p.setTextScaleX(state.monoFontScaleX);
 		p.setFakeBoldText(state.bold);
 		Coords xy = state.scale(c, x1, y1, false);
 		xy.y = 	state.vAlignText == DisplayState.ALIGN_TOP ? xy.y + p.ascent() :

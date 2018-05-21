@@ -70,20 +70,23 @@ public class MainActivity extends AppCompatActivity implements RecordAndPlay.Res
             }
         }
     };
-    private UsbService usbService;
+    public UsbService usbService;
     private TextView display;
     private EditText editText;
     private final ServiceConnection usbConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName arg0, IBinder arg1) {
-            usbService = ((UsbService.UsbBinder) arg1).getService();
-            usbService.setRecord(record);
-            usbService.changeBaudRate(115200);
+            synchronized(MainActivity.this) {
+                usbService = ((UsbService.UsbBinder) arg1).getService();
+                usbService.setRecord(record);
+            }
         }
 
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
-            usbService = null;
+            synchronized(MainActivity.this) {
+                usbService = null;
+            }
         }
     };
 
@@ -94,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements RecordAndPlay.Res
     }
 
     void setOrientation() {
-        setRequestedOrientation(prefs.getBoolean(Options.PREF_LANDSCAPE, true) ?
+        setRequestedOrientation(prefs.getBoolean(Options.PREF_LANDSCAPE, false) ?
                 ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE : ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
@@ -225,7 +228,7 @@ public class MainActivity extends AppCompatActivity implements RecordAndPlay.Res
             record.feed(new Reset(record.parser.state));
         }
         else if (id == R.id.rotate) {
-            boolean landscape = ! prefs.getBoolean(Options.PREF_LANDSCAPE, true);
+            boolean landscape = ! prefs.getBoolean(Options.PREF_LANDSCAPE, false);
             prefs.edit().putBoolean(Options.PREF_LANDSCAPE, landscape).commit();
             setOrientation();
         }

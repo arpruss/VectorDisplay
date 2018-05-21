@@ -29,6 +29,9 @@ public class Attribute8 extends Command {
 			case 'o':
 				state.opaqueTextBackground = buffer.data[1] != 0;
 				break;
+            case 'r':
+                state.rotate = (char) buffer.data[1];
+                break;
 		}
 		return state;
 	}
