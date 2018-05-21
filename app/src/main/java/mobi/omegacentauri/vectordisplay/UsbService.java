@@ -300,16 +300,15 @@ public class UsbService extends Service {
     private class ReadThread extends Thread {
         @Override
         public void run() {
+            byte[] buffer = new byte[128];
             while(true){
                 synchronized(UsbService.this) {
                     if (! UsbService.this.serialPortConnected)
                         return;
                 }
-                byte[] buffer = new byte[128];
                 int n = serialPort.syncRead(buffer, 0);
                 if(n > 0) {
                     if (record != null) {
-//                        Log.e("VectorDisplay", "n="+n);
                         record.feed(buffer, n);
                     }
 /*                    byte[] received = new byte[n];

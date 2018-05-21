@@ -58,7 +58,7 @@ public class Text extends Command {
 		if (state.opaqueTextBackground) {
             float h = p.descent() - p.ascent();
             Paint fill = new Paint();
-            fill.setColor(state.backColor);
+            fill.setColor(state.textBackColor);
             fill.setStyle(Paint.Style.FILL);
             fill.setStrokeWidth(0);
 

@@ -21,6 +21,7 @@ class DisplayState implements Cloneable {
     static final char ALIGN_TOP = 't';
     static final char ALIGN_BOTTOM = 'b';
     static final char ALIGN_BASELINE = 'l';
+    public int textBackColor;
 
     public Object clone() throws
             CloneNotSupportedException
@@ -34,6 +35,7 @@ class DisplayState implements Cloneable {
         pixelAspectRatio = 1.0f;
         foreColor = Color.WHITE;
         backColor = Color.BLACK;
+        textBackColor = Color.BLACK;
         thickness = 1f;
         textSize = 8;
         hAlignText = 'l';

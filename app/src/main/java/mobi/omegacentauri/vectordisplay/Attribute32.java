@@ -25,9 +25,14 @@ public class Attribute32 extends Command {
 			case 'b':
 				state.backColor = buffer.getInteger(1, 4);
 				break;
+			case 'k':
+				state.textBackColor = buffer.getInteger(1, 4);
+				break;
+			case 't':
+				state.thickness = buffer.getInteger(1, 4)/65536f;
+				break;
 			case 'f':
 				state.foreColor = buffer.getInteger(1, 4);
-				MainActivity.log( "set foreColor to "+state.foreColor);
 				break;
 			case 'c':
                 state.width = buffer.getInteger(1, 2);
