@@ -170,6 +170,14 @@ public class VectorAPI {
         public float getFixed16(int i) {
 			return getInteger(i, 2) / 256f;
         }
+
+        public int getColor565(int i) {
+			int c = getInteger(i, 2);
+			int r = ((c & ((1<<5)-1)) * 255 + (1<<4)) / ((1<<5)-1);
+			int g =( ((c>>5) & ((1<<6)-1)) * 255 + (1<<5)) / ((1<<6)-1);
+			int b = ((c>>11) * 255 + (1<<4)) / ((1<<5)-1);
+			return (0xFF<<24)|(r<<16)|(g<<8)|b;
+        }
     }
 
 }

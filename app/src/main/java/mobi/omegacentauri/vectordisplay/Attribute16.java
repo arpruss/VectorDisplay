@@ -20,6 +20,15 @@ public class Attribute16 extends Command {
 	@Override
 	public DisplayState parseArguments(Activity context, Buffer buffer) {
 		switch((char)buffer.data[0]) {
+			case 'b':
+				state.backColor = buffer.getColor565(1);
+				break;
+			case 'k':
+				state.textBackColor = buffer.getColor565(1);
+				break;
+			case 'f':
+				state.foreColor = buffer.getColor565(1);
+				break;
 			case 's':
 				state.textSize = buffer.getInteger(1, 2);
 				break;
