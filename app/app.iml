@@ -99,10 +99,8 @@
     <orderEntry type="library" exported="" name="Gradle: vectordisplay:usbserial-4.5.2-release" level="project" />
     <orderEntry type="library" exported="" name="Gradle: com.android.support:support-v4-23.3.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: com.android.support:animated-vector-drawable-23.3.0" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: com.android.support.constraint:constraint-layout-1.1.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: com.android.support:appcompat-v7-23.3.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: com.android.support:support-annotations:23.3.0@jar" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: com.android.support.constraint:constraint-layout-solver:1.1.0@jar" level="project" />
     <orderEntry type="library" exported="" name="Gradle: android-android-23" level="project" />
   </component>
 </module>
