@@ -2,6 +2,9 @@ package mobi.omegacentauri.vectordisplay;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 import mobi.omegacentauri.vectordisplay.DisplayState;
@@ -22,4 +25,13 @@ public class Reset extends Command {
 		state.reset();
 		Clear.clearCanvas(c, state);
 	}
+
+	@Override
+	public void handleCommand(Handler h) {
+		Message msg = h.obtainMessage(MainActivity.DELETE_ALL_COMMANDS);
+		h.sendMessage(msg);
+        msg = h.obtainMessage(MainActivity.ACK);
+        h.sendMessage(msg);
+	}
+
 }

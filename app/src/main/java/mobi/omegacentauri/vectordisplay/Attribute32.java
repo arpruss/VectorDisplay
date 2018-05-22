@@ -32,6 +32,15 @@ public class Attribute32 extends Command {
 			case 's':
 				state.textSize = buffer.getInteger(1, 4)/65536f;
 				break;
+			case 'b':
+				state.backColor = buffer.getInteger(1, 4);
+				break;
+			case 'k':
+				state.textBackColor = buffer.getInteger(1, 4);
+				break;
+			case 'f':
+				state.foreColor = buffer.getInteger(1, 4);
+				break;
 		}
 		return state;
 	}

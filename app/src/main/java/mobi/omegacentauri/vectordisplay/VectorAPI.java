@@ -49,6 +49,8 @@ public class VectorAPI {
 		map.put((byte) 'E', Reset.class);
         map.put((byte) 'I', Circle.class);
         map.put((byte) 'J', FillCircle.class);
+        map.put((byte) 'U', AddButton.class);
+		map.put((byte) 'D', DeleteButton.class);
 	}
 
 	synchronized public Command parse(byte ch) {
@@ -64,7 +66,7 @@ public class VectorAPI {
 				Command c = currentCommand;
 				currentCommand = null;
 				state = newState;
-				return c.doesDraw() ? c : null;
+				return c;
 			}
 			else if (currentCommand.errorState) {
 				currentCommand = null;

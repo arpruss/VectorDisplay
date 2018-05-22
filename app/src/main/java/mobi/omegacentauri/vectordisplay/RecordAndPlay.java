@@ -36,6 +36,8 @@ public class RecordAndPlay {
     }
 
     synchronized public void feed(Command c) {
+        c.handleCommand(commandHandler);
+
         if (c.needToClearHistory()) {
             head = tail;
         }
@@ -44,7 +46,8 @@ public class RecordAndPlay {
             resetter.resetVectorView(c.state);
         }
 
-        c.handleCommand(commandHandler);
+        if (!c.doesDraw())
+            return;
 
         commands[tail] = c;
         tail = (tail + 1) % MAX_ITEMS;

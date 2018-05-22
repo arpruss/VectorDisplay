@@ -26,7 +26,7 @@ public class VectorView extends View {
     static final byte[] DOWN = new byte[] { 'D', 'N'};
     static final byte[] MOVE = new byte[] { 'M', 'V'};
     long lastEvent = -MOTION_TIMING;
-    byte[] outBuf = new byte[6];
+    byte[] outBuf = new byte[8];
 
     @Override
     protected void onMeasure(int wspec, int hspec) {
@@ -67,30 +67,30 @@ public class VectorView extends View {
             public boolean onTouch(View v, MotionEvent event) {
                 if (record == null || record.parser == null || record.parser.state == null || savedCanvas == null)
                     return true;
-                synchronized (record.parser) {
-                    synchronized(main) {
-                        if (main.usbService != null) {
-                            if (event.getAction() == MotionEvent.ACTION_UP) {
-                                main.usbService.write(UP);
-                            } else if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                                main.usbService.write(DOWN);
-                            } else if (event.getAction() == MotionEvent.ACTION_MOVE &&
-                                    System.currentTimeMillis() >= lastEvent + MOTION_TIMING) {
-                                main.usbService.write(MOVE);
-                            } else {
-                                return true;
-                            }
-                            lastEvent = System.currentTimeMillis();
-                            IntCoords xy = record.parser.state.unscale(savedCanvas, event.getX(), event.getY());
-                            outBuf[0] = (byte) (xy.x & 0xFF);
-                            outBuf[1] = (byte) (xy.x >> 8);
-                            outBuf[2] = (byte) (xy.y & 0xFF);
-                            outBuf[3] = (byte) (xy.y >> 8);
-                            outBuf[4] = 0;
-                            outBuf[5] = 0;
-                            main.usbService.write(outBuf);
-                        }
-                    }
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    outBuf[0] = 'U';
+                    outBuf[1] = 'P';
+                } else if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    outBuf[0] = 'D';
+                    outBuf[1] = 'N';
+                } else if (event.getAction() == MotionEvent.ACTION_MOVE &&
+                        System.currentTimeMillis() >= lastEvent + MOTION_TIMING) {
+                    outBuf[0] = 'M';
+                    outBuf[1] = 'V';
+                } else {
+                    return true;
+                }
+                lastEvent = System.currentTimeMillis();
+                IntCoords xy = record.parser.state.unscale(savedCanvas, event.getX(), event.getY());
+                outBuf[2] = (byte) (xy.x & 0xFF);
+                outBuf[3] = (byte) (xy.x >> 8);
+                outBuf[4] = (byte) (xy.y & 0xFF);
+                outBuf[5] = (byte) (xy.y >> 8);
+                outBuf[6] = 0;
+                outBuf[7] = 0;
+                synchronized(main) {
+                    if (main.usbService != null)
+                        main.usbService.write(outBuf);
                 }
                 return true;
             }

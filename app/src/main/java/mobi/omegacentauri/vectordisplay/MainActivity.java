@@ -1,3 +1,5 @@
+// TODO: initial handshake
+
 package mobi.omegacentauri.vectordisplay;
 
 import mobi.omegacentauri.vectordisplay.R;
@@ -49,8 +51,10 @@ public class MainActivity extends AppCompatActivity implements RecordAndPlay.Res
     static final boolean DEBUG = false;
     ListView commandList;
     MyHandler commandHandler;
-    static final int ADD_COMMAND = 1;
-    static final int DELETE_COMMAND = 2;
+    public static final int ADD_COMMAND = 1;
+    public static final int DELETE_COMMAND = 2;
+    public static final int DELETE_ALL_COMMANDS = 3;
+    public static final int ACK = 4;
     byte[] outBuf = new byte[8];
 
     static public void log(String s) {
@@ -119,6 +123,7 @@ public class MainActivity extends AppCompatActivity implements RecordAndPlay.Res
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.v("VectorDisplay", "onCreate");
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -139,14 +144,15 @@ public class MainActivity extends AppCompatActivity implements RecordAndPlay.Res
         commandList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                @Override
                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    synchronized(MainActivity.this) {
-                        outBuf[0] = 'C';
-                        outBuf[1] = 'M';
+                        outBuf[0] = 'B';
+                        outBuf[1] = 'T';
                         outBuf[2] = userCommands.get(position);
                         for (int i=3; i<8; i++)
                             outBuf[i] = 0;
-                        usbService.write(outBuf);
-                    }
+                        synchronized(MainActivity.this) {
+                           if (usbService != null)
+                               usbService.write(outBuf);
+                        }
                }
         });
 
@@ -251,7 +257,12 @@ public class MainActivity extends AppCompatActivity implements RecordAndPlay.Res
             if (main == null || main.commandListAdapter == null)
                 return;
 
-            if (msg.what == MainActivity.ADD_COMMAND || msg.what == MainActivity.DELETE_COMMAND) {
+            if (msg.what == MainActivity.DELETE_ALL_COMMANDS) {
+                main.userCommands.clear();
+                main.commandListAdapter.clear();
+                main.commandList.setVisibility(main.userCommands.size() > 0 ? View.VISIBLE : View.GONE);
+            }
+            else if (msg.what == MainActivity.ADD_COMMAND || msg.what == MainActivity.DELETE_COMMAND) {
                 byte cmd = msg.getData().getByte(MainActivity.KEY_COMMAND);
                 for (int i=0; i<main.userCommands.size(); i++) {
                     if (main.userCommands.get(i) == cmd) {
@@ -261,9 +272,16 @@ public class MainActivity extends AppCompatActivity implements RecordAndPlay.Res
                 }
                 if (msg.what == MainActivity.ADD_COMMAND) {
                     main.userCommands.add(cmd);
-                    main.commandListAdapter.add((String) msg.getData().getString(MainActivity.KEY_LABEL));
+                    main.commandListAdapter.add(msg.getData().getString(MainActivity.KEY_LABEL));
                 }
                 main.commandList.setVisibility(main.userCommands.size() > 0 ? View.VISIBLE : View.GONE);
+            }
+            else if (msg.what == MainActivity.ACK) {
+                byte[] out = "Acknwldg".getBytes();
+                synchronized(main) {
+                    if (main.usbService != null)
+                        main.usbService.write(out);
+                }
             }
         }
     }
