@@ -20,7 +20,6 @@ public class Attribute32 extends Command {
 
 	@Override
 	public DisplayState parseArguments(Activity context, Buffer buffer) {
-        MainActivity.log( "Attr32 "+(char)buffer.data[0]);
 		switch((char)buffer.data[0]) {
             case 't':
                 state.thickness = buffer.getInteger(1, 4)/65536f;
@@ -28,6 +27,7 @@ public class Attribute32 extends Command {
 			case 'c':
                 state.width = buffer.getInteger(1, 2);
                 state.height = buffer.getInteger(3, 2);
+                resetView = true;
  				break;
 			case 's':
 				state.textSize = buffer.getInteger(1, 4)/65536f;

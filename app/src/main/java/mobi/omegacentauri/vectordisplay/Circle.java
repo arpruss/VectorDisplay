@@ -28,7 +28,7 @@ public class Circle extends Command {
 	
 	@Override
 	public void draw(Canvas c) {
-		Paint p = new Paint();
+		Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
 		p.setColor(state.foreColor);
 		p.setStyle(Paint.Style.STROKE);
 		p.setStrokeWidth(state.getThickness(c));

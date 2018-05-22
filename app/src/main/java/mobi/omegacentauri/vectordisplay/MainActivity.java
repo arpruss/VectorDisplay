@@ -236,11 +236,15 @@ public class MainActivity extends AppCompatActivity implements RecordAndPlay.Res
     @Override
     public void resetVectorView(DisplayState state) {
         VectorView v = (VectorView)findViewById(R.id.vector);
+        if (v != null) {
+            Log.v("VectorDisplay", "reset view");
+            v.aspectRatio = state.width*state.pixelAspectRatio/state.height;
+            v.forceLayout();
+        }
 /*        ConstraintLayout.LayoutParams lp = (ConstraintLayout.LayoutParams)v.getLayoutParams();
         float ratio = state.width*state.pixelAspectRatio/state.height;
         lp.dimensionRatio = ""+ratio;
         v.setLayoutParams(lp); */
-        v.aspectRatio = state.width*state.pixelAspectRatio/state.height;
     }
 
     private static class MyHandler extends Handler {
@@ -278,6 +282,7 @@ public class MainActivity extends AppCompatActivity implements RecordAndPlay.Res
             }
             else if (msg.what == MainActivity.ACK) {
                 byte[] out = "Acknwldg".getBytes();
+                Log.v("VectorDisplay", "acking");
                 synchronized(main) {
                     if (main.usbService != null)
                         main.usbService.write(out);
