@@ -1,5 +1,6 @@
 package mobi.omegacentauri.vectordisplay;
 
+import android.app.Activity;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.os.Bundle;
@@ -20,6 +21,12 @@ public class Reset extends Command {
 	@Override
 	public int fixedArgumentsLength() { return 0; }
 
+    @Override
+    public DisplayState parseArguments(Activity context, VectorAPI.Buffer buffer) {
+	    state.reset();
+	    return state;
+    }
+
 	@Override
 	public void draw(Canvas c) {
 		state.reset();
@@ -38,5 +45,4 @@ public class Reset extends Command {
         msg.setData(b);
         h.sendMessage(msg);
 	}
-
 }

@@ -11,6 +11,7 @@ import mobi.omegacentauri.vectordisplay.VectorAPI.Buffer;
 
 public class Attribute32 extends Command {
 	boolean resetView = false;
+	boolean ack = false;
 
     public Attribute32(DisplayState state) {
 		super(state);
@@ -30,8 +31,8 @@ public class Attribute32 extends Command {
 			case 'c':
                 state.width = buffer.getInteger(1, 2);
                 state.height = buffer.getInteger(3, 2);
+                ack = true;
                 resetView = true;
-                Log.v("VectorDisplay", "resetView needed because of coordinate change to "+state.width+" "+state.height);
  				break;
             case 'a':
                 state.pixelAspectRatio = buffer.getFixed32(1);
@@ -70,6 +71,9 @@ public class Attribute32 extends Command {
     public void handleCommand(Handler h) {
         if (resetView)
             MainActivity.sendResetViewMessage(h, state);
+        if (ack) {
+
+        }
     }
 
 }

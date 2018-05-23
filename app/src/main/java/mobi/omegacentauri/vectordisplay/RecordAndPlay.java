@@ -14,7 +14,7 @@ import java.util.TimerTask;
  */
 
 public class RecordAndPlay {
-    private static final int MAX_ITEMS = 2000;
+    private static final int MAX_ITEMS = 5000;
     private Command commands[] = new Command[MAX_ITEMS];
     public VectorAPI parser;
     private int head;
@@ -23,6 +23,7 @@ public class RecordAndPlay {
     long updateTimeMillis = 60;
     long lastUpdate = 0;
     boolean posted = false;
+    boolean continuous = false;
     Handler commandHandler;
 
     public RecordAndPlay(Activity c, Handler h) {
@@ -35,9 +36,15 @@ public class RecordAndPlay {
 
     synchronized public void feed(Command c) {
         c.handleCommand(commandHandler);
+        continuous = c.state.continuousUpdate;
 
         if (c.needToClearHistory()) {
             head = tail;
+        }
+
+        if (c instanceof Update) {
+            commandHandler.sendMessage(commandHandler.obtainMessage(MainActivity.INVALIDATE_VIEW));
+            posted = true;
         }
 
         if (!c.doesDraw())
@@ -48,7 +55,7 @@ public class RecordAndPlay {
         if (tail == head)
             head = (head + 1) % MAX_ITEMS;
 
-        if (!posted) {
+        if (!posted && continuous) {
             commandHandler.sendMessageDelayed(commandHandler.obtainMessage(MainActivity.INVALIDATE_VIEW), updateTimeMillis);
             posted = true;
         }
@@ -78,7 +85,29 @@ public class RecordAndPlay {
     }
 
     synchronized public void draw(Canvas canvas) {
-        while (head != tail) {
+        int endPos = -1;
+
+        if (! continuous) {
+            if (head == tail) {
+                posted = false;
+                return;
+            }
+            int t0 = (tail - 1) % MAX_ITEMS;
+            while (t0 != head) {
+                if (commands[t0] instanceof Update) {
+                    endPos = (t0 + 1) % MAX_ITEMS;
+                    break;
+                }
+                t0--;
+                if (t0<0)
+                    t0 = MAX_ITEMS - 1;
+            }
+            if (endPos < 0) {
+                posted = false;
+                return;
+            }
+        }
+        while (head != tail && head != endPos) {
             commands[head].draw(canvas);
             commands[head] = null;
             head = (head + 1) % MAX_ITEMS;

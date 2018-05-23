@@ -37,6 +37,8 @@ public class VectorAPI {
 	public VectorAPI(Activity context) {
 	    this.context = context;
 		this.state = new DisplayState();
+		// need to have capital letters
+        map.put((byte) 'F', Update.class);
 		map.put((byte) 'C', Clear.class);
 		map.put((byte) 'L', Line.class);
 		map.put((byte) 'R', FillRectangle.class);

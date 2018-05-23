@@ -1,6 +1,7 @@
 package mobi.omegacentauri.vectordisplay;
 
 import android.app.Activity;
+import android.util.Log;
 
 import mobi.omegacentauri.vectordisplay.VectorAPI.Buffer;
 
@@ -11,7 +12,7 @@ public class Attribute8 extends Command {
 
 	@Override
 	public int fixedArgumentsLength() {
-		return 3;
+		return 2;
 	}
 
 	@Override
@@ -32,6 +33,10 @@ public class Attribute8 extends Command {
             case 'r':
                 state.rotate = (char) buffer.data[1];
                 break;
+			case 'c':
+				state.continuousUpdate = buffer.data[1] != 0;
+//                Log.v("VectorDisplay", "cupdate "+state.continuousUpdate);
+				break;
 		}
 		return state;
 	}

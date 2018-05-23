@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
+        android:key="speed"
+        android:title="Update time (ms.)"
+        android:summary="Smaller is smoother but less reliable"
+        android:entries="@array/updatetimes"
+        android:entryValues="@array/updatetimes"
+        android:defaultValue="66"
+        />
+</PreferenceScreen>

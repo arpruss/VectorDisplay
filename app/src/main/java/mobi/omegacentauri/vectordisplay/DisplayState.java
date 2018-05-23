@@ -18,6 +18,7 @@ class DisplayState implements Cloneable {
     char vAlignText;
     boolean opaqueTextBackground;
     boolean bold;
+    boolean continuousUpdate;
     static final char ALIGN_LEFT = 'l';
     static final char ALIGN_RIGHT = 'r';
     static final char ALIGN_CENTER = 'c';
@@ -48,6 +49,7 @@ class DisplayState implements Cloneable {
         vAlignText = 'b';
         bold = false;
         opaqueTextBackground = true;
+        continuousUpdate = true;
         measureMonoFont();
     }
 

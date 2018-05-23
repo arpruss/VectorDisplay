@@ -32,14 +32,14 @@ public class VectorView extends View {
     protected void onMeasure(int wspec, int hspec) {
         int w = View.MeasureSpec.getSize(wspec);
         int h = View.MeasureSpec.getSize(hspec);
-        Log.v( "VectorDisplay", "onmeasure "+w+" "+h+" want "+aspectRatio );
-        if ((float)w/h >= aspectRatio) {
-            w = (int) (h * aspectRatio);
+        MainActivity.log( "onmeasure "+w+" "+h+" want "+aspectRatio );
+        if (h != 0 && aspectRatio != 0f) {
+            if ((float) w / h >= aspectRatio) {
+                w = (int) (h * aspectRatio);
+            } else {
+                h = (int) (w / aspectRatio);
+            }
         }
-        else {
-            h = (int) (w / aspectRatio);
-        }
-        Log.v( "VectorDisplay", "set "+w+" "+h);
         setMeasuredDimension(w, h);
     }
 
