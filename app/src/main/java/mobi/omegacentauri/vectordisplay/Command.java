@@ -28,23 +28,29 @@ public class Command {
 		return state;
 	}
 
-	final public DisplayState parse(Activity context, Buffer buffer) {
+	public DisplayState parse(Activity context, Buffer buffer) {
+		if (!haveFullData(buffer))
+			return null;
+		if (buffer.checksum())
+			return parseArguments(context, buffer);
+		else {
+			Log.e( "VectorDisplay","bad checksum");
+			errorState = true;
+			return null;
+		}
+	}
+
+	public boolean haveFullData(Buffer buffer) {
 		if (! haveStringArgument()) {
 			if (buffer.length() < fixedArgumentsLength()+1)
-				return null;
+				return false;
 		}
 		else {
 			if (buffer.length() <= fixedArgumentsLength()+1 ||
 					buffer.getByte(buffer.length()-2) != 0)
-				return null;
+				return false;
 		}
-		if (buffer.checksum())
-			return parseArguments(context, buffer);
-		else {
-			MainActivity.log( "bad checksum");
-			errorState = true;
-			return null;
-		}
+		return true;
 	}
 
 	public void draw(Canvas c) {

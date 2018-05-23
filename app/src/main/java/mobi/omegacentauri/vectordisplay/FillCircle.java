@@ -8,6 +8,14 @@ import mobi.omegacentauri.vectordisplay.VectorAPI.Buffer;
 
 public class FillCircle extends Command {
 	short x,y,r;
+	static Paint p = DefaultPaint();
+
+	private static Paint DefaultPaint() {
+		Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
+		p.setStyle(Paint.Style.FILL);
+		p.setStrokeWidth(0);
+		return p;
+	}
 
 	public FillCircle(DisplayState state) {
 		super(state);
@@ -28,10 +36,7 @@ public class FillCircle extends Command {
 	
 	@Override
 	public void draw(Canvas c) {
-		Paint p = new Paint();
 		p.setColor(state.foreColor);
-		p.setStyle(Paint.Style.FILL);
-		p.setStrokeWidth(0);
 
         Coords start = state.scale(c, x, y, false);
 

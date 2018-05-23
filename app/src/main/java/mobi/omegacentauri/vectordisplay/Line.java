@@ -10,6 +10,15 @@ import android.util.Log;
 
 public class Line extends Command {
 	short x1,y1,x2,y2;
+	static Paint p = DefaultPaint();
+
+	private static Paint DefaultPaint() {
+		Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
+		p.setStyle(Paint.Style.STROKE);
+		p.setStrokeCap(Paint.Cap.ROUND);
+		p.setStrokeJoin(Paint.Join.ROUND);
+		return p;
+	}
 
 	@Override
 	public int fixedArgumentsLength() {
@@ -31,9 +40,7 @@ public class Line extends Command {
 	
 	@Override
 	public void draw(Canvas c) {
-		Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
 		p.setColor(state.foreColor);
-		p.setStyle(Paint.Style.STROKE);
 		p.setStrokeWidth(state.getThickness(c));
 		Coords start = state.scale(c, x1, y1, true);
 		Coords end = state.scale(c, x2, y2, true);

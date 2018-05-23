@@ -13,7 +13,15 @@ import android.util.Log;
 public class Text extends Command {
 	int x1,y1;
 	String text;
-	
+	static TextPaint p = DefaultPaint();
+
+	private static TextPaint DefaultPaint() {
+		TextPaint p = new TextPaint();
+		p.setStyle(Style.FILL);
+		p.setTypeface(Typeface.MONOSPACE);
+		return p;
+	}
+
 	public Text(DisplayState state) {
 		super(state);
 	}
@@ -40,10 +48,7 @@ public class Text extends Command {
 	@Override
 	public void draw(Canvas c) {
         MainActivity.log( "drawing text");
-		TextPaint p = new TextPaint();
-		p.setStyle(Style.FILL);
 		p.setColor(state.foreColor);
-		p.setTypeface(Typeface.MONOSPACE);
 
 		float size = state.scaleY(c, state.textSize);
 		p.setTextSize(size*state.monoFontScale);

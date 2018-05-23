@@ -9,7 +9,14 @@ import android.graphics.Paint.Style;
 
 public class Point extends Command {
 	int x1,y1;
-	
+	static Paint p = DefaultPaint();
+
+	private static Paint DefaultPaint() {
+		Paint p = new Paint();
+		p.setStyle(Style.FILL);
+		return p;
+	}
+
 	public Point(DisplayState state) {
 		super(state);
 	}
@@ -28,8 +35,6 @@ public class Point extends Command {
 	
 	@Override
 	public void draw(Canvas c) {
-		Paint p = new Paint();
-		p.setStyle(Style.FILL);
 		p.setColor(state.foreColor);
 		p.setStrokeWidth(state.getThickness(c));
 		Coords xy = state.scale(c, x1, y1, true);

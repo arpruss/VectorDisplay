@@ -51,6 +51,7 @@ public class VectorAPI {
         map.put((byte) 'J', FillCircle.class);
         map.put((byte) 'U', AddButton.class);
 		map.put((byte) 'D', DeleteButton.class);
+		map.put((byte) 'O', PolyLine.class);
 	}
 
 	synchronized public Command parse(byte ch) {
@@ -105,7 +106,7 @@ public class VectorAPI {
 	}
 	
 	static class Buffer {
-		static final int MAX_BUFFER = 1024;
+		static final int MAX_BUFFER = 1024*256;
 		byte[] data = new byte[MAX_BUFFER];
 		int inBuffer = 0;
 		

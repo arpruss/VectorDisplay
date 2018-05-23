@@ -8,7 +8,14 @@ import android.graphics.Paint;
 
 public class FillRectangle extends Command {
 	short x1,y1,x2,y2;
-	
+	static Paint p = DefaultPaint();
+
+	private static Paint DefaultPaint() {
+		Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
+		p.setStyle(Paint.Style.FILL);
+		return p;
+	}
+
 	public FillRectangle(DisplayState state) {
 		super(state);
 	}
@@ -29,9 +36,7 @@ public class FillRectangle extends Command {
 	
 	@Override
 	public void draw(Canvas c) {
-		Paint p = new Paint();
 		p.setColor(state.foreColor);
-		p.setStyle(Paint.Style.FILL);
 		p.setStrokeWidth(state.getThickness(c));
 		Coords start = state.scale(c, x1, y1, false);
 		Coords end = state.scale(c, x2, y2, false);

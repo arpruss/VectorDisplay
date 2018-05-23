@@ -101,7 +101,7 @@ public class UsbService extends Service {
                 arg0.sendBroadcast(intent);
                 synchronized (this) {
                     if (serialPortConnected) {
-                        serialPort.syncClose();
+                        serialPort.close(); // syncClose();
                     }
                     serialPortConnected = false;
                 }
