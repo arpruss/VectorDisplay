@@ -39,7 +39,7 @@ public class UsbService extends Service {
     public static final int DSR_CHANGE = 2;
     public static final int SYNC_READ = 3;
     private static final String ACTION_USB_PERMISSION = "com.android.example.USB_PERMISSION";
-    private static final int BAUD_RATE = 115200; // BaudRate. Change this value if you need
+    private static final int BAUD_RATE = 115200; // 115200*4; // 115200; // BaudRate. Change this value if you need
     public static boolean SERVICE_CONNECTED = false;
 
     private IBinder binder = new UsbBinder();
@@ -148,7 +148,7 @@ public class UsbService extends Service {
      */
     public void write(byte[] data) {
         if (serialPort != null)
-            serialPort.syncWrite(data, 0);
+            serialPort.write(data);
     }
 
     /*
@@ -229,7 +229,7 @@ public class UsbService extends Service {
         public void run() {
             serialPort = UsbSerialDevice.createUsbSerialDevice(device, connection);
             if (serialPort != null) {
-                if (serialPort.syncOpen()) {
+                if (serialPort.open()) {
                     serialPortConnected = true;
                     serialPort.setBaudRate(BAUD_RATE);
                     serialPort.setDataBits(UsbSerialInterface.DATA_BITS_8);
@@ -246,7 +246,7 @@ public class UsbService extends Service {
                     //serialPort.getCTS(ctsCallback);
                     //serialPort.getDSR(dsrCallback);
 
-                    new ReadThread().start();
+//                    new ReadThread().start();
 
                     //
                     // Some Arduinos would need some sleep because firmware wait some time to know whether a new sketch is going
