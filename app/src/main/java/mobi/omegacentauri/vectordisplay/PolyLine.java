@@ -39,7 +39,6 @@ public class PolyLine extends Command {
     @Override
 	public DisplayState parseArguments(Activity context, Buffer buffer) {
 	    n = buffer.getInteger(0, 2);
-        Log.v("VectorDisplay", ""+n);
 	    x = new short[n];
         y = new short[n];
 	    for (int i=0;i<n;i++) {

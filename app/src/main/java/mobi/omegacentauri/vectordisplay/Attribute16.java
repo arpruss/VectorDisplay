@@ -29,10 +29,6 @@ public class Attribute16 extends Command {
 			case 'f':
 				state.foreColor = buffer.getColor565(1);
 				break;
-            case 'a':
-                state.pixelAspectRatio = buffer.getFixed16(1);
-                resetView = true;
-                break;
 		}
 		return state;
 	}
@@ -41,9 +37,6 @@ public class Attribute16 extends Command {
 	public boolean doesDraw() {
 		return resetView;
 	}
-
-	@Override
-    public boolean needToResetView() { return resetView; }
 
     @Override
     public void draw(Canvas c) {

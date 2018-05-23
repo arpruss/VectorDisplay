@@ -20,18 +20,16 @@ public class RecordAndPlay {
     private int head;
     private int tail;
     Activity context;
-    Resetter resetter;
     long updateTimeMillis = 60;
     long lastUpdate = 0;
     boolean posted = false;
     Handler commandHandler;
 
-    public RecordAndPlay(Activity c, Resetter r, Handler h) {
+    public RecordAndPlay(Activity c, Handler h) {
         head = 0;
         tail = 0;
         parser = new VectorAPI(c);
         context = c;
-        resetter = r;
         commandHandler = h;
     }
 
@@ -40,10 +38,6 @@ public class RecordAndPlay {
 
         if (c.needToClearHistory()) {
             head = tail;
-        }
-
-        if (c.needToResetView()) {
-            resetter.resetVectorView(c.state);
         }
 
         if (!c.doesDraw())
@@ -55,11 +49,8 @@ public class RecordAndPlay {
             head = (head + 1) % MAX_ITEMS;
 
         if (!posted) {
-            try {
-                context.findViewById(R.id.vector).postInvalidateDelayed(updateTimeMillis);
-                posted = true;
-            } catch (Exception e) {
-            }
+            commandHandler.sendMessageDelayed(commandHandler.obtainMessage(MainActivity.INVALIDATE_VIEW), updateTimeMillis);
+            posted = true;
         }
     }
 
@@ -93,9 +84,5 @@ public class RecordAndPlay {
             head = (head + 1) % MAX_ITEMS;
         }
         posted = false;
-    }
-
-    public interface Resetter {
-        void resetVectorView(DisplayState state);
     }
 }

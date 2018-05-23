@@ -32,6 +32,11 @@ public class Reset extends Command {
 		h.sendMessage(msg);
         msg = h.obtainMessage(MainActivity.ACK);
         h.sendMessage(msg);
+        msg = h.obtainMessage(MainActivity.RESET_VIEW);
+        Bundle b = new Bundle();
+        b.putFloat(MainActivity.KEY_ASPECT, state.getAspectRatio());
+        msg.setData(b);
+        h.sendMessage(msg);
 	}
 
 }

@@ -34,7 +34,7 @@ public class Command {
 		if (buffer.checksum())
 			return parseArguments(context, buffer);
 		else {
-			Log.e( "VectorDisplay","bad checksum");
+			Log.e( "VectorDisplay","bad checksum "+this.getClass());
 			errorState = true;
 			return null;
 		}
@@ -61,8 +61,6 @@ public class Command {
 	}
 
 	public boolean needToClearHistory() { return false; }
-
-	public boolean needToResetView() { return false; }
 
 	public void handleCommand(Handler h) {}
 }

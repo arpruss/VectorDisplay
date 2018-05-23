@@ -23,7 +23,7 @@ public class PopupMessage extends Command {
 	@Override
 	public DisplayState parseArguments(Activity context, Buffer buffer) {
 		String text = buffer.getString(0, buffer.length()-1);
-		Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
+		Toast.makeText(context, text, Toast.LENGTH_SHORT).show(); // TODO: move to UI thread
 		return null;
 	}
 }

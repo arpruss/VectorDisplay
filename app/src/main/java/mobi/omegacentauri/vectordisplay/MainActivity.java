@@ -1,5 +1,3 @@
-// TODO: initial handshake
-
 package mobi.omegacentauri.vectordisplay;
 
 import mobi.omegacentauri.vectordisplay.R;
@@ -38,9 +36,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class MainActivity extends AppCompatActivity implements RecordAndPlay.Resetter {
+public class MainActivity extends AppCompatActivity {
     public static final String KEY_COMMAND = "cmd";
     public static final String KEY_LABEL = "label";
+    public static final String KEY_ASPECT = "aspect";
     public int physicalWidth = -1;
     public int physicalHeight = -1;
     public RecordAndPlay record;
@@ -55,6 +54,8 @@ public class MainActivity extends AppCompatActivity implements RecordAndPlay.Res
     public static final int DELETE_COMMAND = 2;
     public static final int DELETE_ALL_COMMANDS = 3;
     public static final int ACK = 4;
+    public static final int RESET_VIEW = 5;
+    public static final int INVALIDATE_VIEW = 6;
     byte[] outBuf = new byte[8];
 
     static public void log(String s) {
@@ -131,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements RecordAndPlay.Res
         userLabels = new ArrayList<String>();
 
         commandHandler = new MyHandler(this);
-        record = new RecordAndPlay(this, this, commandHandler);
+        record = new RecordAndPlay(this, commandHandler);
 
         setContentView(R.layout.activity_main);
 
@@ -158,10 +159,19 @@ public class MainActivity extends AppCompatActivity implements RecordAndPlay.Res
 
                 setOrientation();
 //        record = new RecordAndPlay(this, this);
-        resetVectorView(record.parser.state);
+        resetVectorView(this, record.parser.state.getAspectRatio());
 
         MainActivity.log( "OnCreate");
 
+    }
+
+    static void resetVectorView(MainActivity main, float aspectRatio) {
+        VectorView v = (VectorView)main.findViewById(R.id.vector);
+        if (v != null) {
+            v.aspectRatio = aspectRatio;
+            v.getParent().requestLayout();
+            v.forceLayout();
+        }
     }
 
     @Override
@@ -233,18 +243,12 @@ public class MainActivity extends AppCompatActivity implements RecordAndPlay.Res
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void resetVectorView(DisplayState state) {
-        VectorView v = (VectorView)findViewById(R.id.vector);
-        if (v != null) {
-            Log.v("VectorDisplay", "reset view");
-            v.aspectRatio = state.width*state.pixelAspectRatio/state.height;
-            v.forceLayout();
-        }
-/*        ConstraintLayout.LayoutParams lp = (ConstraintLayout.LayoutParams)v.getLayoutParams();
-        float ratio = state.width*state.pixelAspectRatio/state.height;
-        lp.dimensionRatio = ""+ratio;
-        v.setLayoutParams(lp); */
+    static void sendResetViewMessage(Handler h, DisplayState state) {
+        Message msg = h.obtainMessage(RESET_VIEW);
+        Bundle b = new Bundle();
+        b.putFloat(KEY_ASPECT, state.getAspectRatio());
+        msg.setData(b);
+        h.sendMessage(msg);
     }
 
     private static class MyHandler extends Handler {
@@ -287,6 +291,14 @@ public class MainActivity extends AppCompatActivity implements RecordAndPlay.Res
                     if (main.usbService != null)
                         main.usbService.write(out);
                 }
+            }
+            else if (msg.what == MainActivity.RESET_VIEW) {
+                MainActivity.resetVectorView(main, msg.getData().getFloat(MainActivity.KEY_ASPECT));
+            }
+            else if (msg.what == MainActivity.INVALIDATE_VIEW) {
+                VectorView view = (VectorView)main.findViewById(R.id.vector);
+                if (view != null)
+                    view.invalidate();
             }
         }
     }

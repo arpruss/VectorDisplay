@@ -135,4 +135,7 @@ class DisplayState implements Cloneable {
         return scaleY(c, thickness);
     }
 
+    public float getAspectRatio() {
+        return width*pixelAspectRatio/height;
+    }
 }

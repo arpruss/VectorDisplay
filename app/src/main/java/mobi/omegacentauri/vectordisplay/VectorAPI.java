@@ -180,6 +180,10 @@ public class VectorAPI {
 			int b = ((c>>11) * 255 + (1<<4)) / ((1<<5)-1);
 			return (0xFF<<24)|(r<<16)|(g<<8)|b;
         }
-    }
+
+		public float getFixed32(int i) {
+			return getInteger(i, 4) / 65536f;
+		}
+	}
 
 }

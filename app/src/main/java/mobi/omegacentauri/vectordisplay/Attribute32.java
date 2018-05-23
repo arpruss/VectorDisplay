@@ -2,6 +2,9 @@ package mobi.omegacentauri.vectordisplay;
 
 import android.app.Activity;
 import android.graphics.Canvas;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 import mobi.omegacentauri.vectordisplay.VectorAPI.Buffer;
@@ -22,13 +25,18 @@ public class Attribute32 extends Command {
 	public DisplayState parseArguments(Activity context, Buffer buffer) {
 		switch((char)buffer.data[0]) {
             case 't':
-                state.thickness = buffer.getInteger(1, 4)/65536f;
+                state.thickness = buffer.getFixed32(1);
                 break;
 			case 'c':
                 state.width = buffer.getInteger(1, 2);
                 state.height = buffer.getInteger(3, 2);
                 resetView = true;
+                Log.v("VectorDisplay", "resetView needed because of coordinate change to "+state.width+" "+state.height);
  				break;
+            case 'a':
+                state.pixelAspectRatio = buffer.getFixed32(1);
+                resetView = true;
+                break;
 			case 's':
 				state.textSize = buffer.getInteger(1, 4)/65536f;
 				break;
@@ -50,11 +58,18 @@ public class Attribute32 extends Command {
 		return resetView;
 	}
 
-	@Override
-    public boolean needToResetView() { return resetView; }
+//	@Override
+//    public boolean needToResetView() { return resetView; }
 
     @Override
     public void draw(Canvas c) {
         Clear.clearCanvas(c, state);
     }
+
+    @Override
+    public void handleCommand(Handler h) {
+        if (resetView)
+            MainActivity.sendResetViewMessage(h, state);
+    }
+
 }
