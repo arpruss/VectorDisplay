@@ -36,10 +36,8 @@ public class Circle extends Command {
 	@Override
 	public void draw(Canvas c) {
 		p.setColor(state.foreColor);
-		p.setStrokeWidth(state.getThickness(c));
+		p.setStrokeWidth(state.thickness);
 
-        Coords start = state.scale(c, x, y, false);
-
-		c.drawCircle(start.x, start.y, state.scaleY(c,r), p);
+		c.drawCircle(x, y, r, p);
 	}
 }

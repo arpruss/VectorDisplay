@@ -14,6 +14,7 @@ public class Point extends Command {
 	private static Paint DefaultPaint() {
 		Paint p = new Paint();
 		p.setStyle(Style.FILL);
+		p.setStrokeWidth(0);
 		return p;
 	}
 
@@ -36,8 +37,6 @@ public class Point extends Command {
 	@Override
 	public void draw(Canvas c) {
 		p.setColor(state.foreColor);
-		p.setStrokeWidth(state.getThickness(c));
-		Coords xy = state.scale(c, x1, y1, true);
-		c.drawCircle(xy.x, xy.y, state.getThickness(c)/2, p);
+		c.drawCircle(x1, y1, state.thickness/2, p);
 	}
 }

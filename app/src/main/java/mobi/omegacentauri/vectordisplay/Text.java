@@ -11,7 +11,7 @@ import android.text.TextPaint;
 import android.util.Log;
 
 public class Text extends Command {
-	int x1,y1;
+	short x,y;
 	String text;
 	static TextPaint p = DefaultPaint();
 
@@ -38,8 +38,8 @@ public class Text extends Command {
 
 	@Override
 	public DisplayState parseArguments(Activity context, Buffer buffer) {
-		x1 = buffer.getInteger(0, 2);
-		y1 = buffer.getInteger(2, 2);
+		x = (short)buffer.getInteger(0, 2);
+		y = (short)buffer.getInteger(2, 2);
 		text = buffer.getString(4, buffer.length()-1-4);
         MainActivity.log("parsing text: "+text);
 		return state;
@@ -50,20 +50,18 @@ public class Text extends Command {
         MainActivity.log( "drawing text");
 		p.setColor(state.foreColor);
 
-		float size = state.scaleY(c, state.textSize);
-		p.setTextSize(size*state.monoFontScale);
+		p.setTextSize(state.textSize*state.monoFontScale);
 		p.setTextScaleX(state.monoFontScaleX);
 		p.setFakeBoldText(state.bold);
-		Coords xy = state.scale(c, x1, y1, false);
-		xy.y = 	state.vAlignText == DisplayState.ALIGN_TOP ? xy.y + p.ascent() :
-                state.vAlignText == DisplayState.ALIGN_BOTTOM ? xy.y + p.descent() :
-                state.vAlignText == DisplayState.ALIGN_CENTER ? xy.y + p.ascent() * 0.5f :
-                                xy.y;
+		float y1 = 	state.vAlignText == DisplayState.ALIGN_TOP ? y + p.ascent() :
+                state.vAlignText == DisplayState.ALIGN_BOTTOM ? y + p.descent() :
+                state.vAlignText == DisplayState.ALIGN_CENTER ? y + p.ascent() * 0.5f :
+                                y;
 
         float w = p.measureText(text);
-		xy.x = state.hAlignText == DisplayState.ALIGN_LEFT ? xy.x :
-                state.hAlignText == DisplayState.ALIGN_RIGHT ? xy.x - w :
-                xy.x - w * 0.5f;
+		float x1 = state.hAlignText == DisplayState.ALIGN_LEFT ? x :
+                state.hAlignText == DisplayState.ALIGN_RIGHT ? x - w :
+                x - w * 0.5f;
 		if (state.opaqueTextBackground) {
             float h = p.descent() - p.ascent();
             Paint fill = new Paint();
@@ -71,8 +69,8 @@ public class Text extends Command {
             fill.setStyle(Paint.Style.FILL);
             fill.setStrokeWidth(0);
 
-            c.drawRect(xy.x, xy.y + p.ascent(), xy.x + w + 0.5f, xy.y + p.ascent() + h, fill);
+            c.drawRect(x1, y1 + p.ascent(), x1 + w + 0.5f, y1 + p.ascent() + h, fill);
         }
-		c.drawText(text, xy.x, xy.y, p);
+		c.drawText(text, x1, y1, p);
 	}
 }

@@ -48,6 +48,7 @@ class DisplayState implements Cloneable {
         hAlignText = 'l';
         vAlignText = 'b';
         bold = false;
+        rotate = 0;
         opaqueTextBackground = true;
         continuousUpdate = true;
         measureMonoFont();
@@ -74,67 +75,11 @@ class DisplayState implements Cloneable {
         return new Coords((float)cw/width, (float)ch/height);
     }
 
-    public float scaleX(Canvas c, float x) {
-        Coords s = getScale(c);
-        return x * (rotate%2 == 0 ? s.x : s.y);
-    }
-
-    public float scaleY(Canvas c, float y) {
-        Coords s = getScale(c);
-        return y * (rotate%2 == 0 ? s.y : s.x);
-    }
-
-    public Coords scale(Canvas c, int x, int y, boolean centerInPixel) {
-        int temp;
-        switch(rotate%4) {
-            case 1:
-                temp = x;
-                x = width - 1 - y;
-                y = temp;
-                break;
-            case 2:
-                x = width -1 - x;
-                y = height - 1 - y;
-                break;
-            case 3:
-                temp = y;
-                y = height - 1 - x;
-                x = temp;
-                break;
-        }
-        Coords s = getScale(c);
-        if (centerInPixel)
-            return new Coords((x+0.5f) * s.x, (y+0.5f) * s.y);
-        else
-            return new Coords(x * s.x, y * s.y);
-    }
-
     public IntCoords unscale(Canvas c, float x, float y) {
         Coords s = getScale(c);
         int x1 = (int) (x/s.x+0.5f);
         int y1 = (int) (y/s.y+0.5f);
-        int temp;
-        switch(rotate%4) {
-            case 3:
-                temp = x1;
-                x1 = width - 1 - y1;
-                y1 = temp;
-                break;
-            case 2:
-                x1 = width -1 - x1;
-                y1 = height - 1 - y1;
-                break;
-            case 1:
-                temp = y1;
-                y1 = height - 1 - x1;
-                x1 = temp;
-                break;
-        }
         return new IntCoords(x1,y1);
-    }
-
-    public float getThickness(Canvas c) {
-        return scaleY(c, thickness);
     }
 
     public float getAspectRatio() {

@@ -41,10 +41,8 @@ public class Line extends Command {
 	@Override
 	public void draw(Canvas c) {
 		p.setColor(state.foreColor);
-		p.setStrokeWidth(state.getThickness(c));
-		Coords start = state.scale(c, x1, y1, true);
-		Coords end = state.scale(c, x2, y2, true);
+		p.setStrokeWidth(state.thickness);
 		MainActivity.log( "foreColor "+state.foreColor);
-		c.drawLine(start.x, start.y, end.x, end.y, p);
+		c.drawLine(x1, y1, x2, y2, p);
 	}
 }

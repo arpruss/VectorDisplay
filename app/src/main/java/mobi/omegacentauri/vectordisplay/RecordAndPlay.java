@@ -2,6 +2,7 @@ package mobi.omegacentauri.vectordisplay;
 
 import android.app.Activity;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.util.Log;
@@ -25,6 +26,7 @@ public class RecordAndPlay {
     boolean posted = false;
     boolean continuous = false;
     Handler commandHandler;
+    Matrix curMatrix = null;
 
     public RecordAndPlay(Activity c, Handler h) {
         head = 0;
@@ -73,7 +75,7 @@ public class RecordAndPlay {
         }
     }
 
-    synchronized public void redraw(Canvas canvas) {
+/*    synchronized public void redraw(Canvas canvas) {
         if (head == tail) {
             Clear.clearCanvas(canvas, parser.state);
         }
@@ -82,9 +84,9 @@ public class RecordAndPlay {
         }
 
         draw(canvas);
-    }
+    } */
 
-    synchronized public void draw(Canvas canvas) {
+    synchronized public void draw(MyCanvas canvas) {
         int endPos = -1;
 
         if (! continuous) {
@@ -108,7 +110,9 @@ public class RecordAndPlay {
             }
         }
         while (head != tail && head != endPos) {
-            commands[head].draw(canvas);
+            Command c = commands[head];
+            canvas.transform(c.state);
+            c.draw(canvas);
             commands[head] = null;
             head = (head + 1) % MAX_ITEMS;
         }

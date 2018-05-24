@@ -3,24 +3,6 @@ package mobi.omegacentauri.vectordisplay;
 import java.util.HashMap;
 import java.util.Map;
 
-/*
- * parentheses indicate number of bytes of data
- * 
- * From microcontroller to Android:
- * C : clear
- * L x1(2) y1(2) x2(2) y2(2) : draw line from (x1,y1) to (x2,y2)
- * R x1(2) y1(2) x2(2) y2(2) : draw rectangle from (x1,y1) to (x2,y2)
- * P x(2) y(2) : draw point at (x,y)
- * T x(2) y(2) text(up to 1020) : draw text at (x,y)
- * Z width(2) height(2) keep_aspect(1) : set screen coordinate sizes
- * S horizontal_align(1) size(2) : set text style; horizontal alignments: l/c/r
- * B rgba(4) : background color
- * F rgba(4) : foreground color
- * 
- * From Android to microcontroller:
- * T n(1) x(2) y(2) : number of touches and touch locations
- */
-
 import android.app.Activity;
 import android.util.Log;
 

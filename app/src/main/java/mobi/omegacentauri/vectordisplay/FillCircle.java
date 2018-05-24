@@ -38,8 +38,6 @@ public class FillCircle extends Command {
 	public void draw(Canvas c) {
 		p.setColor(state.foreColor);
 
-        Coords start = state.scale(c, x, y, false);
-
-		c.drawCircle(start.x, start.y, state.scaleY(c,r), p);
+		c.drawCircle(x, y, r, p);
 	}
 }

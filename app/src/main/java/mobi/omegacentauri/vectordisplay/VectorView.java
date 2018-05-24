@@ -16,9 +16,9 @@ import android.view.View;
 
 public class VectorView extends View {
     RecordAndPlay record;
-    boolean redraw = false;
+    //boolean redraw = false;
     Bitmap bitmap;
-    Canvas savedCanvas = null;
+    MyCanvas savedCanvas = null;
     float aspectRatio = 4f/3f;
     MainActivity main;
     static final int MOTION_TIMING = 30;
@@ -48,11 +48,11 @@ public class VectorView extends View {
         if (bitmap != null) {
             bitmap.recycle();
         }
-        savedCanvas = new Canvas();
+        savedCanvas = new MyCanvas();
         bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
         savedCanvas.setBitmap(bitmap);
         MainActivity.log( "size "+w+" "+h+" "+(double)w/h);
-        redraw = true;
+        //redraw = true;
     }
 
     public VectorView(Context c, AttributeSet set) {
@@ -60,7 +60,7 @@ public class VectorView extends View {
 
         main = (MainActivity)c;
 
-        this.redraw = true;
+        //this.redraw = true;
         this.record = main.record;
 
         setOnTouchListener(new OnTouchListener() {
@@ -104,15 +104,15 @@ public class VectorView extends View {
             MainActivity.log( "creating savedCanvas");
             onSizeChanged(0,0, canvas.getWidth(), canvas.getHeight());
         }
-        if (redraw) {
+        /*if (redraw) {
             MainActivity.log( "redrawing");
             record.redraw(savedCanvas);
             redraw = false;
         }
-        else {
+        else { */
             MainActivity.log( "drawing");
             record.draw(savedCanvas);
-        }
+        //}
         MainActivity.log( "bitmap "+bitmap.getWidth()+" "+bitmap.getHeight());
         canvas.drawBitmap(bitmap, 0f, 0f, null);
     }

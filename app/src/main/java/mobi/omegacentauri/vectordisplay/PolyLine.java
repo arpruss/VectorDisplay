@@ -53,12 +53,9 @@ public class PolyLine extends Command {
         if (n<2)
             return;
 		p.setColor(state.foreColor);
-		p.setStrokeWidth(state.getThickness(c));
-		Coords prev = state.scale(c, x[0], y[0], true);
+		p.setStrokeWidth(state.thickness);
 		for (int i=1;i<n; i++) {
-		    Coords cur = state.scale(c, x[i], y[i], true);
-		    c.drawLine(prev.x, prev.y, cur.x, cur.y, p);
-		    prev = cur;
+		    c.drawLine(x[i-1], y[i-1], x[i], y[i], p);
         }
 	}
 }

@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Log;
 
+import static java.lang.Math.max;
+
 public class Clear extends Command {
 	public Clear(DisplayState state) {
 		super(state);
@@ -21,7 +23,7 @@ public class Clear extends Command {
 		Paint paint = new Paint();
 		paint.setColor(state.backColor);
 		MainActivity.log( "clearing to "+state.backColor+ " "+c.getWidth()+" "+c.getHeight());
-		c.drawRect(0,0,c.getWidth(),c.getHeight(), paint);
+		c.drawRect(0,0,max(state.width,state.height),max(state.width,state.height), paint);
 	}
 	@Override
 	public void draw(Canvas c) {

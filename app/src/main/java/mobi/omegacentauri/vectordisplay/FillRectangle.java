@@ -13,6 +13,7 @@ public class FillRectangle extends Command {
 	private static Paint DefaultPaint() {
 		Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
 		p.setStyle(Paint.Style.FILL);
+        p.setStrokeWidth(0);
 		return p;
 	}
 
@@ -37,9 +38,6 @@ public class FillRectangle extends Command {
 	@Override
 	public void draw(Canvas c) {
 		p.setColor(state.foreColor);
-		p.setStrokeWidth(state.getThickness(c));
-		Coords start = state.scale(c, x1, y1, false);
-		Coords end = state.scale(c, x2, y2, false);
-		c.drawRect(start.x, start.y, end.x, end.y, p);
+		c.drawRect(x1, y1, x2, y2, p);
 	}
 }
