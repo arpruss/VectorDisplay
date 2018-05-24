@@ -37,6 +37,7 @@ public class RecordAndPlay {
     }
 
     synchronized public void feed(Command c) {
+        MainActivity.log("feed "+c.getClass());
         c.handleCommand(commandHandler);
         continuous = c.state.continuousUpdate;
 
@@ -95,6 +96,8 @@ public class RecordAndPlay {
                 return;
             }
             int t0 = (tail - 1) % MAX_ITEMS;
+            if (t0 < 0)
+                t0 += MAX_ITEMS;
             while (t0 != head) {
                 if (commands[t0] instanceof Update) {
                     endPos = (t0 + 1) % MAX_ITEMS;

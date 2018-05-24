@@ -41,6 +41,8 @@ public class VectorAPI {
 	synchronized public Command parse(byte ch) {
 		DisplayState newState;
 
+		//Log.v("VectorDisplay", Integer.toHexString(ch));
+
 		if (currentCommand != null && System.currentTimeMillis() < commandStartTime + TIMEOUT) {
 			if (!buffer.put(ch)) {
 				currentCommand = null;
@@ -59,7 +61,7 @@ public class VectorAPI {
             }
 		}
 		else {
-			if (lastChar != 0 && (0xFF & ch) == (lastChar ^ 0xFF)) {
+			if (lastChar != 0 && (0xFF & ch) == (0xFF & (lastChar ^ 0xFF))) {
                 Class<? extends Command> cl = map.get(lastChar);
                 lastChar = 0;
                 if (cl != null) {
@@ -141,10 +143,12 @@ public class VectorAPI {
 		}
 		
 		String getString(int start, int length) {
-			try {
+			try
+            {
 				return new String(data, start, length);
 			}
 			catch(Exception e) {
+			    Log.e("VectorDisplay", "error in decoding text");
 				return "";
 			}
 		}

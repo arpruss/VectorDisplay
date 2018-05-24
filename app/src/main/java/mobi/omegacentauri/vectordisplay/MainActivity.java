@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     public static final int ACK = 4;
     public static final int RESET_VIEW = 5;
     public static final int INVALIDATE_VIEW = 6;
+    public static final int TOAST = 7;
     byte[] outBuf = new byte[8];
 
     static public void log(String s) {
@@ -72,8 +73,8 @@ public class MainActivity extends AppCompatActivity {
             switch (intent.getAction()) {
                 case UsbService.ACTION_USB_PERMISSION_GRANTED: // USB PERMISSION GRANTED
                     Toast.makeText(context, "USB Ready", Toast.LENGTH_SHORT).show();
-                    if (prefs.getBoolean(Options.PREF_RESET_ON_CONNECT, true))
-                        record.feed(new Reset(record.parser.state));
+//                    if (prefs.getBoolean(Options.PREF_RESET_ON_CONNECT, true))
+//                        record.feed(new Reset(record.parser.state));
                     break;
                 case UsbService.ACTION_USB_PERMISSION_NOT_GRANTED: // USB PERMISSION NOT GRANTED
                     Toast.makeText(context, "USB Permission not granted", Toast.LENGTH_SHORT).show();
@@ -260,7 +261,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void handleMessage(Message msg) {
-            MainActivity main = mActivity.get();
+            final MainActivity main = mActivity.get();
 
             if (main == null || main.commandListAdapter == null)
                 return;
@@ -286,7 +287,6 @@ public class MainActivity extends AppCompatActivity {
             }
             else if (msg.what == MainActivity.ACK) {
                 byte[] out = "Acknwldg".getBytes();
-                Log.v("VectorDisplay", "acking");
                 synchronized(main) {
                     if (main.usbService != null)
                         main.usbService.write(out);
@@ -299,6 +299,9 @@ public class MainActivity extends AppCompatActivity {
                 VectorView view = (VectorView)main.findViewById(R.id.vector);
                 if (view != null)
                     view.invalidate();
+            }
+            else if (msg.what == MainActivity.TOAST) {
+                Toast.makeText(main.getBaseContext(), msg.getData().getString(MainActivity.KEY_LABEL), Toast.LENGTH_LONG).show();
             }
         }
     }

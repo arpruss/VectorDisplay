@@ -274,31 +274,5 @@ public class UsbService extends Service {
             }
         }
     }
-
-    private class ReadThread extends Thread {
-        @Override
-        public void run() {
-            byte[] buffer = new byte[128];
-            while(true){
-                synchronized(UsbService.this) {
-                    if (! UsbService.this.serialPortConnected)
-                        return;
-                }
-                int n = serialPort.syncRead(buffer, 0);
-                if(n > 0) {
-                    if (record != null) {
-                        record.feed(buffer, n);
-                    }
-/*                    byte[] received = new byte[n];
-                    System.arraycopy(buffer, 0, received, 0, n);
-                    //String receivedStr = new String(received);
-                    record.feed(received);
-                    Log.v("VectorDisplay", "sync "+n);
-//                    mHandler.obtainMessage(SYNC_READ, received).sendToTarget();
-*/
-                }
-            }
-        }
-    }
 }
 

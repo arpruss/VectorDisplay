@@ -31,8 +31,9 @@ public class Command {
 	public DisplayState parse(Activity context, Buffer buffer) {
 		if (!haveFullData(buffer))
 			return null;
-		if (buffer.checksum())
+		if (buffer.checksum()) {
 			return parseArguments(context, buffer);
+		}
 		else {
 			Log.e( "VectorDisplay","bad checksum "+this.getClass());
 			errorState = true;

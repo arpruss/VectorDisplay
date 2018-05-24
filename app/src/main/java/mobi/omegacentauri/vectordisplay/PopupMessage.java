@@ -1,12 +1,18 @@
 package mobi.omegacentauri.vectordisplay;
 
 import android.app.Activity;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.widget.Toast;
 
 import mobi.omegacentauri.vectordisplay.VectorAPI.Buffer;
 
 public class PopupMessage extends Command {
-	public PopupMessage(DisplayState state) {
+    private String text;
+
+    public PopupMessage(DisplayState state) {
 		super(state);
 	}
 
@@ -22,8 +28,21 @@ public class PopupMessage extends Command {
 
 	@Override
 	public DisplayState parseArguments(Activity context, Buffer buffer) {
-		String text = buffer.getString(0, buffer.length()-1);
-		Toast.makeText(context, text, Toast.LENGTH_SHORT).show(); // TODO: move to UI thread
-		return null;
+		text = buffer.getString(0, buffer.length()-2);
+		return state;
 	}
+
+    @Override
+    public void handleCommand(Handler h) {
+        Message msg = h.obtainMessage(MainActivity.TOAST);
+        Bundle b = new Bundle();
+        b.putString(MainActivity.KEY_LABEL, text);
+        msg.setData(b);
+        h.sendMessage(msg);
+    }
+
+    @Override
+    public boolean doesDraw() { // does this type actually do anything when show() is called?
+        return false;
+    }
 }
