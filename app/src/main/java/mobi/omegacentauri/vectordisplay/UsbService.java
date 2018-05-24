@@ -53,22 +53,13 @@ public class UsbService extends Service {
 
     public boolean serialPortConnected;
     /*
-     *  Data received from serial port will be received here. Just populate onReceivedData with your code
-     *  In this particular example. byte stream is converted to String and send to UI thread to
-     *  be treated there.
+     *  Data received from serial port will be received here.
      */
     private UsbSerialInterface.UsbReadCallback mCallback = new UsbSerialInterface.UsbReadCallback() {
         @Override
         public void onReceivedData(byte[] arg0) {
-            if (record != null)
-                record.feed(arg0);
-//            if (mHandler != null)
-//                mHandler.obtainMessage(MESSAGE_FROM_SERIAL_PORT, arg0).sendToTarget();
-/*            try {
-                String data = new String(arg0, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            } */
+        if (record != null)
+            record.feed(arg0);
         }
     };
 
