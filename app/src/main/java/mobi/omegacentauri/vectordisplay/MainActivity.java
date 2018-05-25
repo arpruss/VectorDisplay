@@ -4,18 +4,22 @@ import mobi.omegacentauri.vectordisplay.R;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -241,7 +245,49 @@ public class MainActivity extends AppCompatActivity {
         else if (id == R.id.settings) {
             startActivity(new Intent(this, Options.class));
         }
+        else if (id == R.id.license) {
+            message("The MIT License",
+                            "VectorDisplay Copyright (c) 2018 Omega Centauri Software<br/>" +
+                            "UsbSerial library Copyright (c) 2014 Felipe Herranz<br/><br/>" +
+                            "Permission is hereby granted, free of charge, to any person obtaining a copy\n" +
+                            "of this software and associated documentation files (the \"Software\"), to deal\n" +
+                            "in the Software without restriction, including without limitation the rights\n" +
+                            "to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n" +
+                            "copies of the Software, and to permit persons to whom the Software is\n" +
+                            "furnished to do so, subject to the following conditions:<br/>\n" +
+                            "\n" +
+                            "The above copyright notice and this permission notice shall be included in all\n" +
+                            "copies or substantial portions of the Software.<br/>\n" +
+                            "\n" +
+                            "THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n" +
+                            "IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n" +
+                            "FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n" +
+                            "AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n" +
+                            "LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n" +
+                            "OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n" +
+                            "SOFTWARE.", false);
+        }
+        else if (id == R.id.help) {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.instructables.com/id/TabletPhone-As-Arduino-Screen-and-a-2-Oscilloscope/"));
+            startActivity(browserIntent);
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void message(String title, String msg, final boolean exit) {
+        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+
+        alertDialog.setTitle(title);
+        alertDialog.setMessage(Html.fromHtml(msg));
+        alertDialog.setButton(DialogInterface.BUTTON_POSITIVE,
+                "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(exit) finish();
+                    } });
+        alertDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            public void onCancel(DialogInterface dialog) {if(exit) finish();} });
+        alertDialog.show();
     }
 
     static void sendResetViewMessage(Handler h, DisplayState state) {
