@@ -256,6 +256,7 @@ public class MainActivity extends AppCompatActivity {
         private final WeakReference<MainActivity> mActivity;
 
         public MyHandler(MainActivity activity) {
+            super();
             mActivity = new WeakReference<>(activity);
         }
 
@@ -301,7 +302,9 @@ public class MainActivity extends AppCompatActivity {
                     view.invalidate();
             }
             else if (msg.what == MainActivity.TOAST) {
-                Toast.makeText(main.getBaseContext(), msg.getData().getString(MainActivity.KEY_LABEL), Toast.LENGTH_LONG).show();
+                String text = msg.getData().getString(MainActivity.KEY_LABEL);
+                Log.v("VectorDisplay", "toast "+text);
+                Toast.makeText(main, text, Toast.LENGTH_LONG).show();
             }
         }
     }

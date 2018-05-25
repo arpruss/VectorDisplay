@@ -232,7 +232,7 @@ public class UsbService extends Service {
                      * UsbSerialInterface.FLOW_CONTROL_RTS_CTS only for CP2102 and FT232
                      * UsbSerialInterface.FLOW_CONTROL_DSR_DTR only for CP2102 and FT232
                      */
-                    serialPort.setFlowControl(UsbSerialInterface.FLOW_CONTROL_OFF);//DSR_DTR);
+                    serialPort.setFlowControl(UsbSerialInterface.FLOW_CONTROL_OFF);
                     serialPort.read(mCallback);
                     //serialPort.getCTS(ctsCallback);
                     //serialPort.getDSR(dsrCallback);
