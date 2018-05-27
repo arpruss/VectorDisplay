@@ -132,6 +132,12 @@ public class UsbService extends ConnectionService {
             serialPort.setBaudRate(baudRate);
     }
 
+    public void close() {
+        if (serialPort != null)
+            serialPort.close();
+        stopSelf();
+    }
+
     private void findSerialPortDevice() {
         // This snippet will try to open the first encountered usb device connected, excluding usb root hubs
         HashMap<String, UsbDevice> usbDevices = usbManager.getDeviceList();

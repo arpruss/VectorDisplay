@@ -128,16 +128,18 @@ public class VectorView extends View {
         canvas.drawBitmap(bitmap, 0f, 0f, null);
         if (statusPaint != null) {
             String[] status = record.getStatus();
-            int w = canvas.getWidth();
-            statusPaint.setTextSize(w/15f);
-            float lineHeight = (statusPaint.ascent()-statusPaint.descent())*1.1f;
-            float y0 = bitmap.getHeight()-lineHeight*(status.length-1);
-            for (String line : status) {
-                statusPaint.setTextSize(w/15f);
-                float m = statusPaint.measureText(line);
-                if (m>w)
-                    statusPaint.setTextSize(w/15f*w/m);
-                canvas.drawText(line,bitmap.getWidth()/2,bitmap.getHeight()-statusPaint.descent(),statusPaint);
+            if (status != null) {
+                int w = canvas.getWidth();
+                statusPaint.setTextSize(w / 15f);
+                float lineHeight = (statusPaint.ascent() - statusPaint.descent()) * 1.1f;
+                float y0 = bitmap.getHeight() - lineHeight * (status.length - 1);
+                for (String line : status) {
+                    statusPaint.setTextSize(w / 15f);
+                    float m = statusPaint.measureText(line);
+                    if (m > w)
+                        statusPaint.setTextSize(w / 15f * w / m);
+                    canvas.drawText(line, bitmap.getWidth() / 2, bitmap.getHeight() - statusPaint.descent(), statusPaint);
+                }
             }
         }
     }

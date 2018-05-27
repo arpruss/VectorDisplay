@@ -8,4 +8,10 @@
         <item>500</item>
         <item>1000</item>
     </string-array>
+    <string-array name="modes">
+        <item>USB</item>
+        <item>Bluetooth (not yet supported)</item>
+        <item>IP (not yet supported)</item>
+        <item>Off</item>
+    </string-array>
 </resources>

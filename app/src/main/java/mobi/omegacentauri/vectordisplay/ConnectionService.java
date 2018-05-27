@@ -43,6 +43,8 @@ abstract class ConnectionService extends Service {
      * incoming Intents (USB ATTACHED, USB DETACHED...) and it tries to open a serial port.
      */
 
+    abstract public void close();
+
     @Override
     public void onCreate() {
         this.context = this;

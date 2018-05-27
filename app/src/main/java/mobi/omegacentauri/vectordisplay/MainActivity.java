@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
     private final ServiceConnection connection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName arg0, IBinder arg1) {
-            synchronized(MainActivity.this) {
+            synchronized (MainActivity.this) {
                 connectionService = ((ConnectionService.ConnectionBinder) arg1).getService();
                 connectionService.setRecord(record);
             }
@@ -117,16 +117,39 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
-            synchronized(MainActivity.this) {
+            synchronized (MainActivity.this) {
                 connectionService = null;
             }
         }
     };
 
+    public void chooseConnection() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        CharSequence[] array = getResources().getStringArray(R.array.modes);
+        final int oldConn = prefs.getInt(Options.PREF_CONNECTION, Options.OPT_USB);
+        builder.setTitle("Select Connection")
+                .setSingleChoiceItems(array, oldConn, new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (which == oldConn)
+                            return;
+                        prefs.edit().putInt(Options.PREF_CONNECTION, which).commit();
+                        if (connectionService != null)
+                            connectionService.close();
+                        disconnectService();
+                        connectService();
+                        supportInvalidateOptionsMenu();
+                        dialog.dismiss();
+                    }
+                });
+        builder.create().show();
+    }
+
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        MainActivity.log( "onConfigurationChanged");
+        MainActivity.log("onConfigurationChanged");
     }
 
     void setOrientation() {
@@ -149,37 +172,36 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        commandList = (ListView)findViewById(R.id.commands);
+        commandList = (ListView) findViewById(R.id.commands);
         commandListAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1,
                 android.R.id.text1,
                 userLabels);
         commandList.setAdapter(commandListAdapter);
         commandList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-               @Override
-               public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        outBuf[0] = 'B';
-                        outBuf[1] = 'T';
-                        outBuf[2] = userCommands.get(position);
-                        for (int i=3; i<8; i++)
-                            outBuf[i] = 0;
-                        synchronized(MainActivity.this) {
-                           if (connectionService != null)
-                               connectionService.write(outBuf);
-                        }
-               }
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                outBuf[0] = 'B';
+                outBuf[1] = 'T';
+                outBuf[2] = userCommands.get(position);
+                for (int i = 3; i < 8; i++)
+                    outBuf[i] = 0;
+                synchronized (MainActivity.this) {
+                    if (connectionService != null)
+                        connectionService.write(outBuf);
+                }
+            }
         });
 
-                setOrientation();
+        setOrientation();
 //        record = new RecordAndPlay(this, this);
         resetVectorView(this, record.parser.state.getAspectRatio());
 
-        MainActivity.log( "OnCreate");
-
+        MainActivity.log("OnCreate");
     }
 
     static void resetVectorView(MainActivity main, float aspectRatio) {
-        VectorView v = (VectorView)main.findViewById(R.id.vector);
+        VectorView v = (VectorView) main.findViewById(R.id.vector);
         if (v != null) {
             v.aspectRatio = aspectRatio;
             v.getParent().requestLayout();
@@ -190,19 +212,38 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        record.updateTimeMillis = (long)Integer.parseInt(prefs.getString(Options.PREF_UPDATE_SPEED, "60"));
+        record.updateTimeMillis = (long) Integer.parseInt(prefs.getString(Options.PREF_UPDATE_SPEED, "60"));
+        connectService();
+    }
+
+    private void connectService() {
         setFilters();  // Start listening notifications from UsbService
         int conn = prefs.getInt(Options.PREF_CONNECTION, Options.OPT_USB);
-        if (conn==Options.OPT_USB) {
-            startService(UsbService.class, connection, null); // Start UsbService(if it was not started before) and Bind it
+        switch (conn) {
+            case Options.OPT_USB:
+                startService(UsbService.class, connection, null); // Start UsbService(if it was not started before) and Bind it
+                record.setDisconnectedStatus(new String[]{"USB Disconnected"});
+                break;
+            case Options.OPT_OFF:
+                record.setDisconnectedStatus(new String[]{"Tap on OFF to activate"});
+                break;
         }
+        VectorView view = (VectorView)findViewById(R.id.vector);
+        if (view != null)
+            view.invalidate();
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        disconnectService();
+    }
+
+    void disconnectService() {
         unregisterReceiver(mConnectionReceiver);
-        unbindService(connection);
+        try {
+            unbindService(connection);
+        } catch(Exception e) {}
     }
 
     private void startService(Class<?> service, ServiceConnection serviceConnection, Bundle extras) {
@@ -235,6 +276,8 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
+        MenuItem mode = menu.findItem(R.id.mode);
+        mode.setTitle(getResources().getStringArray(R.array.modes)[prefs.getInt(Options.PREF_CONNECTION, Options.OPT_USB)]);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -281,6 +324,9 @@ public class MainActivity extends AppCompatActivity {
         else if (id == R.id.help) {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.instructables.com/id/TabletPhone-As-Arduino-Screen-and-a-2-Oscilloscope/"));
             startActivity(browserIntent);
+        }
+        else if (id == R.id.mode) {
+            chooseConnection();
         }
         return super.onOptionsItemSelected(item);
     }
