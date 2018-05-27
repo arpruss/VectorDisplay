@@ -94,10 +94,18 @@ public class VectorView extends View {
                 }
                 lastEvent = System.currentTimeMillis();
                 IntCoords xy = record.parser.state.unscale(savedCanvas, event.getX(), event.getY());
-                outBuf[2] = (byte) (xy.x & 0xFF);
-                outBuf[3] = (byte) (xy.x >> 8);
-                outBuf[4] = (byte) (xy.y & 0xFF);
-                outBuf[5] = (byte) (xy.y >> 8);
+                if (record.parser.buffer.lowEndian) {
+                    outBuf[2] = (byte) (xy.x & 0xFF);
+                    outBuf[3] = (byte) (xy.x >> 8);
+                    outBuf[4] = (byte) (xy.y & 0xFF);
+                    outBuf[5] = (byte) (xy.y >> 8);
+                }
+                else {
+                    outBuf[3] = (byte) (xy.x & 0xFF);
+                    outBuf[2] = (byte) (xy.x >> 8);
+                    outBuf[5] = (byte) (xy.y & 0xFF);
+                    outBuf[4] = (byte) (xy.y >> 8);
+                }
                 outBuf[6] = 0;
                 outBuf[7] = 0;
                 synchronized(main) {

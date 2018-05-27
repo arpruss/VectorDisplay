@@ -10,7 +10,7 @@ public class VectorAPI {
 	public DisplayState state;
     private Map<Byte,Class<? extends Command>> map = new HashMap<Byte,Class<? extends Command>>();
     private Command currentCommand = null;
-    private Buffer buffer = new Buffer();
+    public Buffer buffer = new Buffer();
     private static final int TIMEOUT = 5000;
     private long commandStartTime;
     private Activity context;
@@ -30,6 +30,7 @@ public class VectorAPI {
 		map.put((byte) 'A', Attribute16.class);
 		map.put((byte) 'Y', Attribute8.class);
 		map.put((byte) 'M', PopupMessage.class);
+		map.put((byte) 'H', Initialize.class);
 		map.put((byte) 'E', Reset.class);
         map.put((byte) 'I', Circle.class);
         map.put((byte) 'J', FillCircle.class);
@@ -95,6 +96,7 @@ public class VectorAPI {
 		static final int MAX_BUFFER = 1024*256;
 		byte[] data = new byte[MAX_BUFFER];
 		int inBuffer = 0;
+		public boolean lowEndian;
 		
 		void clear() {
 			inBuffer = 0;
@@ -127,10 +129,21 @@ public class VectorAPI {
 			try {
 				int x = 0;
 				int bits = 0;
-				while (length-- > 0) {
-					x = ((0xFF & (int)data[start++]) << bits) | x;
-					bits += 8;
+
+				if (lowEndian) {
+					while (length-- > 0) {
+						x = ((0xFF & (int) data[start++]) << bits) | x;
+						bits += 8;
+					}
 				}
+				else {
+					int pos = start+length-1;
+					while (length-- > 0) {
+						x = ((0xFF & (int) data[pos--]) << bits) | x;
+						bits += 8;
+					}
+				}
+
 				return x;
 			}
 			catch(Exception e) {
@@ -173,5 +186,4 @@ public class VectorAPI {
 			return getInteger(i, 4) / 65536f;
 		}
 	}
-
 }

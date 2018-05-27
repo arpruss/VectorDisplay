@@ -24,6 +24,7 @@ public class Reset extends Command {
     @Override
     public DisplayState parseArguments(Activity context, VectorAPI.Buffer buffer) {
 	    state.reset();
+	    buffer.lowEndian = false;
 	    return state;
     }
 
@@ -33,16 +34,20 @@ public class Reset extends Command {
 		Clear.clearCanvas(c, state);
 	}
 
-	@Override
-	public void handleCommand(Handler h) {
+	static public void doReset(Handler h, DisplayState state) {
 		Message msg = h.obtainMessage(MainActivity.DELETE_ALL_COMMANDS);
 		h.sendMessage(msg);
-        msg = h.obtainMessage(MainActivity.ACK);
-        h.sendMessage(msg);
-        msg = h.obtainMessage(MainActivity.RESET_VIEW);
-        Bundle b = new Bundle();
-        b.putFloat(MainActivity.KEY_ASPECT, state.getAspectRatio());
-        msg.setData(b);
-        h.sendMessage(msg);
+		msg = h.obtainMessage(MainActivity.ACK);
+		h.sendMessage(msg);
+		msg = h.obtainMessage(MainActivity.RESET_VIEW);
+		Bundle b = new Bundle();
+		b.putFloat(MainActivity.KEY_ASPECT, state.getAspectRatio());
+		msg.setData(b);
+		h.sendMessage(msg);
+	}
+
+	@Override
+	public void handleCommand(Handler h) {
+		doReset(h, state);
 	}
 }
