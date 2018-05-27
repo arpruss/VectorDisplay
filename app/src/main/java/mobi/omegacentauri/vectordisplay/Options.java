@@ -10,6 +10,11 @@ public class Options extends PreferenceActivity {
     public static final String PREF_LANDSCAPE = "landscape";
     public static final String PREF_RESET_ON_CONNECT = "resetOnConnect";
     public static final String PREF_UPDATE_SPEED = "speed";
+    public static final String PREF_CONNECTION = "connection";
+    public static final int OPT_USB = 0;
+    public static final int OPT_BLUETOOTH = 1;
+    public static final int OPT_IP = 2;
+    public static final int NUM_CONNECTION_OPTS = 3;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -29,7 +34,7 @@ public class Options extends PreferenceActivity {
         super.onResume();
 
         setRequestedOrientation(
-                PreferenceManager.getDefaultSharedPreferences(this).getBoolean(Options.PREF_LANDSCAPE, true) ?
+                PreferenceManager.getDefaultSharedPreferences(this).getBoolean(Options.PREF_LANDSCAPE, false) ?
                 ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE : ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
     }

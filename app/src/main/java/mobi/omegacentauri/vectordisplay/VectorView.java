@@ -3,12 +3,16 @@ package mobi.omegacentauri.vectordisplay;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.os.SystemClock;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Typeface;
+import android.text.TextPaint;
 import android.util.AttributeSet;
-import android.util.Log;
+import android.util.TypedValue;
 import android.view.MotionEvent;
-import android.view.SurfaceView;
 import android.view.View;
+
+import static android.util.TypedValue.*;
 
 /**
  * Created by Alexander_Pruss on 10/13/2017.
@@ -27,6 +31,7 @@ public class VectorView extends View {
     static final byte[] MOVE = new byte[] { 'M', 'V'};
     long lastEvent = -MOTION_TIMING;
     byte[] outBuf = new byte[8];
+    TextPaint statusPaint;
 
     @Override
     protected void onMeasure(int wspec, int hspec) {
@@ -53,6 +58,12 @@ public class VectorView extends View {
         savedCanvas.setBitmap(bitmap);
         MainActivity.log( "size "+w+" "+h+" "+(double)w/h);
         //redraw = true;
+
+        statusPaint = new TextPaint();
+        statusPaint.setStyle(Paint.Style.FILL);
+        statusPaint.setTypeface(Typeface.MONOSPACE);
+        statusPaint.setColor(Color.YELLOW);
+        statusPaint.setTextAlign(Paint.Align.CENTER);
     }
 
     public VectorView(Context c, AttributeSet set) {
@@ -90,8 +101,8 @@ public class VectorView extends View {
                 outBuf[6] = 0;
                 outBuf[7] = 0;
                 synchronized(main) {
-                    if (main.usbService != null)
-                        main.usbService.write(outBuf);
+                    if (main.connectionService != null)
+                        main.connectionService.write(outBuf);
                 }
                 return true;
             }
@@ -115,5 +126,19 @@ public class VectorView extends View {
         //}
         MainActivity.log( "bitmap "+bitmap.getWidth()+" "+bitmap.getHeight());
         canvas.drawBitmap(bitmap, 0f, 0f, null);
+        if (statusPaint != null) {
+            String[] status = record.getStatus();
+            int w = canvas.getWidth();
+            statusPaint.setTextSize(w/15f);
+            float lineHeight = (statusPaint.ascent()-statusPaint.descent())*1.1f;
+            float y0 = bitmap.getHeight()-lineHeight*(status.length-1);
+            for (String line : status) {
+                statusPaint.setTextSize(w/15f);
+                float m = statusPaint.measureText(line);
+                if (m>w)
+                    statusPaint.setTextSize(w/15f*w/m);
+                canvas.drawText(line,bitmap.getWidth()/2,bitmap.getHeight()-statusPaint.descent(),statusPaint);
+            }
+        }
     }
 }

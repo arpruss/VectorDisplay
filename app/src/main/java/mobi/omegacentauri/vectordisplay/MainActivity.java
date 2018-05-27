@@ -1,6 +1,5 @@
 package mobi.omegacentauri.vectordisplay;
 
-import mobi.omegacentauri.vectordisplay.R;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -27,9 +26,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -51,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     List<Byte> userCommands;
     List<String> userLabels;
     ArrayAdapter<String> commandListAdapter = null;
-    static final boolean DEBUG = false;
+    static final boolean DEBUG = true;
     ListView commandList;
     MyHandler commandHandler;
     public static final int ADD_COMMAND = 1;
@@ -71,46 +67,58 @@ public class MainActivity extends AppCompatActivity {
     /*
      * Notifications from UsbService will be received here.
      */
-    private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver mConnectionReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            boolean conn;
             switch (intent.getAction()) {
-                case UsbService.ACTION_USB_PERMISSION_GRANTED: // USB PERMISSION GRANTED
-                    Toast.makeText(context, "USB Ready", Toast.LENGTH_SHORT).show();
+                case UsbService.ACTION_DEVICE_PERMISSION_GRANTED: // USB PERMISSION GRANTED
+                    Toast.makeText(context, "Device ready", Toast.LENGTH_SHORT).show();
 //                    if (prefs.getBoolean(Options.PREF_RESET_ON_CONNECT, true))
 //                        record.feed(new Reset(record.parser.state));
+                    conn = true;
                     break;
-                case UsbService.ACTION_USB_PERMISSION_NOT_GRANTED: // USB PERMISSION NOT GRANTED
-                    Toast.makeText(context, "USB Permission not granted", Toast.LENGTH_SHORT).show();
+                case UsbService.ACTION_DEVICE_PERMISSION_NOT_GRANTED: // USB PERMISSION NOT GRANTED
+                    Toast.makeText(context, "Device permission not granted", Toast.LENGTH_SHORT).show();
+                    conn = false;
                     break;
                 case UsbService.ACTION_NO_USB: // NO USB CONNECTED
-                    Toast.makeText(context, "No USB connected", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "No USB device connected", Toast.LENGTH_SHORT).show();
+                    conn = false;
                     break;
-                case UsbService.ACTION_USB_DISCONNECTED: // USB DISCONNECTED
-                    Toast.makeText(context, "USB disconnected", Toast.LENGTH_SHORT).show();
+                case UsbService.ACTION_DEVICE_DISCONNECTED: // USB DISCONNECTED
+                    Toast.makeText(context, "Device disconnected", Toast.LENGTH_SHORT).show();
+                    conn = false;
                     break;
                 case UsbService.ACTION_USB_NOT_SUPPORTED: // USB NOT SUPPORTED
                     Toast.makeText(context, "USB device not supported", Toast.LENGTH_SHORT).show();
+                    conn = false;
                     break;
+                default:
+                    return;
+            }
+            if (record != null) {
+                record.setConnected(conn);
+                record.forceUpdate();
             }
         }
     };
-    public UsbService usbService;
+    public ConnectionService connectionService;
     private TextView display;
     private EditText editText;
-    private final ServiceConnection usbConnection = new ServiceConnection() {
+    private final ServiceConnection connection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName arg0, IBinder arg1) {
             synchronized(MainActivity.this) {
-                usbService = ((UsbService.UsbBinder) arg1).getService();
-                usbService.setRecord(record);
+                connectionService = ((ConnectionService.ConnectionBinder) arg1).getService();
+                connectionService.setRecord(record);
             }
         }
 
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
             synchronized(MainActivity.this) {
-                usbService = null;
+                connectionService = null;
             }
         }
     };
@@ -156,8 +164,8 @@ public class MainActivity extends AppCompatActivity {
                         for (int i=3; i<8; i++)
                             outBuf[i] = 0;
                         synchronized(MainActivity.this) {
-                           if (usbService != null)
-                               usbService.write(outBuf);
+                           if (connectionService != null)
+                               connectionService.write(outBuf);
                         }
                }
         });
@@ -184,14 +192,17 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         record.updateTimeMillis = (long)Integer.parseInt(prefs.getString(Options.PREF_UPDATE_SPEED, "60"));
         setFilters();  // Start listening notifications from UsbService
-        startService(UsbService.class, usbConnection, null); // Start UsbService(if it was not started before) and Bind it
+        int conn = prefs.getInt(Options.PREF_CONNECTION, Options.OPT_USB);
+        if (conn==Options.OPT_USB) {
+            startService(UsbService.class, connection, null); // Start UsbService(if it was not started before) and Bind it
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        unregisterReceiver(mUsbReceiver);
-        unbindService(usbConnection);
+        unregisterReceiver(mConnectionReceiver);
+        unbindService(connection);
     }
 
     private void startService(Class<?> service, ServiceConnection serviceConnection, Bundle extras) {
@@ -212,12 +223,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void setFilters() {
         IntentFilter filter = new IntentFilter();
-        filter.addAction(UsbService.ACTION_USB_PERMISSION_GRANTED);
+        filter.addAction(UsbService.ACTION_DEVICE_PERMISSION_GRANTED);
         filter.addAction(UsbService.ACTION_NO_USB);
-        filter.addAction(UsbService.ACTION_USB_DISCONNECTED);
+        filter.addAction(UsbService.ACTION_DEVICE_DISCONNECTED);
         filter.addAction(UsbService.ACTION_USB_NOT_SUPPORTED);
-        filter.addAction(UsbService.ACTION_USB_PERMISSION_NOT_GRANTED);
-        registerReceiver(mUsbReceiver, filter);
+        filter.addAction(UsbService.ACTION_DEVICE_PERMISSION_NOT_GRANTED);
+        registerReceiver(mConnectionReceiver, filter);
     }
 
     @Override
@@ -335,8 +346,8 @@ public class MainActivity extends AppCompatActivity {
             else if (msg.what == MainActivity.ACK) {
                 byte[] out = "Acknwldg".getBytes();
                 synchronized(main) {
-                    if (main.usbService != null)
-                        main.usbService.write(out);
+                    if (main.connectionService != null)
+                        main.connectionService.write(out);
                 }
             }
             else if (msg.what == MainActivity.RESET_VIEW) {

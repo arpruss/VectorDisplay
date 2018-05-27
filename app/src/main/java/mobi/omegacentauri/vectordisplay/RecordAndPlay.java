@@ -27,6 +27,8 @@ public class RecordAndPlay {
     boolean continuous = false;
     Handler commandHandler;
     Matrix curMatrix = null;
+    boolean connected = false;
+    String[] disconnectedStatus = new String[] { "Disconnected" };
 
     public RecordAndPlay(Activity c, Handler h) {
         head = 0;
@@ -46,8 +48,7 @@ public class RecordAndPlay {
         }
 
         if (c instanceof Update) {
-            commandHandler.sendMessage(commandHandler.obtainMessage(MainActivity.INVALIDATE_VIEW));
-            posted = true;
+            forceUpdate();
         }
 
         if (!c.doesDraw())
@@ -62,6 +63,14 @@ public class RecordAndPlay {
             commandHandler.sendMessageDelayed(commandHandler.obtainMessage(MainActivity.INVALIDATE_VIEW), updateTimeMillis);
             posted = true;
         }
+    }
+
+    synchronized public void setConnected(boolean c) {
+        connected = c;
+    }
+
+    public void setDisconnectedStatus(String[] lines) {
+        disconnectedStatus = lines;
     }
 
     public void feed(byte[] data) {
@@ -120,5 +129,17 @@ public class RecordAndPlay {
             head = (head + 1) % MAX_ITEMS;
         }
         posted = false;
+    }
+
+    synchronized public String[] getStatus() {
+        if (connected)
+            return null;
+        else
+            return disconnectedStatus;
+    }
+
+    public void forceUpdate() {
+        commandHandler.sendMessage(commandHandler.obtainMessage(MainActivity.INVALIDATE_VIEW));
+        posted = true;
     }
 }
