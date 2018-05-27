@@ -1,11 +1,11 @@
 package mobi.omegacentauri.vectordisplay;
 
 import android.app.Activity;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
 import mobi.omegacentauri.vectordisplay.VectorAPI.Buffer;
+import mobi.omegacentauri.vectordisplay.commands.Command;
 
 public class Update extends Command {
 	byte cmd;

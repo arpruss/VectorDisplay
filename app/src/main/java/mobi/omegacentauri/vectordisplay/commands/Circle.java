@@ -1,10 +1,12 @@
-package mobi.omegacentauri.vectordisplay;
+package mobi.omegacentauri.vectordisplay.commands;
 
 import android.app.Activity;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
+import mobi.omegacentauri.vectordisplay.DisplayState;
 import mobi.omegacentauri.vectordisplay.VectorAPI.Buffer;
+import mobi.omegacentauri.vectordisplay.commands.Command;
 
 public class Circle extends Command {
 	short x,y,r;

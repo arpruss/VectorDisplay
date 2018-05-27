@@ -1,6 +1,9 @@
-package mobi.omegacentauri.vectordisplay;
+package mobi.omegacentauri.vectordisplay.commands;
 
+import mobi.omegacentauri.vectordisplay.DisplayState;
+import mobi.omegacentauri.vectordisplay.MainActivity;
 import mobi.omegacentauri.vectordisplay.VectorAPI.Buffer;
+import mobi.omegacentauri.vectordisplay.commands.Command;
 
 import android.app.Activity;
 import android.graphics.Canvas;
@@ -8,7 +11,6 @@ import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Typeface;
 import android.text.TextPaint;
-import android.util.Log;
 
 public class Text extends Command {
 	short x,y;

@@ -36,6 +36,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import mobi.omegacentauri.vectordisplay.commands.Clear;
+import mobi.omegacentauri.vectordisplay.commands.Reset;
+
 public class MainActivity extends AppCompatActivity {
     public static final String KEY_COMMAND = "cmd";
     public static final String KEY_LABEL = "label";
@@ -347,7 +350,7 @@ public class MainActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    static void sendResetViewMessage(Handler h, DisplayState state) {
+    public static void sendResetViewMessage(Handler h, DisplayState state) {
         Message msg = h.obtainMessage(RESET_VIEW);
         Bundle b = new Bundle();
         b.putFloat(KEY_ASPECT, state.getAspectRatio());

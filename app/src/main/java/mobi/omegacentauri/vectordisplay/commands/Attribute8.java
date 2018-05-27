@@ -1,9 +1,10 @@
-package mobi.omegacentauri.vectordisplay;
+package mobi.omegacentauri.vectordisplay.commands;
 
 import android.app.Activity;
-import android.util.Log;
 
+import mobi.omegacentauri.vectordisplay.DisplayState;
 import mobi.omegacentauri.vectordisplay.VectorAPI.Buffer;
+import mobi.omegacentauri.vectordisplay.commands.Command;
 
 public class Attribute8 extends Command {
 	public Attribute8(DisplayState state) {

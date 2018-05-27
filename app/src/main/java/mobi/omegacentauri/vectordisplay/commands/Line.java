@@ -1,12 +1,13 @@
-package mobi.omegacentauri.vectordisplay;
+package mobi.omegacentauri.vectordisplay.commands;
 
+import mobi.omegacentauri.vectordisplay.DisplayState;
+import mobi.omegacentauri.vectordisplay.MainActivity;
 import mobi.omegacentauri.vectordisplay.VectorAPI.Buffer;
+import mobi.omegacentauri.vectordisplay.commands.Command;
 
 import android.app.Activity;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.util.Log;
 
 public class Line extends Command {
 	short x1,y1,x2,y2;

@@ -1,5 +1,6 @@
-package mobi.omegacentauri.vectordisplay;
+package mobi.omegacentauri.vectordisplay.commands;
 
+import mobi.omegacentauri.vectordisplay.DisplayState;
 import mobi.omegacentauri.vectordisplay.VectorAPI.Buffer;
 
 import android.app.Activity;
@@ -8,7 +9,7 @@ import android.os.Handler;
 import android.util.Log;
 
 public class Command {
-	DisplayState state;
+	public DisplayState state;
 
 	public boolean errorState;
 

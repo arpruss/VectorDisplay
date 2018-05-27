@@ -6,6 +6,24 @@ import java.util.Map;
 import android.app.Activity;
 import android.util.Log;
 
+import mobi.omegacentauri.vectordisplay.commands.AddButton;
+import mobi.omegacentauri.vectordisplay.commands.Attribute16;
+import mobi.omegacentauri.vectordisplay.commands.Attribute32;
+import mobi.omegacentauri.vectordisplay.commands.Attribute8;
+import mobi.omegacentauri.vectordisplay.commands.Circle;
+import mobi.omegacentauri.vectordisplay.commands.Clear;
+import mobi.omegacentauri.vectordisplay.commands.Command;
+import mobi.omegacentauri.vectordisplay.commands.DeleteButton;
+import mobi.omegacentauri.vectordisplay.commands.FillCircle;
+import mobi.omegacentauri.vectordisplay.commands.FillRectangle;
+import mobi.omegacentauri.vectordisplay.commands.Initialize;
+import mobi.omegacentauri.vectordisplay.commands.Line;
+import mobi.omegacentauri.vectordisplay.commands.Point;
+import mobi.omegacentauri.vectordisplay.commands.PolyLine;
+import mobi.omegacentauri.vectordisplay.commands.PopupMessage;
+import mobi.omegacentauri.vectordisplay.commands.Reset;
+import mobi.omegacentauri.vectordisplay.commands.Text;
+
 public class VectorAPI {
 	public DisplayState state;
     private Map<Byte,Class<? extends Command>> map = new HashMap<Byte,Class<? extends Command>>();
@@ -92,9 +110,9 @@ public class VectorAPI {
 		return null;
 	}
 	
-	static class Buffer {
+	public static class Buffer {
 		static final int MAX_BUFFER = 1024*256;
-		byte[] data = new byte[MAX_BUFFER];
+		public byte[] data = new byte[MAX_BUFFER];
 		int inBuffer = 0;
 		public boolean lowEndian;
 		
@@ -112,11 +130,11 @@ public class VectorAPI {
 			}
 		}
 		
-		int length() {
+		public int length() {
 			return inBuffer;
 		}
 
-		boolean checksum() {
+		public boolean checksum() {
 			int sum = 0;
 			for (int i=0; i<inBuffer-1; i++) {
 				sum = ((data[i] & 0xFF) + sum) & 0xFF;
@@ -125,7 +143,7 @@ public class VectorAPI {
 			return data[inBuffer-1] == (byte)sum;
 		}
 		
-		int getInteger(int start, int length) {
+		public int getInteger(int start, int length) {
 			try {
 				int x = 0;
 				int bits = 0;
@@ -155,7 +173,7 @@ public class VectorAPI {
 			return getString(start, inBuffer-start);
 		}
 		
-		String getString(int start, int length) {
+		public String getString(int start, int length) {
 			try
             {
 				return new String(data, start, length);

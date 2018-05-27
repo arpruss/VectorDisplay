@@ -1,14 +1,10 @@
 package mobi.omegacentauri.vectordisplay;
 
 import android.app.Activity;
-import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.os.Handler;
-import android.os.SystemClock;
-import android.util.Log;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import mobi.omegacentauri.vectordisplay.commands.Command;
 
 /**
  * Created by Alexander_Pruss on 10/13/2017.

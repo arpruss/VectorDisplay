@@ -6,29 +6,29 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.text.TextPaint;
 
-class DisplayState implements Cloneable {
-    int width;
-    int height;
-    float pixelAspectRatio;
-    int foreColor;
-    int backColor;
-    float thickness;
-    float textSize;
-    char hAlignText;
-    char vAlignText;
-    boolean opaqueTextBackground;
-    boolean bold;
-    boolean continuousUpdate;
-    static final char ALIGN_LEFT = 'l';
-    static final char ALIGN_RIGHT = 'r';
-    static final char ALIGN_CENTER = 'c';
-    static final char ALIGN_TOP = 't';
-    static final char ALIGN_BOTTOM = 'b';
+public class DisplayState implements Cloneable {
+    public int width;
+    public int height;
+    public float pixelAspectRatio;
+    public int foreColor;
+    public int backColor;
+    public float thickness;
+    public float textSize;
+    public char hAlignText;
+    public char vAlignText;
+    public boolean opaqueTextBackground;
+    public boolean bold;
+    public boolean continuousUpdate;
+    public static final char ALIGN_LEFT = 'l';
+    public static final char ALIGN_RIGHT = 'r';
+    public static final char ALIGN_CENTER = 'c';
+    public static final char ALIGN_TOP = 't';
+    public static final char ALIGN_BOTTOM = 'b';
     static final char ALIGN_BASELINE = 'l';
     public int textBackColor;
     public char rotate;
-    float monoFontScaleX;
-    float monoFontScale;
+    public float monoFontScaleX;
+    public float monoFontScale;
 
     public Object clone() throws
             CloneNotSupportedException
