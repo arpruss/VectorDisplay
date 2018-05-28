@@ -5,6 +5,7 @@ import android.graphics.Matrix;
 import android.os.Handler;
 
 import mobi.omegacentauri.vectordisplay.commands.Command;
+import mobi.omegacentauri.vectordisplay.commands.Update;
 
 /**
  * Created by Alexander_Pruss on 10/13/2017.

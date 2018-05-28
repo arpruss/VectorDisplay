@@ -26,7 +26,7 @@ public class Reset extends Command {
     @Override
     public DisplayState parseArguments(Activity context, VectorAPI.Buffer buffer) {
 	    state.reset();
-	    buffer.lowEndian = false;
+	    buffer.lowEndian = true;
 	    return state;
     }
 

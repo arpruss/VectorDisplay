@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             boolean conn;
             switch (intent.getAction()) {
-                case UsbService.ACTION_DEVICE_PERMISSION_GRANTED: // USB PERMISSION GRANTED
+                case ConnectionService.ACTION_DEVICE_CONNECTED:
                     Toast.makeText(context, "Device ready", Toast.LENGTH_SHORT).show();
 //                    if (prefs.getBoolean(Options.PREF_RESET_ON_CONNECT, true))
 //                        record.feed(new Reset(record.parser.state));
@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(context, "No USB device connected", Toast.LENGTH_SHORT).show();
                     conn = false;
                     break;
-                case UsbService.ACTION_DEVICE_DISCONNECTED: // USB DISCONNECTED
+                case ConnectionService.ACTION_DEVICE_DISCONNECTED: // USB DISCONNECTED
                     Toast.makeText(context, "Device disconnected", Toast.LENGTH_SHORT).show();
                     conn = false;
                     break;
@@ -114,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
         public void onServiceConnected(ComponentName arg0, IBinder arg1) {
             synchronized (MainActivity.this) {
                 connectionService = ((ConnectionService.ConnectionBinder) arg1).getService();
+                Log.v("VectorDisplay", "setRecord");
                 connectionService.setRecord(record);
             }
         }
@@ -163,7 +164,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.v("VectorDisplay", "onCreate");
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -220,6 +220,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void connectService() {
+        Log.v("VectorDisplay", "connectService()");
         setFilters();  // Start listening notifications from UsbService
         int conn = prefs.getInt(Options.PREF_CONNECTION, Options.OPT_USB);
         switch (conn) {
@@ -229,6 +230,11 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case Options.OPT_OFF:
                 record.setDisconnectedStatus(new String[]{"Tap on OFF to activate"});
+                break;
+            case Options.OPT_IP:
+                Log.v("VectorDisplay", "starting wifi service");
+                startService(WifiService.class, connection, null); // Start WifiService (if it was not started before) and Bind it
+                record.setDisconnectedStatus(new String[]{"WiFi device not connected"});
                 break;
         }
         VectorView view = (VectorView)findViewById(R.id.vector);
@@ -267,9 +273,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void setFilters() {
         IntentFilter filter = new IntentFilter();
-        filter.addAction(UsbService.ACTION_DEVICE_PERMISSION_GRANTED);
+        filter.addAction(ConnectionService.ACTION_DEVICE_CONNECTED);
         filter.addAction(UsbService.ACTION_NO_USB);
-        filter.addAction(UsbService.ACTION_DEVICE_DISCONNECTED);
+        filter.addAction(ConnectionService.ACTION_DEVICE_DISCONNECTED);
         filter.addAction(UsbService.ACTION_USB_NOT_SUPPORTED);
         filter.addAction(UsbService.ACTION_DEVICE_PERMISSION_NOT_GRANTED);
         registerReceiver(mConnectionReceiver, filter);

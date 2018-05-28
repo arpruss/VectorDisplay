@@ -8,6 +8,8 @@ import android.os.Binder;
 import android.os.IBinder;
 
 abstract class ConnectionService extends Service {
+    public static final String ACTION_DEVICE_CONNECTED = "mobi.omegacentauri.vectordisplay.CONNECTED";
+    public static final String ACTION_DEVICE_DISCONNECTED = "mobi.omegacentauri.vectordisplay.DISCONNECTED";
     protected IBinder binder = new ConnectionBinder();
     protected RecordAndPlay record;
     protected Context context;
@@ -31,6 +33,11 @@ abstract class ConnectionService extends Service {
         public ConnectionService getService() {
             return ConnectionService.this;
         }
+    }
+
+    public void broadcast(String msg) {
+        Intent intent = new Intent(msg);
+        sendBroadcast(intent);
     }
 
     public void setRecord(RecordAndPlay r) {

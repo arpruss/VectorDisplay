@@ -23,6 +23,7 @@ import mobi.omegacentauri.vectordisplay.commands.PolyLine;
 import mobi.omegacentauri.vectordisplay.commands.PopupMessage;
 import mobi.omegacentauri.vectordisplay.commands.Reset;
 import mobi.omegacentauri.vectordisplay.commands.Text;
+import mobi.omegacentauri.vectordisplay.commands.Update;
 
 public class VectorAPI {
 	public DisplayState state;
@@ -114,7 +115,7 @@ public class VectorAPI {
 		static final int MAX_BUFFER = 1024*256;
 		public byte[] data = new byte[MAX_BUFFER];
 		int inBuffer = 0;
-		public boolean lowEndian;
+		public boolean lowEndian = true;
 		
 		void clear() {
 			inBuffer = 0;

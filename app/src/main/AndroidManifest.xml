@@ -4,6 +4,8 @@
     <uses-feature android:name="android.hardware.usb.host"
                   android:required="true"/>
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <application
         android:allowBackup="true"
         android:label="@string/app_name"
@@ -35,6 +37,11 @@
 
         <service
             android:name="mobi.omegacentauri.vectordisplay.UsbService"
+            android:enabled="true">
+        </service>
+
+        <service
+            android:name="mobi.omegacentauri.vectordisplay.WifiService"
             android:enabled="true">
         </service>
 
