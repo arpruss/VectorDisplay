@@ -50,6 +50,10 @@ abstract class ConnectionService extends Service {
      * incoming Intents (USB ATTACHED, USB DETACHED...) and it tries to open a serial port.
      */
 
+    public void disconnectDevice() {
+        broadcast(ACTION_DEVICE_DISCONNECTED);
+    }
+
     abstract public void close();
 
     @Override

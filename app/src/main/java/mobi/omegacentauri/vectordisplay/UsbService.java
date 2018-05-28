@@ -50,6 +50,14 @@ public class UsbService extends ConnectionService {
     };
 
     @Override
+    public void disconnectDevice() {
+        super.disconnectDevice();
+
+        if (serialPort != null)
+            serialPort.close();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         if (serialPort != null)

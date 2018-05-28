@@ -338,6 +338,10 @@ public class MainActivity extends AppCompatActivity {
         else if (id == R.id.mode) {
             chooseConnection();
         }
+        else if (id == R.id.disconnect) {
+            if (connectionService != null)
+                connectionService.disconnectDevice();
+        }
         return super.onOptionsItemSelected(item);
     }
 
