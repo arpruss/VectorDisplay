@@ -74,7 +74,7 @@ public class RecordAndPlay {
         feed(data, data.length);
     }
 
-    public void feed(byte[] data, int n) {
+    synchronized public void feed(byte[] data, int n) {
         for(int i=0; i<n; i++) {
             Command c = parser.parse(data[i]);
             if (c != null)

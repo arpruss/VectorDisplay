@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.hardware.usb.UsbManager;
 import android.os.Binder;
 import android.os.IBinder;
+import android.util.Log;
 
 abstract class ConnectionService extends Service {
     public static final String ACTION_DEVICE_CONNECTED = "mobi.omegacentauri.vectordisplay.CONNECTED";
@@ -37,6 +38,7 @@ abstract class ConnectionService extends Service {
 
     public void broadcast(String msg) {
         Intent intent = new Intent(msg);
+        Log.v("VectorDisplay", "sending "+intent.getAction());
         sendBroadcast(intent);
     }
 

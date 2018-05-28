@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
     private final BroadcastReceiver mConnectionReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.v("VectorDisplay", "mCR:"+intent.getAction());
             switch (intent.getAction()) {
                 case ConnectionService.ACTION_DEVICE_CONNECTED:
                     Toast.makeText(context, "Device ready", Toast.LENGTH_SHORT).show();
