@@ -10,7 +10,7 @@
     </string-array>
     <string-array name="modes">
         <item>USB</item>
-        <item>Bluetooth (not yet supported)</item>
         <item>WiFi</item>
+        <item>Bluetooth (not yet supported)</item>
     </string-array>
 </resources>

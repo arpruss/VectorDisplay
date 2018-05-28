@@ -12,9 +12,9 @@ public class Options extends PreferenceActivity {
     public static final String PREF_UPDATE_SPEED = "speed";
     public static final String PREF_CONNECTION = "connection";
     public static final int OPT_USB = 0;
-    public static final int OPT_BLUETOOTH = 1;
-    public static final int OPT_IP = 2;
-    public static final int NUM_CONNECTION_OPTS = 3;
+    public static final int OPT_IP = 1;
+    //public static final int OPT_BLUETOOTH = 2;
+    public static final int NUM_CONNECTION_OPTS = 2;
 
     @Override
     public void onCreate(Bundle icicle) {

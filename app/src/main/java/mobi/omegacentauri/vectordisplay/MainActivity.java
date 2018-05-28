@@ -226,14 +226,14 @@ public class MainActivity extends AppCompatActivity {
         setFilters();  // Start listening notifications from UsbService
         int conn = prefs.getInt(Options.PREF_CONNECTION, Options.OPT_USB);
         switch (conn) {
-            case Options.OPT_USB:
-                startService(UsbService.class, connection, null); // Start UsbService(if it was not started before) and Bind it
-                record.setDisconnectedStatus(new String[]{"USB Disconnected"});
-                break;
             case Options.OPT_IP:
                 Log.v("VectorDisplay", "starting wifi service");
                 startService(WifiService.class, connection, null); // Start WifiService (if it was not started before) and Bind it
                 record.setDisconnectedStatus(new String[]{"WiFi device not connected"});
+                break;
+            default:
+                startService(UsbService.class, connection, null); // Start UsbService(if it was not started before) and Bind it
+                record.setDisconnectedStatus(new String[]{"USB Disconnected"});
                 break;
         }
         VectorView view = (VectorView)findViewById(R.id.vector);
