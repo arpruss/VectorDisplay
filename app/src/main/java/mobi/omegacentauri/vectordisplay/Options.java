@@ -14,8 +14,7 @@ public class Options extends PreferenceActivity {
     public static final int OPT_USB = 0;
     public static final int OPT_BLUETOOTH = 1;
     public static final int OPT_IP = 2;
-    public static final int OPT_OFF = 3;
-    public static final int NUM_CONNECTION_OPTS = 4;
+    public static final int NUM_CONNECTION_OPTS = 3;
 
     @Override
     public void onCreate(Bundle icicle) {

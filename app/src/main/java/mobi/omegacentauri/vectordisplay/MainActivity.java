@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
     public static final int RESET_VIEW = 5;
     public static final int INVALIDATE_VIEW = 6;
     public static final int TOAST = 7;
+    boolean attached;
     byte[] outBuf = new byte[8];
 
     static public void log(String s) {
@@ -73,37 +74,37 @@ public class MainActivity extends AppCompatActivity {
     private final BroadcastReceiver mConnectionReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            boolean conn;
             switch (intent.getAction()) {
                 case ConnectionService.ACTION_DEVICE_CONNECTED:
                     Toast.makeText(context, "Device ready", Toast.LENGTH_SHORT).show();
 //                    if (prefs.getBoolean(Options.PREF_RESET_ON_CONNECT, true))
 //                        record.feed(new Reset(record.parser.state));
-                    conn = true;
+                    attached = true;
                     break;
                 case UsbService.ACTION_DEVICE_PERMISSION_NOT_GRANTED: // USB PERMISSION NOT GRANTED
                     Toast.makeText(context, "Device permission not granted", Toast.LENGTH_SHORT).show();
-                    conn = false;
+                    attached = false;
                     break;
                 case UsbService.ACTION_NO_USB: // NO USB CONNECTED
                     Toast.makeText(context, "No USB device connected", Toast.LENGTH_SHORT).show();
-                    conn = false;
+                    attached = false;
                     break;
                 case ConnectionService.ACTION_DEVICE_DISCONNECTED: // USB DISCONNECTED
                     Toast.makeText(context, "Device disconnected", Toast.LENGTH_SHORT).show();
-                    conn = false;
+                    attached = false;
                     break;
                 case UsbService.ACTION_USB_NOT_SUPPORTED: // USB NOT SUPPORTED
                     Toast.makeText(context, "USB device not supported", Toast.LENGTH_SHORT).show();
-                    conn = false;
+                    attached = false;
                     break;
                 default:
                     return;
             }
             if (record != null) {
-                record.setConnected(conn);
+                record.setConnected(attached);
                 record.forceUpdate();
             }
+            supportInvalidateOptionsMenu();
         }
     };
     public ConnectionService connectionService;
@@ -228,9 +229,6 @@ public class MainActivity extends AppCompatActivity {
                 startService(UsbService.class, connection, null); // Start UsbService(if it was not started before) and Bind it
                 record.setDisconnectedStatus(new String[]{"USB Disconnected"});
                 break;
-            case Options.OPT_OFF:
-                record.setDisconnectedStatus(new String[]{"Tap on OFF to activate"});
-                break;
             case Options.OPT_IP:
                 Log.v("VectorDisplay", "starting wifi service");
                 startService(WifiService.class, connection, null); // Start WifiService (if it was not started before) and Bind it
@@ -285,8 +283,11 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
-        MenuItem mode = menu.findItem(R.id.mode);
-        mode.setTitle(getResources().getStringArray(R.array.modes)[prefs.getInt(Options.PREF_CONNECTION, Options.OPT_USB)]);
+        MenuItem item = menu.findItem(R.id.mode);
+        item.setTitle(getResources().getStringArray(R.array.modes)[prefs.getInt(Options.PREF_CONNECTION, Options.OPT_USB)]);
+        item = menu.findItem(R.id.disconnect);
+        item.setVisible(attached);
+
         return super.onCreateOptionsMenu(menu);
     }
 
