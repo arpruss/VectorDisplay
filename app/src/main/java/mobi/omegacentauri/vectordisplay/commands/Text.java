@@ -55,7 +55,7 @@ public class Text extends Command {
 		p.setTextSize(state.textSize*state.monoFontScale);
 		p.setTextScaleX(state.monoFontScaleX);
 		p.setFakeBoldText(state.bold);
-		float y1 = 	state.vAlignText == DisplayState.ALIGN_TOP ? y + p.ascent() :
+		float y1 = 	state.vAlignText == DisplayState.ALIGN_TOP ? y - p.ascent() :
                 state.vAlignText == DisplayState.ALIGN_BOTTOM ? y + p.descent() :
                 state.vAlignText == DisplayState.ALIGN_CENTER ? y + p.ascent() * 0.5f :
                                 y;

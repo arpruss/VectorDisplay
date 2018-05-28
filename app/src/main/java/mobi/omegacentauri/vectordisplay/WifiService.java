@@ -107,12 +107,15 @@ public class WifiService extends ConnectionService {
         super.setRecord(r);
         if (wifiInfo != null && wifiInfo.getNetworkId() != -1) {
             int ip = wifiInfo.getIpAddress();
-            String ipString = "" + (0xFF & (ip >> 24)) + "." + (0xFF & (ip >> 16)) + "." + (0xFF & (ip >> 8)) + "." + (0xFF & ip);
             if (record != null) {
-                record.setDisconnectedStatus(new String[]{"WiFi device not connected", "Connect to " + ipString});
+                record.setDisconnectedStatus(new String[]{"WiFi device not connected", "Connect to " + ipString(ip)});
                 record.forceUpdate();
             }
         }
+    }
+
+    private static String ipString(int ip) {
+        return "" + (0xFF & ip) + "." + (0xFF & (ip >> 8)) + "." + (0xFF & (ip >> 16)) + "." + (0xFF & (ip >> 24));
     }
 
     /*
@@ -130,9 +133,8 @@ public class WifiService extends ConnectionService {
                 Log.v("VectorDisplay", "net id "+wifiInfo.getNetworkId());
                 if (wifiInfo.getNetworkId() != -1) {
                     int ip = wifiInfo.getIpAddress();
-                    String ipString = ""+(0xFF&(ip>>24))+"."+(0xFF&(ip>>16))+"."+(0xFF&(ip>>8))+"."+(0xFF&ip);
                     if (record != null) {
-                        record.setDisconnectedStatus(new String[]{"WiFi device not connected", "Connect to " + ipString});
+                        record.setDisconnectedStatus(new String[]{"WiFi device not connected", "Connect to " + ipString(ip)});
                         record.forceUpdate();
                     }
 

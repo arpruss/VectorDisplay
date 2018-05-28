@@ -46,7 +46,7 @@ public class DisplayState implements Cloneable {
         thickness = 1f;
         textSize = 8;
         hAlignText = 'l';
-        vAlignText = 'b';
+        vAlignText = 't';
         bold = false;
         rotate = 0;
         opaqueTextBackground = true;
