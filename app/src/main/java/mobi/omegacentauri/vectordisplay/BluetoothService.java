@@ -21,12 +21,12 @@ import java.net.Socket;
 import java.util.UUID;
 
 public class BluetoothService extends ConnectionService {
-    private static final String EXTRA_DEVICE_ADDRESS = "deviceAddress";
+    public static final String EXTRA_DEVICE_ADDRESS = "deviceAddress";
     public static boolean SERVICE_CONNECTED = false;
     String btAddress = null;
     BluetoothDevice device = null;
     BluetoothSocket sock = null;
-    private static final String ACTION_BLUETOOTH_DEVICE_SELECTED="mobi.omegacentauri.vectordisplay.BLUETOOTH_DEVICE_SELECTED";
+    public static final String ACTION_BLUETOOTH_DEVICE_SELECTED="mobi.omegacentauri.vectordisplay.BLUETOOTH_DEVICE_SELECTED";
 
     private final BroadcastReceiver usbReceiver = new BroadcastReceiver() {
         @Override

@@ -1,5 +1,7 @@
 package mobi.omegacentauri.vectordisplay;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -27,12 +29,15 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -151,6 +156,46 @@ public class MainActivity extends AppCompatActivity {
                         connectService();
                         supportInvalidateOptionsMenu();
                         dialog.dismiss();
+                    }
+                });
+        builder.create().show();
+    }
+
+    public void chooseBluetoothDevice() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        if (prefs.getInt(Options.PREF_CONNECTION, Options.OPT_USB) != Options.OPT_BLUETOOTH)
+            return;
+        BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
+        final ArrayList<BluetoothDevice> devs = new ArrayList<BluetoothDevice>();
+        devs.addAll(btAdapter.getBondedDevices());
+        if (devs == null) {
+            Toast.makeText(this, "No paired Bluetooth devices", Toast.LENGTH_LONG).show();
+            return;
+        }
+        Collections.sort(devs, new Comparator<BluetoothDevice>(){
+            @Override
+            public int compare(BluetoothDevice lhs, BluetoothDevice rhs) {
+                return String.CASE_INSENSITIVE_ORDER.compare(lhs.getName(), rhs.getName());
+            }});
+        ArrayList<String> devLabels = new ArrayList<String>();
+        int selected = -1;
+        String lastAddress = prefs.getString(Options.PREF_LAST_BLUETOOTH_ADDRESS, "");
+        for (int i=0; i<devs.size(); i++) {
+            BluetoothDevice d = devs.get(i);
+            if (d.getAddress().equals(lastAddress))
+                selected = i;
+            devLabels.add(d.getName() + " (" + d.getAddress() + ")");
+        }
+        builder.setTitle("Select Device")
+                .setSingleChoiceItems((CharSequence[]) devLabels.toArray(), selected, new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String address = devs.get(which).getAddress();
+                        prefs.edit().putString(Options.PREF_LAST_BLUETOOTH_ADDRESS, address).commit();
+                        Intent intent = new Intent(BluetoothService.ACTION_BLUETOOTH_DEVICE_SELECTED);
+                        intent.putExtra(BluetoothService.EXTRA_DEVICE_ADDRESS, address);
+                        sendBroadcast(intent);
                     }
                 });
         builder.create().show();
