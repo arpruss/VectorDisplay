@@ -36,7 +36,6 @@ public class RecordAndPlay {
     }
 
     synchronized public void feed(Command c) {
-        MainActivity.log("feed "+c.getClass());
         c.handleCommand(commandHandler);
         continuous = c.state.continuousUpdate;
 

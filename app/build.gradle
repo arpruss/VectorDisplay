@@ -6,8 +6,8 @@ android {
         applicationId "mobi.omegacentauri.vectordisplay"
         minSdkVersion 12
         targetSdkVersion 23
-        versionCode 7
-        versionName "0.20"
+        versionCode 8
+        versionName "0.21"
     }
     buildTypes {
         release {

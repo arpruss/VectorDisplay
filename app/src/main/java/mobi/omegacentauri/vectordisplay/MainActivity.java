@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     List<Byte> userCommands;
     List<String> userLabels;
     ArrayAdapter<String> commandListAdapter = null;
-    static final boolean DEBUG = true;
+    static final boolean DEBUG = false;
     ListView commandList;
     MyHandler commandHandler;
     public static final int ADD_COMMAND = 1;
@@ -220,6 +220,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        stopServices();
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         userCommands = new ArrayList<Byte>();
@@ -256,6 +257,12 @@ public class MainActivity extends AppCompatActivity {
         resetVectorView(this, record.parser.state.getAspectRatio());
 
         MainActivity.log("OnCreate");
+    }
+
+    private void stopServices() {
+        stopService(new Intent(this, UsbService.class));
+        stopService(new Intent(this, WifiService.class));
+        stopService(new Intent(this, BluetoothService.class));
     }
 
     static void resetVectorView(MainActivity main, float aspectRatio) {
@@ -302,6 +309,12 @@ public class MainActivity extends AppCompatActivity {
     public void onPause() {
         super.onPause();
         disconnectService();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        stopServices();
     }
 
     void disconnectService() {

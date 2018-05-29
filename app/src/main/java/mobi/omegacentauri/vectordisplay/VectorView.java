@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.text.TextPaint;
 import android.util.AttributeSet;
@@ -50,12 +52,16 @@ public class VectorView extends View {
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        if (bitmap != null) {
-            bitmap.recycle();
-        }
+        Bitmap old = bitmap;
         savedCanvas = new MyCanvas();
         bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
         savedCanvas.setBitmap(bitmap);
+        if (old != null) {
+            Rect oldR = new Rect(0, 0, old.getWidth(), old.getHeight());
+            Rect newR = new Rect(0, 0, w, h);
+            savedCanvas.drawBitmap(old, oldR, newR, new Paint());
+            old.recycle();
+        }
         MainActivity.log( "size "+w+" "+h+" "+(double)w/h);
         //redraw = true;
 
