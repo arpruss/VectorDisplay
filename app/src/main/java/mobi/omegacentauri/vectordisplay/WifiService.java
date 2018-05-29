@@ -12,10 +12,6 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 
-import com.felhr.usbserial.CDCSerialDevice;
-import com.felhr.usbserial.UsbSerialDevice;
-import com.felhr.usbserial.UsbSerialInterface;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -32,16 +28,6 @@ public class WifiService extends ConnectionService {
 
     private WifiManager wifiManager;
 
-    public boolean serialPortConnected;
-    /*
-     *  Data received from serial port will be received here.
-     */
-    private UsbSerialInterface.UsbReadCallback mCallback = new UsbSerialInterface.UsbReadCallback() {
-        @Override
-        public void onReceivedData(byte[] data) {
-            feed(data);
-        }
-    };
     private WifiServer server;
     private WifiInfo wifiInfo;
 
@@ -59,20 +45,12 @@ public class WifiService extends ConnectionService {
     public void onCreate() {
         super.onCreate();
         Log.v("VectorDisplay", "on create WiFiService");
-        serialPortConnected = false;
         WifiService.SERVICE_CONNECTED = true;
         WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
         wifiInfo = wifiManager.getConnectionInfo();
         new WifiService.ConnectionThread().start();
     }
 
-    /* MUST READ about services
-     * http://developer.android.com/guide/components/services.html
-     * http://developer.android.com/guide/components/bound-services.html
-     */
-    /*
-     * This function will be called from MainActivity to write data through Serial Port
-     */
     @Override
     synchronized public void write(byte[] data) {
         if (server != null) { // TODO: fix synchronization
@@ -118,10 +96,6 @@ public class WifiService extends ConnectionService {
         return "" + (0xFF & ip) + "." + (0xFF & (ip >> 8)) + "." + (0xFF & (ip >> 16)) + "." + (0xFF & (ip >> 24));
     }
 
-    /*
-     * A simple thread to open a serial port.
-     * Although it should be a fast operation. moving usb operations away from UI thread is a good thing.
-     */
     private class ConnectionThread extends Thread {
         @Override
         public void run() {
@@ -178,7 +152,6 @@ public class WifiService extends ConnectionService {
         Socket client = null;
         InputStream in = null;
         OutputStream out = null;
-        char[] buffer = new char[256];
         byte[] byteBuffer = new byte[256];
         Boolean stop;
 

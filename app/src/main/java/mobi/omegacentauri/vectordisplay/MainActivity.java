@@ -90,6 +90,10 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(context, "No USB device connected", Toast.LENGTH_SHORT).show();
                     attached = false;
                     break;
+                case ConnectionService.ACTION_DEVICE_UNSUPPORTED: // USB DISCONNECTED
+                    Toast.makeText(context, "Device not supported", Toast.LENGTH_SHORT).show();
+                    attached = false;
+                    break;
                 case ConnectionService.ACTION_DEVICE_DISCONNECTED: // USB DISCONNECTED
                     Toast.makeText(context, "Device disconnected", Toast.LENGTH_SHORT).show();
                     attached = false;
@@ -275,6 +279,7 @@ public class MainActivity extends AppCompatActivity {
         filter.addAction(ConnectionService.ACTION_DEVICE_CONNECTED);
         filter.addAction(UsbService.ACTION_NO_USB);
         filter.addAction(ConnectionService.ACTION_DEVICE_DISCONNECTED);
+        filter.addAction(ConnectionService.ACTION_DEVICE_UNSUPPORTED);
         filter.addAction(UsbService.ACTION_USB_NOT_SUPPORTED);
         filter.addAction(UsbService.ACTION_DEVICE_PERMISSION_NOT_GRANTED);
         registerReceiver(mConnectionReceiver, filter);
@@ -282,12 +287,15 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        int conn = prefs.getInt(Options.PREF_CONNECTION, Options.OPT_USB);
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
         MenuItem item = menu.findItem(R.id.mode);
-        item.setTitle(getResources().getStringArray(R.array.modes)[prefs.getInt(Options.PREF_CONNECTION, Options.OPT_USB)]);
+        item.setTitle(getResources().getStringArray(R.array.modes)[conn]);
         item = menu.findItem(R.id.disconnect);
         item.setVisible(attached);
+        item = menu.findItem(R.id.connect);
+        item.setVisible(!attached && conn == Options.OPT_BLUETOOTH);
 
         return super.onCreateOptionsMenu(menu);
     }

@@ -7,6 +7,9 @@
     <item android:id="@+id/disconnect"
         android:title="disconnect"
         app:showAsAction="always" />
+    <item android:id="@+id/connect"
+        android:title="connect"
+        app:showAsAction="always" />
     <item android:id="@+id/mode"
         android:title="USB"
         app:showAsAction="always" />

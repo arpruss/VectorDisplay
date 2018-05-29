@@ -11,6 +11,7 @@ import android.util.Log;
 abstract class ConnectionService extends Service {
     public static final String ACTION_DEVICE_CONNECTED = "mobi.omegacentauri.vectordisplay.CONNECTED";
     public static final String ACTION_DEVICE_DISCONNECTED = "mobi.omegacentauri.vectordisplay.DISCONNECTED";
+    public static final String ACTION_DEVICE_UNSUPPORTED = "mobi.omegacentauri.vectordisplay.UNSUPPORTED";
     protected IBinder binder = new ConnectionBinder();
     protected RecordAndPlay record;
     protected Context context;
