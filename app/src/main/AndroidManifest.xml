@@ -46,6 +46,11 @@
             android:enabled="true">
         </service>
 
+        <service
+            android:name="mobi.omegacentauri.vectordisplay.BluetoothService"
+            android:enabled="true">
+        </service>
+
     </application>
 
 </manifest>

@@ -11,6 +11,6 @@
     <string-array name="modes">
         <item>USB</item>
         <item>WiFi</item>
-        <item>Bluetooth (not yet supported)</item>
+        <item>Bluetooth</item>
     </string-array>
 </resources>

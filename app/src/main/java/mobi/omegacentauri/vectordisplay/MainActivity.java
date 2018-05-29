@@ -29,7 +29,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -138,10 +137,14 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    public void chooseConnection() {
+    private int connectionMode() {
+        return prefs.getInt(Options.PREF_CONNECTION, Options.OPT_USB);
+    }
+
+    private void chooseConnection() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         CharSequence[] array = getResources().getStringArray(R.array.modes);
-        final int oldConn = prefs.getInt(Options.PREF_CONNECTION, Options.OPT_USB);
+        final int oldConn = connectionMode();
         builder.setTitle("Select Connection")
                 .setSingleChoiceItems(array, oldConn, new DialogInterface.OnClickListener() {
 
@@ -163,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void chooseBluetoothDevice() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        if (prefs.getInt(Options.PREF_CONNECTION, Options.OPT_USB) != Options.OPT_BLUETOOTH)
+        if (connectionMode() != Options.OPT_BLUETOOTH)
             return;
         BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
         final ArrayList<BluetoothDevice> devs = new ArrayList<BluetoothDevice>();
@@ -177,17 +180,17 @@ public class MainActivity extends AppCompatActivity {
             public int compare(BluetoothDevice lhs, BluetoothDevice rhs) {
                 return String.CASE_INSENSITIVE_ORDER.compare(lhs.getName(), rhs.getName());
             }});
-        ArrayList<String> devLabels = new ArrayList<String>();
         int selected = -1;
         String lastAddress = prefs.getString(Options.PREF_LAST_BLUETOOTH_ADDRESS, "");
+        CharSequence[] devLabels = new CharSequence[devs.size()];
         for (int i=0; i<devs.size(); i++) {
             BluetoothDevice d = devs.get(i);
             if (d.getAddress().equals(lastAddress))
                 selected = i;
-            devLabels.add(d.getName() + " (" + d.getAddress() + ")");
+            devLabels[i] = d.getName() + " (" + d.getAddress() + ")";
         }
         builder.setTitle("Select Device")
-                .setSingleChoiceItems((CharSequence[]) devLabels.toArray(), selected, new DialogInterface.OnClickListener() {
+                .setItems(devLabels, /*selected, */new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -196,6 +199,7 @@ public class MainActivity extends AppCompatActivity {
                         Intent intent = new Intent(BluetoothService.ACTION_BLUETOOTH_DEVICE_SELECTED);
                         intent.putExtra(BluetoothService.EXTRA_DEVICE_ADDRESS, address);
                         sendBroadcast(intent);
+                        dialog.dismiss();
                     }
                 });
         builder.create().show();
@@ -273,12 +277,16 @@ public class MainActivity extends AppCompatActivity {
     private void connectService() {
         Log.v("VectorDisplay", "connectService()");
         setFilters();  // Start listening notifications from UsbService
-        int conn = prefs.getInt(Options.PREF_CONNECTION, Options.OPT_USB);
-        switch (conn) {
+        switch (connectionMode()) {
             case Options.OPT_IP:
                 Log.v("VectorDisplay", "starting wifi service");
                 startService(WifiService.class, connection, null); // Start WifiService (if it was not started before) and Bind it
                 record.setDisconnectedStatus(new String[]{"WiFi device not connected"});
+                break;
+            case Options.OPT_BLUETOOTH:
+                Log.v("VectorDisplay", "starting bluetooth service");
+                startService(BluetoothService.class, connection, null); // Start WifiService (if it was not started before) and Bind it
+                record.setDisconnectedStatus(new String[]{"Start Bluetooth device and press CONNECT"});
                 break;
             default:
                 startService(UsbService.class, connection, null); // Start UsbService(if it was not started before) and Bind it
@@ -332,7 +340,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        int conn = prefs.getInt(Options.PREF_CONNECTION, Options.OPT_USB);
+        int conn = connectionMode();
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
         MenuItem item = menu.findItem(R.id.mode);
@@ -395,6 +403,9 @@ public class MainActivity extends AppCompatActivity {
         else if (id == R.id.disconnect) {
             if (connectionService != null)
                 connectionService.disconnectDevice();
+        }
+        else if (id == R.id.connect && connectionMode() == Options.OPT_BLUETOOTH) {
+            chooseBluetoothDevice();
         }
         return super.onOptionsItemSelected(item);
     }
