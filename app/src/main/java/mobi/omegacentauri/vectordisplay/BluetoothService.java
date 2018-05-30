@@ -7,7 +7,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.util.Log;
 
@@ -16,8 +15,6 @@ import com.felhr.usbserial.UsbSerialInterface;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.UUID;
 
 public class BluetoothService extends ConnectionService {
@@ -25,7 +22,7 @@ public class BluetoothService extends ConnectionService {
     public static boolean SERVICE_CONNECTED = false;
     String btAddress = null;
     BluetoothDevice device = null;
-    BluetoothSocket sock = null;
+    BluetoothSocket mSock = null;
     public static final String ACTION_BLUETOOTH_DEVICE_SELECTED="mobi.omegacentauri.vectordisplay.BLUETOOTH_DEVICE_SELECTED";
 
     private final BroadcastReceiver usbReceiver = new BroadcastReceiver() {
@@ -68,7 +65,7 @@ public class BluetoothService extends ConnectionService {
         super.onCreate();
         btAddress = null;
         device = null;
-        sock = null;
+        mSock = null;
         Log.v("VectorDisplay", "on create BluetoothService");
         BluetoothService.SERVICE_CONNECTED = true;
         setFilter();
@@ -91,30 +88,14 @@ public class BluetoothService extends ConnectionService {
     }
 
     public void stopSocket() {
-        if (sock != null)
+        if (mSock != null)
             broadcast(ACTION_DEVICE_DISCONNECTED);
-        synchronized(this) {
-            if (out != null) {
-                try {
-                    out.close();
-                } catch (IOException e1) {
-                }
-                out = null;
-            }
-        }
-        if (in != null) {
+        if (mSock != null) {
             try {
-                in.close();
+                mSock.close();
             } catch (IOException e1) {
             }
-            in = null;
-        }
-        if (sock != null) {
-            try {
-                sock .close();
-            } catch (IOException e1) {
-            }
-            sock = null;
+            mSock = null;
         }
     }
 
@@ -150,15 +131,16 @@ public class BluetoothService extends ConnectionService {
                 return;
             }
 
-            sock = null;
+            mSock = null;
             try {
-                sock = device.createInsecureRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"));
+                mSock = device.createInsecureRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"));
             } catch (IOException e) {
                 broadcast(ACTION_DEVICE_UNSUPPORTED);
                 return;
             }
 
             try {
+                BluetoothSocket sock = mSock; // local copy
                 sock.connect();
                 out = sock.getOutputStream();
                 in = sock.getInputStream();

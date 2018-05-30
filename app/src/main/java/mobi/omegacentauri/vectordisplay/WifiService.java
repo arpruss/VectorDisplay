@@ -64,9 +64,10 @@ public class WifiService extends ConnectionService {
 
     @Override
     public void disconnectDevice() {
-        if (server != null && server.client != null) {
+        if (server != null && server.mClient != null) {
             try {
-                server.client.close();
+                server.mClient.close();
+                server.mClient = null;
             } catch (IOException e) {
             }
         }
@@ -149,7 +150,7 @@ public class WifiService extends ConnectionService {
     public class WifiServer extends Thread {
         private ServerSocket listener;
         WifiService wifiService;
-        Socket client = null;
+        Socket mClient = null;
         InputStream in = null;
         OutputStream out = null;
         byte[] byteBuffer = new byte[256];
@@ -169,7 +170,8 @@ public class WifiService extends ConnectionService {
                         break;
                 }
                 try {
-                    client = listener.accept();
+                    WifiServer.this.mClient = listener.accept();
+                    Socket client = WifiServer.this.mClient; // local copy
                     Log.v("VectorDisplay", "Accepted");
                     in = client.getInputStream();
                     synchronized(WifiServer.this) {
@@ -202,28 +204,12 @@ public class WifiService extends ConnectionService {
         public void stopClient() {
             Log.v("VectorDisplay", "adc");
             wifiService.broadcast(ACTION_DEVICE_DISCONNECTED);
-            synchronized(WifiServer.this) {
-                if (out != null) {
-                    try {
-                        out.close();
-                    } catch (IOException e1) {
-                    }
-                    out = null;
-                }
-            }
-            if (in != null) {
+            if (mClient != null) {
                 try {
-                    in.close();
+                    mClient.close();
                 } catch (IOException e1) {
                 }
-                in = null;
-            }
-            if (client != null) {
-                try {
-                    client.close();
-                } catch (IOException e1) {
-                }
-                client = null;
+                mClient = null;
             }
         }
 
