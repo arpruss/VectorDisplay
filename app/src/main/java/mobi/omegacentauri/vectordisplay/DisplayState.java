@@ -29,6 +29,7 @@ public class DisplayState implements Cloneable {
     public char rotate;
     public float monoFontScaleX;
     public float monoFontScale;
+    public boolean cp437;
     public boolean rounded;
 
     public Object clone() throws
@@ -50,6 +51,7 @@ public class DisplayState implements Cloneable {
         vAlignText = 't';
         bold = false;
         rotate = 0;
+        cp437 = false;
         opaqueTextBackground = true;
         continuousUpdate = true;
         rounded = true;

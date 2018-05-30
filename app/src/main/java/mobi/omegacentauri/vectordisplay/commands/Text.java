@@ -42,7 +42,7 @@ public class Text extends Command {
 	public DisplayState parseArguments(Activity context, Buffer buffer) {
 		x = (short)buffer.getInteger(0, 2);
 		y = (short)buffer.getInteger(2, 2);
-		text = buffer.getString(4, buffer.length()-1-4);
+		text = buffer.getString(4, buffer.length()-1-4, state);
         MainActivity.log("parsing text: "+text);
 		return state;
 	}

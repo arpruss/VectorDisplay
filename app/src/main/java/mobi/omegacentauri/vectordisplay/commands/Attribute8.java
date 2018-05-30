@@ -37,6 +37,9 @@ public class Attribute8 extends Command {
             case 'r':
                 state.rotate = (char) buffer.data[1];
                 break;
+			case 'i':
+				state.cp437 = buffer.data[1] != 0;
+				break;
 			case 'c':
 				state.continuousUpdate = buffer.data[1] != 0;
 //                Log.v("VectorDisplay", "cupdate "+state.continuousUpdate);
