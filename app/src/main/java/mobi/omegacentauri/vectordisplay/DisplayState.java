@@ -29,6 +29,7 @@ public class DisplayState implements Cloneable {
     public char rotate;
     public float monoFontScaleX;
     public float monoFontScale;
+    public boolean rounded;
 
     public Object clone() throws
             CloneNotSupportedException
@@ -51,6 +52,7 @@ public class DisplayState implements Cloneable {
         rotate = 0;
         opaqueTextBackground = true;
         continuousUpdate = true;
+        rounded = true;
         measureMonoFont();
     }
 
@@ -71,5 +73,13 @@ public class DisplayState implements Cloneable {
 
     public float getAspectRatio() {
         return width*pixelAspectRatio/height;
+    }
+
+    public int rotatedWidth() {
+        return rotate % 2 == 0 ? width : height;
+    }
+
+    public int rotatedHeight() {
+        return rotate % 2 == 0 ? height : width;
     }
 }

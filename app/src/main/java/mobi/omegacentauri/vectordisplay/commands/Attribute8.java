@@ -28,6 +28,9 @@ public class Attribute8 extends Command {
 			case 'b':
 				state.bold = buffer.data[1] != 0;
 				break;
+			case 'n':
+				state.rounded = buffer.data[1] != 0;
+				break;
 			case 'o':
 				state.opaqueTextBackground = buffer.data[1] != 0;
 				break;

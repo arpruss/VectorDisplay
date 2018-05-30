@@ -40,6 +40,16 @@ public class FillRectangle extends Command {
 	@Override
 	public void draw(Canvas c) {
 		p.setColor(state.foreColor);
+		if (x1==0)
+			x1 = -1;
+		if (y1==0)
+			y1 = -1;
+		short w = (short) state.rotatedWidth();
+		if (x2==w-1)
+			x2 = w;
+		short h = (short) state.rotatedHeight();
+		if (y2==h-1)
+			y2 = h;
 		c.drawRect(x1, y1, x2, y2, p);
 	}
 }

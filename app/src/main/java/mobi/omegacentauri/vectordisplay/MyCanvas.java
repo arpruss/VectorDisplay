@@ -18,7 +18,8 @@ public class MyCanvas extends Canvas {
             return;
         if (state.width <= 0 || state.height <= 0)
             return;
-        matrix.setScale((float)getWidth()/state.width, (float)getHeight()/state.height);
+        matrix.setScale((float)(getWidth())/(state.width), (float)(getHeight())/(state.height));
+        matrix.preTranslate(0.5f,0.5f);
         matrix.postRotate(state.rotate * 90, getWidth() / 2f, getHeight() / 2f);
         if ((state.rotate & 3) == 1) {
             float delta = (getHeight()-getWidth())/2f;

@@ -1,6 +1,7 @@
 import socket
 import sys
 import os
+from vectordisplay import VectorDisplay
 from threading import Thread
 from random import randint
 from time import sleep
@@ -16,11 +17,6 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((addr, port))
 print("connected")
 
-def sendCommand(c, args):
-    command = [ ord(c), ord(c)^0xff ] + args + [ 0xff^sum(bytearray(args)) ]
-    print(command)
-    s.send(bytearray(c&0xFF for c in command))
-    
 def dec16(a,b):
     return (a<<8) | (b&0xFF);
 
@@ -38,12 +34,16 @@ def reader():
 thread = Thread(target = reader, args  = ())
 thread.start()
 
-sendCommand('H', [0x12, 0x34, 0, 0]) # big endian
+out = VectorDisplay(s.send,lowendian=False)
+
+out.initialize()
+
 sleep(1)
 while 1:
     x1 = randint(0,239)
     y1 = randint(0,319)
     x2 = randint(0,239)
     y2 = randint(0,319)
-    sendCommand('L', [x1>>8,x1&0xFF, y1>>8,y1&0xFF, x2>>8,x2&0xff, y2>>8,y2&0xFF ])
+    out.line(x1,y1,x2,y2)
     sleep(1)
+    

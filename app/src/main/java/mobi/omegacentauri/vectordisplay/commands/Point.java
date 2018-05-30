@@ -39,6 +39,9 @@ public class Point extends Command {
 	@Override
 	public void draw(Canvas c) {
 		p.setColor(state.foreColor);
-		c.drawCircle(x1, y1, state.thickness/2, p);
+		if (state.rounded)
+			c.drawCircle(x1, y1, state.thickness/2, p);
+		else
+			c.drawRect(x1-state.thickness/2,y1-state.thickness/2,x1+state.thickness/2,y1+state.thickness/2, p);
 	}
 }

@@ -16,8 +16,6 @@ public class Line extends Command {
 	private static Paint DefaultPaint() {
 		Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
 		p.setStyle(Paint.Style.STROKE);
-		p.setStrokeCap(Paint.Cap.ROUND);
-		p.setStrokeJoin(Paint.Join.ROUND);
 		return p;
 	}
 
@@ -43,6 +41,8 @@ public class Line extends Command {
 	public void draw(Canvas c) {
 		p.setColor(state.foreColor);
 		p.setStrokeWidth(state.thickness);
+		p.setStrokeCap(state.rounded ? Paint.Cap.ROUND : Paint.Cap.SQUARE);
+		p.setStrokeJoin(state.rounded ? Paint.Join.ROUND : Paint.Join.MITER);
 		MainActivity.log( "foreColor "+state.foreColor);
 		c.drawLine(x1, y1, x2, y2, p);
 	}
