@@ -5,9 +5,9 @@ android {
     defaultConfig {
         applicationId "mobi.omegacentauri.vectordisplay"
         minSdkVersion 12
-        targetSdkVersion 23
+        targetSdkVersion 24
         versionCode 11
-        versionName "0.24"
+        versionName "0.24b"
     }
     buildTypes {
         release {
