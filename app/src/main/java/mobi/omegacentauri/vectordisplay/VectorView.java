@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -33,6 +34,7 @@ public class VectorView extends View {
     static final byte[] MOVE = new byte[] { 'M', 'V'};
     long lastEvent = -MOTION_TIMING;
     byte[] outBuf = new byte[8];
+    float[] coords = new float[2];
     TextPaint statusPaint;
 
     @Override
@@ -47,6 +49,10 @@ public class VectorView extends View {
                 h = (int) (w / aspectRatio);
             }
         }
+        if (w==0)
+            w=1;
+        if (h==0)
+            h=1;
         setMeasuredDimension(w, h);
     }
 
@@ -99,18 +105,26 @@ public class VectorView extends View {
                     return true;
                 }
                 lastEvent = System.currentTimeMillis();
-                IntCoords xy = record.parser.state.unscale(savedCanvas, event.getX(), event.getY());
+                Matrix inv = new Matrix();
+                if (!savedCanvas.matrix.invert(inv))
+                    inv.reset();
+                coords[0] = event.getX();
+                coords[1] = event.getY();
+                inv.mapPoints(coords);
+                int x = (int)(coords[0]+0.5f);
+                int y = (int)(coords[1]+0.5f);
+
                 if (record.parser.buffer.lowEndian) {
-                    outBuf[2] = (byte) (xy.x & 0xFF);
-                    outBuf[3] = (byte) (xy.x >> 8);
-                    outBuf[4] = (byte) (xy.y & 0xFF);
-                    outBuf[5] = (byte) (xy.y >> 8);
+                    outBuf[2] = (byte) (x & 0xFF);
+                    outBuf[3] = (byte) (x >> 8);
+                    outBuf[4] = (byte) (y & 0xFF);
+                    outBuf[5] = (byte) (y >> 8);
                 }
                 else {
-                    outBuf[3] = (byte) (xy.x & 0xFF);
-                    outBuf[2] = (byte) (xy.x >> 8);
-                    outBuf[5] = (byte) (xy.y & 0xFF);
-                    outBuf[4] = (byte) (xy.y >> 8);
+                    outBuf[3] = (byte) (x & 0xFF);
+                    outBuf[2] = (byte) (x >> 8);
+                    outBuf[5] = (byte) (y & 0xFF);
+                    outBuf[4] = (byte) (y >> 8);
                 }
                 outBuf[6] = 0;
                 outBuf[7] = 0;
@@ -129,17 +143,10 @@ public class VectorView extends View {
             MainActivity.log( "creating savedCanvas");
             onSizeChanged(0,0, canvas.getWidth(), canvas.getHeight());
         }
-        /*if (redraw) {
-            MainActivity.log( "redrawing");
-            record.redraw(savedCanvas);
-            redraw = false;
-        }
-        else { */
-            MainActivity.log( "drawing");
-            record.draw(savedCanvas);
-        //}
-        MainActivity.log( "bitmap "+bitmap.getWidth()+" "+bitmap.getHeight());
+
+        record.draw(savedCanvas);
         canvas.drawBitmap(bitmap, 0f, 0f, null);
+
         if (statusPaint != null) {
             String[] status = record.getStatus();
             if (status != null) {

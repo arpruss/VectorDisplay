@@ -81,17 +81,6 @@ public class RecordAndPlay {
         }
     }
 
-/*    synchronized public void redraw(Canvas canvas) {
-        if (head == tail) {
-            Clear.clearCanvas(canvas, parser.state);
-        }
-        else {
-            Clear.clearCanvas(canvas, commands[head].state);
-        }
-
-        draw(canvas);
-    } */
-
     synchronized public void draw(MyCanvas canvas) {
         int endPos = -1;
 
@@ -100,7 +89,7 @@ public class RecordAndPlay {
                 posted = false;
                 return;
             }
-            int t0 = (tail - 1) % MAX_ITEMS;
+            int t0 = tail - 1;
             if (t0 < 0)
                 t0 += MAX_ITEMS;
             while (t0 != head) {

@@ -69,19 +69,6 @@ public class DisplayState implements Cloneable {
         reset();
     }
 
-    public Coords getScale(Canvas c) {
-        int cw = c.getWidth();
-        int ch = c.getHeight();
-        return new Coords((float)cw/width, (float)ch/height);
-    }
-
-    public IntCoords unscale(Canvas c, float x, float y) {
-        Coords s = getScale(c);
-        int x1 = (int) (x/s.x+0.5f);
-        int y1 = (int) (y/s.y+0.5f);
-        return new IntCoords(x1,y1);
-    }
-
     public float getAspectRatio() {
         return width*pixelAspectRatio/height;
     }
