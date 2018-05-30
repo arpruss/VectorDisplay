@@ -20,12 +20,18 @@ def sendCommand(c, args):
     command = [ ord(c), ord(c)^0xff ] + args + [ 0xff^sum(bytearray(args)) ]
     print(command)
     s.send(bytearray(c&0xFF for c in command))
+    
+def dec16(a,b):
+    return (a<<8) | (b&0xFF);
 
 def reader():    
     while 1:
         try:
             data = s.recv(8)
             print(" ".join("%02X" % b for b in data))
+            c = chr(data[0])
+            if c=='U' or c=='D' or c=='M':
+                print ( chr(data[0])+":%d,%d" % (dec16(data[2],data[3]),dec16(data[4],data[5])) )
         except:
             pass
     
