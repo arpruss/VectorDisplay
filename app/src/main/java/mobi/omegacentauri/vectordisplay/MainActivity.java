@@ -482,7 +482,8 @@ public class MainActivity extends AppCompatActivity {
                 main.commandList.setVisibility(main.userCommands.size() > 0 ? View.VISIBLE : View.GONE);
             }
             else if (msg.what == MainActivity.ACK) {
-                byte[] out = "Acknwldg".getBytes();
+                byte[] out = "Acknwld_".getBytes();
+                out[7] = (byte)msg.arg1;
                 synchronized(main) {
                     if (main.connectionService != null)
                         main.connectionService.write(out);

@@ -39,8 +39,6 @@ public class Reset extends Command {
 	static public void doReset(Handler h, DisplayState state) {
 		Message msg = h.obtainMessage(MainActivity.DELETE_ALL_COMMANDS);
 		h.sendMessage(msg);
-		msg = h.obtainMessage(MainActivity.ACK);
-		h.sendMessage(msg);
 		msg = h.obtainMessage(MainActivity.RESET_VIEW);
 		Bundle b = new Bundle();
 		b.putFloat(MainActivity.KEY_ASPECT, state.getAspectRatio());
@@ -51,5 +49,6 @@ public class Reset extends Command {
 	@Override
 	public void handleCommand(Handler h) {
 		doReset(h, state);
+		sendAck(h, VectorAPI.RESET_COMMAND);
 	}
 }

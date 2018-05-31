@@ -8,24 +8,7 @@ import java.util.Map;
 import android.app.Activity;
 import android.util.Log;
 
-import mobi.omegacentauri.vectordisplay.commands.AddButton;
-import mobi.omegacentauri.vectordisplay.commands.Attribute16;
-import mobi.omegacentauri.vectordisplay.commands.Attribute32;
-import mobi.omegacentauri.vectordisplay.commands.Attribute8;
-import mobi.omegacentauri.vectordisplay.commands.Circle;
-import mobi.omegacentauri.vectordisplay.commands.Clear;
-import mobi.omegacentauri.vectordisplay.commands.Command;
-import mobi.omegacentauri.vectordisplay.commands.DeleteButton;
-import mobi.omegacentauri.vectordisplay.commands.FillCircle;
-import mobi.omegacentauri.vectordisplay.commands.FillRectangle;
-import mobi.omegacentauri.vectordisplay.commands.Initialize;
-import mobi.omegacentauri.vectordisplay.commands.Line;
-import mobi.omegacentauri.vectordisplay.commands.Point;
-import mobi.omegacentauri.vectordisplay.commands.PolyLine;
-import mobi.omegacentauri.vectordisplay.commands.PopupMessage;
-import mobi.omegacentauri.vectordisplay.commands.Reset;
-import mobi.omegacentauri.vectordisplay.commands.Text;
-import mobi.omegacentauri.vectordisplay.commands.Update;
+import mobi.omegacentauri.vectordisplay.commands.*;
 
 public class VectorAPI {
 	public DisplayState state;
@@ -36,28 +19,32 @@ public class VectorAPI {
     private long commandStartTime;
     private Activity context;
     private byte lastChar = 0;
-		
+    public static final byte RESET_COMMAND = 'E';
+	public static final byte INITIALIZE_COMMAND = 'H';
+	public static final byte ATTRIBUTE32_COMMAND = 'B';
+
 	public VectorAPI(Activity context) {
 	    this.context = context;
 		this.state = new DisplayState();
 		// need to have capital letters
+        map.put((byte) 'A', Attribute16.class);
+        map.put(ATTRIBUTE32_COMMAND, Attribute32.class);
+        map.put((byte) 'C', Clear.class);
+        map.put((byte) 'D', DeleteButton.class);
+        map.put(RESET_COMMAND, Reset.class);
         map.put((byte) 'F', Update.class);
-		map.put((byte) 'C', Clear.class);
-		map.put((byte) 'L', Line.class);
-		map.put((byte) 'R', FillRectangle.class);
-		map.put((byte) 'T', Text.class);
-		map.put((byte) 'P', Point.class);
-		map.put((byte) 'B', Attribute32.class);
-		map.put((byte) 'A', Attribute16.class);
-		map.put((byte) 'Y', Attribute8.class);
-		map.put((byte) 'M', PopupMessage.class);
-		map.put((byte) 'H', Initialize.class);
-		map.put((byte) 'E', Reset.class);
+        map.put((byte) 'G', FillTriangle.class);
+        map.put(INITIALIZE_COMMAND, Initialize.class);
         map.put((byte) 'I', Circle.class);
         map.put((byte) 'J', FillCircle.class);
+		map.put((byte) 'L', Line.class);
+        map.put((byte) 'M', PopupMessage.class);
+        map.put((byte) 'O', PolyLine.class);
+        map.put((byte) 'P', Point.class);
+		map.put((byte) 'R', FillRectangle.class);
+		map.put((byte) 'T', Text.class);
         map.put((byte) 'U', AddButton.class);
-		map.put((byte) 'D', DeleteButton.class);
-		map.put((byte) 'O', PolyLine.class);
+		map.put((byte) 'Y', Attribute8.class);
 	}
 
 	synchronized public Command parse(byte ch) {

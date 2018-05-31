@@ -48,7 +48,9 @@ public class Initialize extends Command {
 
 	@Override
 	public void handleCommand(Handler h) {
-		if (valid)
+		if (valid) {
 			Reset.doReset(h, state);
+			sendAck(h, VectorAPI.INITIALIZE_COMMAND);
+		}
 	}
 }

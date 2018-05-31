@@ -30,7 +30,7 @@ public class AddButton extends Command {
 	@Override
 	public DisplayState parseArguments(Activity context, Buffer buffer) {
 		cmd = buffer.data[0];
-		label = buffer.getString(1, buffer.length()-1-1);
+		label = buffer.getString(1, buffer.length()-1-1, state);
 		return state;
 	}
 

@@ -49,7 +49,6 @@ public class Text extends Command {
 	
 	@Override
 	public void draw(Canvas c) {
-        MainActivity.log( "drawing text");
 		p.setColor(state.foreColor);
 
 		p.setTextSize(state.textSize*state.monoFontScale);

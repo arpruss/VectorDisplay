@@ -29,7 +29,7 @@ public class PopupMessage extends Command {
 
 	@Override
 	public DisplayState parseArguments(Activity context, Buffer buffer) {
-		text = buffer.getString(0, buffer.length()-2);
+		text = buffer.getString(0, buffer.length()-2, state);
 		return state;
 	}
 

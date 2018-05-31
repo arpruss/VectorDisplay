@@ -1,11 +1,13 @@
 package mobi.omegacentauri.vectordisplay.commands;
 
 import mobi.omegacentauri.vectordisplay.DisplayState;
+import mobi.omegacentauri.vectordisplay.MainActivity;
 import mobi.omegacentauri.vectordisplay.VectorAPI.Buffer;
 
 import android.app.Activity;
 import android.graphics.Canvas;
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 public class Command {
@@ -65,4 +67,10 @@ public class Command {
 	public boolean needToClearHistory() { return false; }
 
 	public void handleCommand(Handler h) {}
+
+	static void sendAck(Handler h, byte command) {
+		Message msg = h.obtainMessage(MainActivity.ACK);
+		msg.arg1 = command;
+		h.sendMessage(msg);
+	}
 }
