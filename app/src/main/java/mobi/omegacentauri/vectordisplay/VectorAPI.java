@@ -39,6 +39,7 @@ public class VectorAPI {
         map.put((byte) 'J', FillCircle.class);
 		map.put((byte) 'L', Line.class);
         map.put((byte) 'M', PopupMessage.class);
+		map.put((byte) 'N', FillPoly.class);
         map.put((byte) 'O', PolyLine.class);
         map.put((byte) 'P', Point.class);
 		map.put((byte) 'R', FillRectangle.class);

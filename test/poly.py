@@ -1,6 +1,7 @@
 import socket
 import sys
 import os
+import math
 from vectordisplay import VectorDisplay
 from random import randint
 from time import sleep
@@ -16,17 +17,10 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((addr, port))
 print("connected")
 
-w = 3
-h = 4
+w = 300
+h = 400
 v = VectorDisplay(s.send,lowendian=False)
 v.initialize()
 v.coordinates(w,h)
 v.rounded(True)
-v.foreColor(0xFFFF0000)
-v.rectangle(0,0,w-1,h-1)
-v.foreColor(0x3F00FF00)
-v.fillRectangle(0,0,w-1,h-1)
-v.foreColor(0x7F0000FF)
-v.fillRectangle(0,0,0,0)
-v.foreColor(0x7f00007F)
-v.fillRectangle(1,0,1,0)
+v.poly([(100,100),(200,100),(150,50)], fill=True)

@@ -62,3 +62,10 @@ class VectorDisplay(object):
         
     def point(self,x,y):
         self.command('P',self.e16(x)+self.e16(y))
+        
+    def poly(self,points,fill=True):
+        path = self.e16(len(points))
+        for p in points:
+            path += self.e16(p[0])+self.e16(p[1])
+        self.command('N' if fill else 'O',path)
+        

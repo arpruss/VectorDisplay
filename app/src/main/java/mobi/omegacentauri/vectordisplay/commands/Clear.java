@@ -24,7 +24,7 @@ public class Clear extends Command {
 		Paint paint = new Paint();
 		paint.setColor(state.backColor);
 		MainActivity.log( "clearing to "+state.backColor+ " "+c.getWidth()+" "+c.getHeight());
-		c.drawRect(0,0,max(state.width,state.height),max(state.width,state.height), paint);
+		c.drawRect(-0.5f,-0.5f,max(state.width,state.height),max(state.width,state.height), paint);
 	}
 	@Override
 	public void draw(Canvas c) {

@@ -10,7 +10,6 @@ import mobi.omegacentauri.vectordisplay.VectorAPI.Buffer;
 import mobi.omegacentauri.vectordisplay.commands.Command;
 
 public class PolyLine extends Command {
-	Path path;
 	int n;
 	short[] x;
 	short[] y;
@@ -55,6 +54,8 @@ public class PolyLine extends Command {
             return;
 		p.setColor(state.foreColor);
 		p.setStrokeWidth(state.thickness);
+		p.setStrokeCap(state.rounded ? Paint.Cap.ROUND : Paint.Cap.SQUARE);
+		p.setStrokeJoin(state.rounded ? Paint.Join.ROUND : Paint.Join.MITER);
 		for (int i=1;i<n; i++) {
 		    c.drawLine(x[i-1], y[i-1], x[i], y[i], p);
         }
