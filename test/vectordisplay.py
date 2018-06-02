@@ -51,11 +51,17 @@ class VectorDisplay(object):
     def rounded(self,r):
         self.attr8('n',r)
         
-    def rectangle(self,x1,y1,x2,y2):
-        self.line(x1,y1,x2,y1)
-        self.line(x2,y1,x2,y2)
-        self.line(x2,y2,x1,y2)
-        self.line(x1,y2,x1,y1)
+    def rectangle(self,x1,y1,x2,y2,fill=False):
+        if fill:
+            self.command('R', self.e16(x1)+self.e16(y1)+self.e16(x2)+self.e16(y2))
+        else:
+            self.line(x1,y1,x2,y1)
+            self.line(x2,y1,x2,y2)
+            self.line(x2,y2,x1,y2)
+            self.line(x1,y2,x1,y1)
+
+    def roundedRectangle(self,x1,y1,x2,y2,r,fill=False):
+        self.command('Q', self.e16(x1)+self.e16(y1)+self.e16(x2)+self.e16(y2)+self.e16(r)+(1 if fill else 0,))
 
     def foreColor(self,c):
         self.attr32('f',self.e32(c))

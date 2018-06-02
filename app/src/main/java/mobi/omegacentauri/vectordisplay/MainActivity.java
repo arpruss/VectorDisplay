@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     List<Byte> userCommands;
     List<String> userLabels;
     ArrayAdapter<String> commandListAdapter = null;
-    static final boolean DEBUG = false;
+    static final boolean DEBUG = true;
     ListView commandList;
     MyHandler commandHandler;
     public static final int ADD_COMMAND = 1;

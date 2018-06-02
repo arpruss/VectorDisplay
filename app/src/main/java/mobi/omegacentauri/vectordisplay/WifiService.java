@@ -26,8 +26,6 @@ public class WifiService extends ConnectionService {
     public boolean stop = false;
     public String ipAddress = "";
 
-    private WifiManager wifiManager;
-
     private WifiServer server;
     private WifiInfo wifiInfo;
 
@@ -46,8 +44,6 @@ public class WifiService extends ConnectionService {
         super.onCreate();
         Log.v("VectorDisplay", "on create WiFiService");
         WifiService.SERVICE_CONNECTED = true;
-        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
-        wifiInfo = wifiManager.getConnectionInfo();
         new WifiService.ConnectionThread().start();
     }
 
@@ -105,11 +101,22 @@ public class WifiService extends ConnectionService {
             do {
                 server = null;
 
-                Log.v("VectorDisplay", "net id "+wifiInfo.getNetworkId());
-                if (wifiInfo.getNetworkId() != -1) {
-                    int ip = wifiInfo.getIpAddress();
+                WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
+                int net = -1;
+                int ip = 0;
+                if (wifiManager != null) {
+                    wifiInfo = wifiManager.getConnectionInfo();
+                    net = wifiInfo.getNetworkId();
+                    if (net != -1)
+                        ip = wifiInfo.getIpAddress();
+                }
+                else
+                    wifiInfo = null;
+
+                if (ip != 0) {
                     if (record != null) {
                         record.setDisconnectedStatus(new String[]{"WiFi device not connected", "Connect to " + ipString(ip)});
+                        MainActivity.log("ip "+ipString(ip));
                         record.forceUpdate();
                     }
 
@@ -134,7 +141,8 @@ public class WifiService extends ConnectionService {
                     }
                 }
                 else {
-                    record.setDisconnectedStatus(new String[]{"WiFi not connected"});
+                    if (record != null)
+                        record.setDisconnectedStatus(new String[]{"WiFi not connected"});
                 }
 
                 try {
