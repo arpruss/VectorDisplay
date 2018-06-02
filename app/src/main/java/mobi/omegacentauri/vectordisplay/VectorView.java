@@ -208,10 +208,9 @@ public class VectorView extends SurfaceView implements SurfaceHolder.Callback {
             while(isActive()) {
                 boolean drew = false;
                 long t0 = System.currentTimeMillis();
-                if (record != null)
-                    synchronized(record) {
-                        if (holder.getSurface().isValid() && record.haveStuffToDraw()) {
-                            Log.v("VectorDisplay", "have stuff to draw");
+                if (record != null && holder.getSurface().isValid() ) {
+                    synchronized (record) {
+                        if (record.haveStuffToDraw()) {
                             Canvas c = holder.lockCanvas(); // TODO: lockHardwareCanvas on API 26
                             record.draw(savedCanvas);
                             c.drawBitmap(bitmap, 0f, 0f, paint);
@@ -220,6 +219,7 @@ public class VectorView extends SurfaceView implements SurfaceHolder.Callback {
                             drew = true;
                         }
                     }
+                }
                 long t = System.currentTimeMillis()-t0;
                 long pauseTime = drew ? 1000/30 : 1000/100;
                 if (0 <= t && t < pauseTime) {
