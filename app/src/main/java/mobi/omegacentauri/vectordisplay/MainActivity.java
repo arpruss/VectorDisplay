@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     List<Byte> userCommands;
     List<String> userLabels;
     ArrayAdapter<String> commandListAdapter = null;
-    static final boolean DEBUG = true;
+    static final boolean DEBUG = false;
     ListView commandList;
     MyHandler commandHandler;
     public static final int ADD_COMMAND = 1;
@@ -301,8 +301,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
         VectorView view = (VectorView)findViewById(R.id.vector);
-        if (view != null)
+/*        if (view != null) {
             view.invalidate();
+        } */
     }
 
     @Override

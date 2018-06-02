@@ -1,6 +1,7 @@
 package mobi.omegacentauri.vectordisplay;
 
 import android.app.Activity;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.os.Handler;
 
@@ -18,14 +19,15 @@ public class RecordAndPlay {
     private int head;
     private int tail;
     Activity context;
-    long updateTimeMillis = 60;
-    long lastUpdate = 0;
-    boolean posted = false;
     boolean continuous = false;
     Handler commandHandler;
-    Matrix curMatrix = null;
+    Transformation curMatrix = new Transformation();
     boolean connected = false;
+    boolean forcedUpdate = false;
     String[] disconnectedStatus = new String[] { "Disconnected" };
+    public long updateTimeMillis;
+    // TODO: control update speed
+    // TODO: delay rendering after view change
 
     public RecordAndPlay(Activity c, Handler h) {
         head = 0;
@@ -36,7 +38,7 @@ public class RecordAndPlay {
     }
 
     synchronized public void feed(Command c) {
-        MainActivity.log("Feeding "+c.getClass());
+//        MainActivity.log("Feeding "+c.getClass());
         c.handleCommand(commandHandler);
         continuous = c.state.continuousUpdate;
 
@@ -55,11 +57,6 @@ public class RecordAndPlay {
         tail = (tail + 1) % MAX_ITEMS;
         if (tail == head)
             head = (head + 1) % MAX_ITEMS;
-
-        if (!posted && continuous) {
-            commandHandler.sendMessageDelayed(commandHandler.obtainMessage(MainActivity.INVALIDATE_VIEW), updateTimeMillis);
-            posted = true;
-        }
     }
 
     synchronized public void setConnected(boolean c) {
@@ -82,39 +79,45 @@ public class RecordAndPlay {
         }
     }
 
-    synchronized public void draw(MyCanvas canvas) {
+    public int findAdjustedTail() {
+        if (head == tail)
+            return -1;
+        if (continuous)
+            return tail;
+        int t0 = tail - 1;
+        if (t0 < 0)
+            t0 += MAX_ITEMS;
+        while (t0 != head) {
+            if (commands[t0] instanceof Update) {
+                return (t0 + 1) % MAX_ITEMS;
+            }
+            t0--;
+            if (t0<0)
+                t0 = MAX_ITEMS - 1;
+        }
+        return -1;
+    }
+
+    synchronized public void draw(Canvas canvas) {
         int endPos = -1;
 
-        if (! continuous) {
-            if (head == tail) {
-                posted = false;
-                return;
-            }
-            int t0 = tail - 1;
-            if (t0 < 0)
-                t0 += MAX_ITEMS;
-            while (t0 != head) {
-                if (commands[t0] instanceof Update) {
-                    endPos = (t0 + 1) % MAX_ITEMS;
-                    break;
-                }
-                t0--;
-                if (t0<0)
-                    t0 = MAX_ITEMS - 1;
-            }
-            if (endPos < 0) {
-                posted = false;
-                return;
-            }
-        }
-        while (head != tail && head != endPos) {
+        forcedUpdate = false;
+
+        endPos = findAdjustedTail();
+
+        if (endPos < 0)
+            return;
+
+        while (head != endPos) {
             Command c = commands[head];
-            canvas.transform(c.state);
+            synchronized(curMatrix) {
+                curMatrix.update(canvas, c.state);
+                canvas.setMatrix(curMatrix);
+            }
             c.draw(canvas);
             commands[head] = null;
             head = (head + 1) % MAX_ITEMS;
         }
-        posted = false;
     }
 
     synchronized public String[] getStatus() {
@@ -125,7 +128,10 @@ public class RecordAndPlay {
     }
 
     public void forceUpdate() {
-        commandHandler.sendMessage(commandHandler.obtainMessage(MainActivity.INVALIDATE_VIEW));
-        posted = true;
+        forcedUpdate = true;
+    }
+
+    synchronized public boolean haveStuffToDraw() {
+        return forcedUpdate || 0 <= findAdjustedTail();
     }
 }
