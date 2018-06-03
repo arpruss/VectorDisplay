@@ -66,7 +66,8 @@ public class Command {
 
 	public boolean needToClearHistory() { return false; }
 
-	public void handleCommand(Handler h) {}
+	// returns true if we need to wait for onLayout() before proceeding with rendering
+	public boolean handleCommand(Handler h) { return false; }
 
 	static void sendAck(Handler h, byte command) {
 		Message msg = h.obtainMessage(MainActivity.ACK);

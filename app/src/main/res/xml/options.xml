@@ -2,11 +2,11 @@
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android">
     <ListPreference
-        android:key="speed"
-        android:title="Update time (ms.)"
-        android:summary="Smaller is smoother but less reliable"
-        android:entries="@array/updatetimes"
-        android:entryValues="@array/updatetimes"
-        android:defaultValue="66"
+        android:key="fps"
+        android:title="FPS to aim at"
+        android:summary="Larger is smoother until it's too large"
+        android:entries="@array/fpss"
+        android:entryValues="@array/fpss"
+        android:defaultValue="30"
         />
 </PreferenceScreen>

@@ -68,11 +68,12 @@ public class Attribute32 extends Command {
     }
 
     @Override
-    public void handleCommand(Handler h) {
+    public boolean handleCommand(Handler h) {
         if (resetView)
             MainActivity.sendResetViewMessage(h, state);
         if (ack)
 			sendAck(h, VectorAPI.ATTRIBUTE32_COMMAND);
+        return resetView;
 	}
 
 }

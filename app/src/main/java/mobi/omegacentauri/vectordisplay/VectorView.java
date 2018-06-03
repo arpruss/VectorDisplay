@@ -9,11 +9,13 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
+import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -37,9 +39,9 @@ public class VectorView extends SurfaceView implements SurfaceHolder.Callback {
     float[] coords = new float[2];
     TextPaint statusPaint;
     MySurfaceThread thread;
-    private Bitmap bitmap;
     private Canvas savedCanvas;
     Paint paint = new Paint();
+    volatile long waitForSurfaceChanged = -1;
 
     @Override
     protected void onMeasure(int wspec, int hspec) {
@@ -60,21 +62,11 @@ public class VectorView extends SurfaceView implements SurfaceHolder.Callback {
         setMeasuredDimension(w, h);
     }
 
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        Bitmap old = bitmap;
-        savedCanvas = new Canvas();
-        bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-        savedCanvas.setBitmap(bitmap);
-        if (old != null) {
-            Rect newR = new Rect(0, 0, w, h);
-            savedCanvas.drawBitmap(old, null, newR, null);
-            old.recycle();
-        }
-        MainActivity.log( "size "+w+" "+h+" "+(double)w/h);
-        //redraw = true;
-
-    }
+/*    @Override
+    public void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+        MainActivity.log("onLayout1");
+    } */
 
     public VectorView(Context c, AttributeSet set) {
         super(c,set);
@@ -177,18 +169,21 @@ public class VectorView extends SurfaceView implements SurfaceHolder.Callback {
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         Log.v("VectorDisplay", "surfaceChanged");
         record.forceUpdate();
+        waitForSurfaceChanged = -1;
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         if (thread != null) {
             thread.close();
+            thread = null;
         }
     }
 
     public class MySurfaceThread extends Thread {
         private SurfaceHolder holder;
-        private boolean active;
+        volatile private boolean active;
+        private Bitmap bitmap;
 
         public MySurfaceThread(SurfaceHolder h) {
             holder = h;
@@ -199,29 +194,55 @@ public class VectorView extends SurfaceView implements SurfaceHolder.Callback {
             active = false;
         }
 
-        synchronized private boolean isActive() {
-            return active;
+        private void prepareBitmap(Canvas c) {
+            int w = c.getWidth();
+            int h = c.getHeight();
+            if (bitmap == null || bitmap.getWidth() != w || bitmap.getHeight() != h) {
+                Bitmap old = bitmap;
+                bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+                savedCanvas = new Canvas();
+                savedCanvas.setBitmap(bitmap);
+                if (old != null) {
+                    Rect newR = new Rect(0, 0, w, h);
+                    savedCanvas.drawBitmap(old, null, newR, null);
+                    old.recycle();
+                }
+            }
+        }
+
+        private void deleteBitmap() {
+            if (bitmap != null) {
+                bitmap.recycle();
+                bitmap = null;
+            }
         }
 
         @Override
         public void run() {
-            while(isActive()) {
+            while(active) {
                 boolean drew = false;
                 long t0 = System.currentTimeMillis();
-                if (record != null && holder.getSurface().isValid() ) {
-                    synchronized (record) {
-                        if (record.haveStuffToDraw()) {
-                            Canvas c = holder.lockCanvas(); // TODO: lockHardwareCanvas on API 26
+                synchronized (record) {
+                    if (record.haveStuffToDraw() && active) { // check we're still active
+                        try {
+                            Canvas c;
+                            if (Build.VERSION.SDK_INT >= 23)
+                                c = holder.getSurface().lockHardwareCanvas();
+                            else
+                                c = holder.lockCanvas();
+                            prepareBitmap(c);
                             record.draw(savedCanvas);
                             c.drawBitmap(bitmap, 0f, 0f, paint);
                             updateStatus(c);
                             holder.unlockCanvasAndPost(c);
                             drew = true;
+                        } catch (Exception e) {
+                            // in case surface gets invalidated mid-way
                         }
                     }
                 }
                 long t = System.currentTimeMillis()-t0;
-                long pauseTime = drew ? 1000/30 : 1000/100;
+                long pauseTime = drew ? record.updateTimeMillis : 2;
                 if (0 <= t && t < pauseTime) {
                     try {
                         sleep(pauseTime-t);
@@ -229,6 +250,7 @@ public class VectorView extends SurfaceView implements SurfaceHolder.Callback {
                     }
                 }
             }
+            deleteBitmap();
         }
     }
 }

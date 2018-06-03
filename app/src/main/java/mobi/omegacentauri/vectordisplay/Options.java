@@ -9,7 +9,7 @@ import android.preference.PreferenceManager;
 public class Options extends PreferenceActivity {
     public static final String PREF_LANDSCAPE = "landscape";
     public static final String PREF_RESET_ON_CONNECT = "resetOnConnect";
-    public static final String PREF_UPDATE_SPEED = "speed";
+    public static final String PREF_FPS = "fps";
     public static final String PREF_CONNECTION = "connection";
     public static final int OPT_USB = 0;
     public static final int OPT_IP = 1;

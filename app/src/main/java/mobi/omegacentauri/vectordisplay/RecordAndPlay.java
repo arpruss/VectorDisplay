@@ -20,10 +20,11 @@ public class RecordAndPlay {
     private int tail;
     Activity context;
     boolean continuous = false;
+    volatile long waitTime = -1;
     Handler commandHandler;
     Transformation curMatrix = new Transformation();
     boolean connected = false;
-    boolean forcedUpdate = false;
+    volatile boolean forcedUpdate = false;
     String[] disconnectedStatus = new String[] { "Disconnected" };
     public long updateTimeMillis;
     // TODO: control update speed
@@ -39,7 +40,11 @@ public class RecordAndPlay {
 
     synchronized public void feed(Command c) {
 //        MainActivity.log("Feeding "+c.getClass());
-        c.handleCommand(commandHandler);
+        if (c.handleCommand(commandHandler)) {
+            waitTime = System.currentTimeMillis() + 250; // TODO: fix this hack
+                                                         // so we correctly wait for the screen layout
+        }
+
         continuous = c.state.continuousUpdate;
 
         if (c.needToClearHistory()) {
@@ -80,7 +85,7 @@ public class RecordAndPlay {
     }
 
     public int findAdjustedTail() {
-        if (head == tail)
+        if (waitTime >= System.currentTimeMillis() || head == tail)
             return -1;
         if (continuous)
             return tail;
@@ -99,9 +104,9 @@ public class RecordAndPlay {
     }
 
     synchronized public void draw(Canvas canvas) {
-        int endPos = -1;
-
         forcedUpdate = false;
+
+        int endPos = -1;
 
         endPos = findAdjustedTail();
 

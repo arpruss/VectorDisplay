@@ -39,11 +39,12 @@ public class DeleteButton extends Command {
 	}
 
 	@Override
-	public void handleCommand(Handler h) {
+	public boolean handleCommand(Handler h) {
 		Message msg = h.obtainMessage(MainActivity.DELETE_COMMAND);
 		Bundle b = new Bundle();
 		b.putByte(MainActivity.KEY_COMMAND, cmd);
 		msg.setData(b);
 		h.sendMessage(msg);
+		return true;
 	}
 }

@@ -34,12 +34,13 @@ public class PopupMessage extends Command {
 	}
 
     @Override
-    public void handleCommand(Handler h) {
+    public boolean handleCommand(Handler h) {
         Message msg = h.obtainMessage(MainActivity.TOAST);
         Bundle b = new Bundle();
         b.putString(MainActivity.KEY_LABEL, text);
         msg.setData(b);
         h.sendMessage(msg);
+        return false;
     }
 
     @Override

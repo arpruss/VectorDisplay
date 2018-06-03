@@ -18,6 +18,7 @@ print("connected")
 
 v = VectorDisplay(s.send,lowendian=True)
 v.initialize()
+v.coordinates(100,50);
 v.foreColor(0xFFFF0000)
 v.roundedRectangle(10,10,100,100,30,fill=False)
 v.foreColor(0x3F00FF00)

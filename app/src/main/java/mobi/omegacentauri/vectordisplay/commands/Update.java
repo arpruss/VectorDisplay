@@ -28,12 +28,6 @@ public class Update extends Command {
 	}
 
 	@Override
-	public void handleCommand(Handler h) {
-		Message msg = h.obtainMessage(MainActivity.INVALIDATE_VIEW);
-		h.sendMessage(msg);
-	}
-
-	@Override
 	public boolean doesDraw() { // does this type actually do anything when show() is called?
 		return true;
 	}

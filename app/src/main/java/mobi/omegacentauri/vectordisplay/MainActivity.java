@@ -266,6 +266,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     static void resetVectorView(MainActivity main, float aspectRatio) {
+        MainActivity.log("reset to aspect "+aspectRatio);
         VectorView v = (VectorView) main.findViewById(R.id.vector);
         if (v != null) {
             v.aspectRatio = aspectRatio;
@@ -277,7 +278,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        record.updateTimeMillis = (long) Integer.parseInt(prefs.getString(Options.PREF_UPDATE_SPEED, "60"));
+        record.updateTimeMillis = 1000 / (long) Integer.parseInt(prefs.getString(Options.PREF_FPS, "30"));
         connectService();
     }
 
@@ -481,6 +482,7 @@ public class MainActivity extends AppCompatActivity {
                     main.commandListAdapter.add(msg.getData().getString(MainActivity.KEY_LABEL));
                 }
                 main.commandList.setVisibility(main.userCommands.size() > 0 ? View.VISIBLE : View.GONE);
+                MainActivity.resetVectorView(main, main.record.parser.state.getAspectRatio());
             }
             else if (msg.what == MainActivity.ACK) {
                 byte[] out = "Acknwld_".getBytes();
@@ -491,12 +493,11 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             else if (msg.what == MainActivity.RESET_VIEW) {
+                MainActivity.log("resetting view");
                 MainActivity.resetVectorView(main, msg.getData().getFloat(MainActivity.KEY_ASPECT));
             }
             else if (msg.what == MainActivity.INVALIDATE_VIEW) {
-                VectorView view = (VectorView)main.findViewById(R.id.vector);
-                if (view != null)
-                    view.invalidate();
+                main.record.forceUpdate();
             }
             else if (msg.what == MainActivity.TOAST) {
                 String text = msg.getData().getString(MainActivity.KEY_LABEL);

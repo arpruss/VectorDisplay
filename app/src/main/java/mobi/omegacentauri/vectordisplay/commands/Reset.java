@@ -25,7 +25,6 @@ public class Reset extends Command {
 
     @Override
     public DisplayState parseArguments(Activity context, VectorAPI.Buffer buffer) {
-	    state.reset();
 	    buffer.lowEndian = true;
 	    return state;
     }
@@ -47,8 +46,10 @@ public class Reset extends Command {
 	}
 
 	@Override
-	public void handleCommand(Handler h) {
+	public boolean handleCommand(Handler h) {
+	    state.reset();
 		doReset(h, state);
 		sendAck(h, VectorAPI.RESET_COMMAND);
+		return true;
 	}
 }
