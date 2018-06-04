@@ -75,3 +75,9 @@ class VectorDisplay(object):
             path += self.e16(p[0])+self.e16(p[1])
         self.command('N' if fill else 'O',path)
         
+    def bwBitmap(self,x,y,width,height,data,foreColor=0xFFFFFFFF,backColor=0xFF000000):
+        dataLen = (width+7)/8*height
+        out = 8+dataLen
+        outData = ( self.e32(dataLen)+self.e16(x)+self.e16(y)+self.e16(width)+self.e16(height)+
+            self.e32(foreColor)+self.e32(backColor)+data[:dataLen] )
+        self.command('K',outData)

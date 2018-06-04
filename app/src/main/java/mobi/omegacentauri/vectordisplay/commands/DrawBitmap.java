@@ -55,10 +55,10 @@ public class DrawBitmap extends Command {
 	public DisplayState parseArguments(Activity context, Buffer buffer) {
 		depth = buffer.data[4];
 		flags = buffer.data[5];
-		w = (short)buffer.getInteger(6,2);
-		h = (short)buffer.getInteger(8,2);
-		x = (short)buffer.getInteger(10, 2);
-		y = (short)buffer.getInteger(12, 2);
+		x = (short)buffer.getInteger(6, 2);
+		y = (short)buffer.getInteger(8, 2);
+		w = (short)buffer.getInteger(10,2);
+		h = (short)buffer.getInteger(12,2);
 
 		int bitmapOffset;
 		if (depth == MONOCHROME) {
