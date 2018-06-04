@@ -37,6 +37,7 @@ public class VectorAPI {
         map.put(INITIALIZE_COMMAND, Initialize.class);
         map.put((byte) 'I', Circle.class);
         map.put((byte) 'J', FillCircle.class);
+        map.put((byte) 'K', DrawBitmap.class); // TODO: untested!
 		map.put((byte) 'L', Line.class);
         map.put((byte) 'M', PopupMessage.class);
 		map.put((byte) 'N', FillPoly.class);

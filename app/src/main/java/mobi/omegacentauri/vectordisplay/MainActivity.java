@@ -370,7 +370,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // TODO Auto-generated method stub
         int id = item.getItemId();
         if (id == R.id.clear) {
             record.feed(new Clear(record.parser.state));
