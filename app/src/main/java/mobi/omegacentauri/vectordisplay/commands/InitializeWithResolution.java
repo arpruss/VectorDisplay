@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.os.Handler;
 
 import mobi.omegacentauri.vectordisplay.DisplayState;
+import mobi.omegacentauri.vectordisplay.RecordAndPlay;
 import mobi.omegacentauri.vectordisplay.VectorAPI;
 
 public class InitializeWithResolution extends Command {
@@ -54,7 +55,7 @@ public class InitializeWithResolution extends Command {
 	public boolean handleCommand(Handler h) {
 		if (valid) {
 			Reset.doReset(h, state);
-			sendAck(h, VectorAPI.INITIALIZE_WITH_RESOLUTION_COMMAND);
+			sendAck(h, VectorAPI.INITIALIZE_WITH_RESOLUTION_COMMAND, RecordAndPlay.LAYOUT_DELAY);
 		}
 		return true;
 	}
