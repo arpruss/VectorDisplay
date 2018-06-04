@@ -28,6 +28,7 @@ public class DrawBitmap extends Command {
 	byte flags;
 	static final byte FLAG_LOW_ENDIAN_BITMAP = 1;
 	static final byte FLAG_HAVE_MASK = 2;
+	static final byte FLAG_PAD_BYTE = 4;
 
 	private static Paint DefaultPaint() {
 		Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -77,7 +78,7 @@ public class DrawBitmap extends Command {
 			bitmapLength = depth * w * h;
 		}
 		else {
-			bitmapLength = (w*h + 7) / 8;
+			bitmapLength =  ((flags & FLAG_PAD_BYTE) != 0) ? (w+7)/8*h : (w*h + 7) / 8;
 		}
 
 		if ((flags & FLAG_HAVE_MASK) != 0) {
@@ -126,29 +127,57 @@ public class DrawBitmap extends Command {
 		}
 		else {
 			if (depth == MONOCHROME) {
-				int offset = 0;
-				if (le)
-                    for (int y = 0; y < h ; y++) {
-                        int yw = y * w;
-                        for (int x = 0; x < w; x++) {
-							if ((data[offset / 8] & (1 << (offset % 8))) != 0)
-								pixels[yw + x] = foreColor;
-							else
-								pixels[yw + x] = backColor;
-							offset++;
-						}
+			    if ((flags & FLAG_PAD_BYTE) == 0){
+                    int offset = 0;
+                    if (le)
+                        for (int y = 0; y < h; y++) {
+                            int yw = y * w;
+                            for (int x = 0; x < w; x++) {
+                                if ((data[offset / 8] & (1 << (offset % 8))) != 0)
+                                    pixels[yw + x] = foreColor;
+                                else
+                                    pixels[yw + x] = backColor;
+                                offset++;
+                            }
+                        }
+                    else {
+                        for (int y = 0; y < h; y++) {
+                            int yw = y * w;
+                            for (int x = 0; x < w; x++) {
+                                if ((data[offset / 8] & (1 << (7 - offset % 8))) != 0)
+                                    pixels[yw + x] = foreColor;
+                                else
+                                    pixels[yw + x] = backColor;
+                                offset++;
+                            }
+                        }
                     }
-				else
-                    for (int y = 0; y < h ; y++) {
-                        int yw = y * w;
-                        for (int x = 0; x < w; x++) {
-							if ((data[offset / 8] & (1 << (7 - offset % 8))) != 0)
-								pixels[yw + x] = foreColor;
-							else
-								pixels[yw + x] = backColor;
-							offset++;
-						}
+                }
+                else {
+                    if (le)
+                        for (int y = 0; y < h; y++) {
+                            int yw = y * w;
+                            int yw1 = (w+7)/8 * w;
+                            for (int x = 0; x < w; x++) {
+                                if ((data[yw1 + x/8] & (1 << (x% 8))) != 0)
+                                    pixels[yw + x] = foreColor;
+                                else
+                                    pixels[yw + x] = backColor;
+                            }
+                        }
+                    else {
+                        for (int y = 0; y < h; y++) {
+                            int yw = y * w;
+                            int yw1 = (w+7)/8 * w;
+                            for (int x = 0; x < w; x++) {
+                                if ((data[yw1 + x/8] & (1 << (7 - x% 8))) != 0)
+                                    pixels[yw + x] = foreColor;
+                                else
+                                    pixels[yw + x] = backColor;
+                            }
+                        }
                     }
+                }
 			}
 			else if (depth == GRAYSCALE) {
 				for (int i = 0; i < pixels.length; i++) {
