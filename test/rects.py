@@ -19,8 +19,7 @@ print("connected")
 w = 3
 h = 4
 v = VectorDisplay(s.send,lowendian=False)
-v.initialize()
-v.coordinates(w,h)
+v.initialize(w,h)
 v.rounded(True)
 v.foreColor(0xFFFF0000)
 v.rectangle(0,0,w-1,h-1)

@@ -8,7 +8,6 @@ import android.os.Message;
 import mobi.omegacentauri.vectordisplay.DisplayState;
 import mobi.omegacentauri.vectordisplay.MainActivity;
 import mobi.omegacentauri.vectordisplay.VectorAPI.Buffer;
-import mobi.omegacentauri.vectordisplay.commands.Command;
 
 public class PopupMessage extends Command {
     private String text;

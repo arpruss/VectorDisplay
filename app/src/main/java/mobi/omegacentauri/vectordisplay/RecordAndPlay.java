@@ -21,6 +21,7 @@ public class RecordAndPlay {
     Activity context;
     boolean continuous = false;
     volatile long waitTime = -1;
+    public static final int LAYOUT_DELAY = 250;
     Handler commandHandler;
     Transformation curMatrix = new Transformation();
     boolean connected = false;
@@ -41,7 +42,7 @@ public class RecordAndPlay {
     synchronized public void feed(Command c) {
 //        MainActivity.log("Feeding "+c.getClass());
         if (c.handleCommand(commandHandler)) {
-            waitTime = System.currentTimeMillis() + 250; // TODO: fix this hack
+            waitTime = System.currentTimeMillis() + LAYOUT_DELAY; // TODO: fix this hack
                                                          // so we correctly wait for the screen layout
         }
 

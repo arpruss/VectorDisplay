@@ -69,9 +69,16 @@ public class Command {
 	// returns true if we need to wait for onLayout() before proceeding with rendering
 	public boolean handleCommand(Handler h) { return false; }
 
-	static void sendAck(Handler h, byte command) {
+	static void sendAck(Handler h, byte command, long delay) {
 		Message msg = h.obtainMessage(MainActivity.ACK);
 		msg.arg1 = command;
-		h.sendMessage(msg);
+		if (delay > 0)
+			h.sendMessageDelayed(msg, delay);
+		else
+			h.sendMessage(msg);
+	}
+
+	static void sendAck(Handler h, byte command) {
+		sendAck(h, command, 0);
 	}
 }

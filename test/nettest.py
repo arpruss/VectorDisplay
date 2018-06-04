@@ -36,7 +36,7 @@ thread.start()
 
 out = VectorDisplay(s.send,lowendian=False)
 
-out.initialize()
+out.initialize(240,320)
 
 sleep(1)
 while 1:

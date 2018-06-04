@@ -20,7 +20,6 @@ print("connected")
 w = 300
 h = 400
 v = VectorDisplay(s.send,lowendian=False)
-v.initialize()
-v.coordinates(w,h)
+v.initialize(w,h)
 v.rounded(True)
 v.poly([(100,100),(200,100),(150,50)], fill=True)

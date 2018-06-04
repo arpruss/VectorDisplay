@@ -12,7 +12,7 @@ import mobi.omegacentauri.vectordisplay.commands.*;
 
 public class VectorAPI {
 	public DisplayState state;
-    private Map<Byte,Class<? extends Command>> map = new HashMap<Byte,Class<? extends Command>>();
+    private Class<? extends Command>[] map = new Class[256];
     private Command currentCommand = null;
     public Buffer buffer = new Buffer();
     private static final int TIMEOUT = 5000;
@@ -22,32 +22,36 @@ public class VectorAPI {
     public static final byte RESET_COMMAND = 'E';
 	public static final byte INITIALIZE_COMMAND = 'H';
 	public static final byte ATTRIBUTE32_COMMAND = 'B';
+	public static final byte INITIALIZE_WITH_RESOLUTION_COMMAND = 'Z';
 
 	public VectorAPI(Activity context) {
 	    this.context = context;
 		this.state = new DisplayState();
 		// need to have capital letters
-        map.put((byte) 'A', Attribute16.class);
-        map.put(ATTRIBUTE32_COMMAND, Attribute32.class);
-        map.put((byte) 'C', Clear.class);
-        map.put((byte) 'D', DeleteButton.class);
-        map.put(RESET_COMMAND, Reset.class);
-        map.put((byte) 'F', Update.class);
-        map.put((byte) 'G', FillTriangle.class);
-        map.put(INITIALIZE_COMMAND, Initialize.class);
-        map.put((byte) 'I', Circle.class);
-        map.put((byte) 'J', FillCircle.class);
-        map.put((byte) 'K', DrawBitmap.class); // TODO: untested!
-		map.put((byte) 'L', Line.class);
-        map.put((byte) 'M', PopupMessage.class);
-		map.put((byte) 'N', FillPoly.class);
-        map.put((byte) 'O', PolyLine.class);
-        map.put((byte) 'P', Point.class);
-        map.put((byte) 'Q', RoundedRectangle.class);
-		map.put((byte) 'R', FillRectangle.class);
-		map.put((byte) 'T', Text.class);
-        map.put((byte) 'U', AddButton.class);
-		map.put((byte) 'Y', Attribute8.class);
+		for(int i=0;i<map.length;i++)
+			map[i] = null;
+        map['A'] = Attribute16.class;
+        map[ATTRIBUTE32_COMMAND] = Attribute32.class;
+        map['C'] = Clear.class;
+        map['D'] = DeleteButton.class;
+        map[RESET_COMMAND] = Reset.class;
+        map['F'] = Update.class;
+        map['G'] = FillTriangle.class;
+        map[INITIALIZE_COMMAND] = Initialize.class;
+        map['I'] = Circle.class;
+        map['J'] = FillCircle.class;
+        map['K'] = DrawBitmap.class; // TODO: untested!
+		map['L'] = Line.class;
+        map['M'] = PopupMessage.class;
+		map['N'] = FillPoly.class;
+        map['O'] = PolyLine.class;
+        map['P'] = Point.class;
+        map['Q'] = RoundedRectangle.class;
+		map['R'] = FillRectangle.class;
+		map['T'] = Text.class;
+        map['U'] = AddButton.class;
+		map['Y'] = Attribute8.class;
+		map[INITIALIZE_WITH_RESOLUTION_COMMAND] = InitializeWithResolution.class; // TODO: untested
 	}
 
 	synchronized public Command parse(byte ch) {
@@ -74,7 +78,7 @@ public class VectorAPI {
 		}
 		else {
 			if (lastChar != 0 && (0xFF & ch) == (0xFF & (lastChar ^ 0xFF))) {
-                Class<? extends Command> cl = map.get(lastChar);
+                Class<? extends Command> cl = map[lastChar & 0xFF];
                 lastChar = 0;
                 if (cl != null) {
                     Command c;
@@ -92,7 +96,7 @@ public class VectorAPI {
                 }
 			}
 			else {
-			    if ('A' <= ch && ch <= 'Z') {
+			    if (map[ch & 0xFF] != null) {
 			        lastChar = ch;
                 }
                 else {

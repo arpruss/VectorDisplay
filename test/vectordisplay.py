@@ -21,8 +21,8 @@ class VectorDisplay(object):
         bc = ord(c)
         self.write(bytearray((bc,bc^0xFF)+data+((0xFF&sum(data))^0xFF,)))
         
-    def initialize(self):
-        self.command('H',self.e16(0x1234)+self.e16(0))
+    def initialize(self,width=240,height=320):
+        self.command('Z',self.e16(0x1234)+self.e16(width)+self.e16(height)+self.e32(65536)+self.e16(0)*3)
         
     def line(self,x1,y1,x2,y2):
         self.command('L',self.e16(x1)+self.e16(y1)+self.e16(x2)+self.e16(y2))

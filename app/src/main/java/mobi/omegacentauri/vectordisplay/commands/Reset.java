@@ -9,8 +9,6 @@ import android.os.Message;
 import mobi.omegacentauri.vectordisplay.DisplayState;
 import mobi.omegacentauri.vectordisplay.MainActivity;
 import mobi.omegacentauri.vectordisplay.VectorAPI;
-import mobi.omegacentauri.vectordisplay.commands.Clear;
-import mobi.omegacentauri.vectordisplay.commands.Command;
 
 public class Reset extends Command {
 	public Reset(DisplayState state) {

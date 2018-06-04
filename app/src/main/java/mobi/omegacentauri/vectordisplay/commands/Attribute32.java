@@ -6,6 +6,7 @@ import android.os.Handler;
 
 import mobi.omegacentauri.vectordisplay.DisplayState;
 import mobi.omegacentauri.vectordisplay.MainActivity;
+import mobi.omegacentauri.vectordisplay.RecordAndPlay;
 import mobi.omegacentauri.vectordisplay.VectorAPI;
 import mobi.omegacentauri.vectordisplay.VectorAPI.Buffer;
 
@@ -72,8 +73,7 @@ public class Attribute32 extends Command {
         if (resetView)
             MainActivity.sendResetViewMessage(h, state);
         if (ack)
-			sendAck(h, VectorAPI.ATTRIBUTE32_COMMAND);
+			sendAck(h, VectorAPI.ATTRIBUTE32_COMMAND, RecordAndPlay.LAYOUT_DELAY);
         return resetView;
 	}
-
 }
