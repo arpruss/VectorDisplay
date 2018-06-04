@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.util.Log;
 
 import java.util.Arrays;
 
@@ -76,18 +77,18 @@ public class DrawBitmap extends Command {
 			bitmapLength = depth * w * h;
 		}
 		else {
-			bitmapLength = (w + 7) / 8 * h;
+			bitmapLength = (w*h + 7) / 8;
 		}
 
 		if ((flags & FLAG_HAVE_MASK) != 0) {
-			maskLength = (w + 7) / 8 * h;
+			maskLength = (w*h + 7) / 8;
 		}
 		else {
 			maskLength = 0;
 		}
 
 		if (bitmapLength > 0) {
-			data = Arrays.copyOfRange(buffer.data, bitmapOffset, bitmapLength);
+			data = Arrays.copyOfRange(buffer.data, bitmapOffset, bitmapOffset+bitmapLength);
 		}
 		else {
 			data = null;
@@ -125,23 +126,28 @@ public class DrawBitmap extends Command {
 		}
 		else {
 			if (depth == MONOCHROME) {
+				int offset = 0;
 				if (le)
                     for (int y = 0; y < h ; y++) {
                         int yw = y * w;
-                        for (int x = 0; x < w; x++)
-                            if ((data[yw + x / 8] & (1 << (x % 8))) != 0)
-                                pixels[yw + x] = foreColor;
-                            else
-                                pixels[yw + x] = backColor;
+                        for (int x = 0; x < w; x++) {
+							if ((data[offset / 8] & (1 << (offset % 8))) != 0)
+								pixels[yw + x] = foreColor;
+							else
+								pixels[yw + x] = backColor;
+							offset++;
+						}
                     }
 				else
                     for (int y = 0; y < h ; y++) {
                         int yw = y * w;
-                        for (int x = 0; x < w; x++)
-                            if ((data[yw + x / 8] & (1 << (7 - x % 8))) != 0)
-                                pixels[yw + x] = foreColor;
-                            else
-                                pixels[yw + x] = backColor;
+                        for (int x = 0; x < w; x++) {
+							if ((data[offset / 8] & (1 << (7 - offset % 8))) != 0)
+								pixels[yw + x] = foreColor;
+							else
+								pixels[yw + x] = backColor;
+							offset++;
+						}
                     }
 			}
 			else if (depth == GRAYSCALE) {
@@ -200,5 +206,6 @@ public class DrawBitmap extends Command {
 
 		bitmap.setPixels(pixels,0,w,0,0,w,h);
 		c.drawBitmap(bitmap,x,y,null);
+		bitmap.recycle();
 	}
 }

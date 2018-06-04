@@ -81,6 +81,7 @@ public class VectorAPI {
                 Class<? extends Command> cl = map[lastChar & 0xFF];
                 lastChar = 0;
                 if (cl != null) {
+					Log.v("VectorDisplay", "parsing "+cl);
                     Command c;
                     try {
                         c = (Command) cl.getConstructor(DisplayState.class).newInstance(state);
