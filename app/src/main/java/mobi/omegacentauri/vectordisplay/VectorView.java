@@ -225,6 +225,7 @@ public class VectorView extends SurfaceView implements SurfaceHolder.Callback {
                 synchronized (record) {
                     if (record.haveStuffToDraw() && active) { // check we're still active
                         try {
+                            Log.v("VectorDisplay", "drawing");
                             Canvas c;
                             if (Build.VERSION.SDK_INT >= 23)
                                 c = holder.getSurface().lockHardwareCanvas();

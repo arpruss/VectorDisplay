@@ -81,7 +81,6 @@ public class VectorAPI {
                 Class<? extends Command> cl = map[lastChar & 0xFF];
                 lastChar = 0;
                 if (cl != null) {
-					Log.v("VectorDisplay", "parsing "+cl);
                     Command c;
                     try {
                         c = (Command) cl.getConstructor(DisplayState.class).newInstance(state);
@@ -156,6 +155,7 @@ public class VectorAPI {
 				sum = ((data[i] & 0xFF) + sum) & 0xFF;
 			}
 			sum ^= 0xFF;
+			Log.v("VectorDisplay", "checksum "+data[inBuffer-1]+" vs "+sum);
 			return data[inBuffer-1] == (byte)sum;
 		}
 		

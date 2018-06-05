@@ -34,7 +34,9 @@ public class Command {
 	public DisplayState parse(Activity context, Buffer buffer) {
 		if (!haveFullData(buffer))
 			return null;
-		if (buffer.checksum()) {
+		// DrawBitmap doesn't get checksummed, as small errors in bitmap transmission can
+		// be ignored, hopefully.
+		if (this.getClass()!=DrawBitmap.class || buffer.checksum()) {
 			return parseArguments(context, buffer);
 		}
 		else {

@@ -40,7 +40,8 @@ public class RecordAndPlay {
     }
 
     synchronized public void feed(Command c) {
-        MainActivity.log("Feeding "+c.getClass());
+        if (MainActivity.DEBUG)
+            MainActivity.log("Feeding "+c.getClass());
         if (c.handleCommand(commandHandler)) {
             waitTime = System.currentTimeMillis() + LAYOUT_DELAY; // TODO: fix this hack
                                                          // so we correctly wait for the screen layout
