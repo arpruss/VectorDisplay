@@ -87,9 +87,10 @@ class VectorDisplay(object):
             data[:dataLen] )
         self.command('K',outData)
 
-    def rgb888Bitmap(self,x,y,width,height,data):
-        dataLen = width*height*3
+    def argb8888Bitmap(self,x,y,width,height,data):
+        dataLen = width*height*4
         outData = ( self.e32(dataLen)+(24,1)+self.e16(x)+self.e16(y)+self.e16(width)+self.e16(height)+
             data[:dataLen] )
         self.command('K',outData)
+        
         
