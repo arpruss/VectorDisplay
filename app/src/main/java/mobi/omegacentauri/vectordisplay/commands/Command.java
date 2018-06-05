@@ -2,7 +2,7 @@ package mobi.omegacentauri.vectordisplay.commands;
 
 import mobi.omegacentauri.vectordisplay.DisplayState;
 import mobi.omegacentauri.vectordisplay.MainActivity;
-import mobi.omegacentauri.vectordisplay.VectorAPI.Buffer;
+import mobi.omegacentauri.vectordisplay.VectorAPI.MyBuffer;
 
 import android.app.Activity;
 import android.graphics.Canvas;
@@ -27,16 +27,16 @@ public class Command {
 
 	public int fixedArgumentsLength() { return 0; }
 
-	public DisplayState parseArguments(Activity context, Buffer buffer) {
+	public DisplayState parseArguments(Activity context, MyBuffer buffer) {
 		return state;
 	}
 
-	public DisplayState parse(Activity context, Buffer buffer) {
+	public DisplayState parse(Activity context, MyBuffer buffer) {
 		if (!haveFullData(buffer))
 			return null;
 		// DrawBitmap doesn't get checksummed, as small errors in bitmap transmission can
 		// be ignored, hopefully.
-		if (this.getClass()!=DrawBitmap.class || buffer.checksum()) {
+		if (this.getClass()==DrawBitmap.class || buffer.checksum()) {
 			return parseArguments(context, buffer);
 		}
 		else {
@@ -46,7 +46,7 @@ public class Command {
 		}
 	}
 
-	public boolean haveFullData(Buffer buffer) {
+	public boolean haveFullData(MyBuffer buffer) {
 		if (! haveStringArgument()) {
 			if (buffer.length() < fixedArgumentsLength()+1)
 				return false;

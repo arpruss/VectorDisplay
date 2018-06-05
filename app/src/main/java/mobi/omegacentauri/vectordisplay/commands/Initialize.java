@@ -22,7 +22,7 @@ public class Initialize extends Command {
 	public int fixedArgumentsLength() { return 4; } // endianness selector: send 0x1234 ; wait for rest
 
     @Override
-    public DisplayState parseArguments(Activity context, VectorAPI.Buffer buffer) {
+    public DisplayState parseArguments(Activity context, VectorAPI.MyBuffer buffer) {
 		int e = buffer.getInteger(0, 2);
 
 		if (e == 0x1234) {

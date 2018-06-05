@@ -1,13 +1,9 @@
 package mobi.omegacentauri.vectordisplay.commands;
 
 import android.app.Activity;
-import android.os.Handler;
-import android.os.Message;
 
 import mobi.omegacentauri.vectordisplay.DisplayState;
-import mobi.omegacentauri.vectordisplay.MainActivity;
-import mobi.omegacentauri.vectordisplay.VectorAPI.Buffer;
-import mobi.omegacentauri.vectordisplay.commands.Command;
+import mobi.omegacentauri.vectordisplay.VectorAPI.MyBuffer;
 
 public class Update extends Command {
 	byte cmd;
@@ -23,7 +19,7 @@ public class Update extends Command {
 	}
 
 	@Override
-	public DisplayState parseArguments(Activity context, Buffer buffer) {
+	public DisplayState parseArguments(Activity context, MyBuffer buffer) {
 		return state;
 	}
 

@@ -22,7 +22,7 @@ public class Reset extends Command {
 	public int fixedArgumentsLength() { return 0; }
 
     @Override
-    public DisplayState parseArguments(Activity context, VectorAPI.Buffer buffer) {
+    public DisplayState parseArguments(Activity context, VectorAPI.MyBuffer buffer) {
 	    buffer.lowEndian = true;
 	    return state;
     }

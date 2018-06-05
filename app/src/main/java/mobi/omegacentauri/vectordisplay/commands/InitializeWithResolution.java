@@ -22,7 +22,7 @@ public class InitializeWithResolution extends Command {
 	public int fixedArgumentsLength() { return 16; } // endianness selector 0x1234, w [2 bytes], h [2 bytes], pixelAspectRatio [4 bytes], future-proofing [6 bytes]
 
     @Override
-    public DisplayState parseArguments(Activity context, VectorAPI.Buffer buffer) {
+    public DisplayState parseArguments(Activity context, VectorAPI.MyBuffer buffer) {
 		int e = buffer.getInteger(0, 2);
 
 		if (e == 0x1234) {

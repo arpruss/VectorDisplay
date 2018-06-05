@@ -8,7 +8,7 @@ import mobi.omegacentauri.vectordisplay.DisplayState;
 import mobi.omegacentauri.vectordisplay.MainActivity;
 import mobi.omegacentauri.vectordisplay.RecordAndPlay;
 import mobi.omegacentauri.vectordisplay.VectorAPI;
-import mobi.omegacentauri.vectordisplay.VectorAPI.Buffer;
+import mobi.omegacentauri.vectordisplay.VectorAPI.MyBuffer;
 
 public class Attribute32 extends Command {
 	boolean resetView = false;
@@ -24,7 +24,7 @@ public class Attribute32 extends Command {
 	}
 
 	@Override
-	public DisplayState parseArguments(Activity context, Buffer buffer) {
+	public DisplayState parseArguments(Activity context, MyBuffer buffer) {
 		switch((char)buffer.data[0]) {
             case 't':
                 state.thickness = buffer.getFixed32(1);

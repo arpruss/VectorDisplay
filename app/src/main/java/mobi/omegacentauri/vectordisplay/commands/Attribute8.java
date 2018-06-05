@@ -3,8 +3,7 @@ package mobi.omegacentauri.vectordisplay.commands;
 import android.app.Activity;
 
 import mobi.omegacentauri.vectordisplay.DisplayState;
-import mobi.omegacentauri.vectordisplay.VectorAPI.Buffer;
-import mobi.omegacentauri.vectordisplay.commands.Command;
+import mobi.omegacentauri.vectordisplay.VectorAPI.MyBuffer;
 
 public class Attribute8 extends Command {
 	public Attribute8(DisplayState state) {
@@ -17,7 +16,7 @@ public class Attribute8 extends Command {
 	}
 
 	@Override
-	public DisplayState parseArguments(Activity context, Buffer buffer) {
+	public DisplayState parseArguments(Activity context, MyBuffer buffer) {
 		switch((char)buffer.data[0]) {
 			case 'h':
 				state.hAlignText = (char)buffer.data[1];

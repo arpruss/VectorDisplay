@@ -7,7 +7,7 @@ import android.os.Message;
 
 import mobi.omegacentauri.vectordisplay.DisplayState;
 import mobi.omegacentauri.vectordisplay.MainActivity;
-import mobi.omegacentauri.vectordisplay.VectorAPI.Buffer;
+import mobi.omegacentauri.vectordisplay.VectorAPI.MyBuffer;
 
 public class PopupMessage extends Command {
     private String text;
@@ -27,7 +27,7 @@ public class PopupMessage extends Command {
 	}
 
 	@Override
-	public DisplayState parseArguments(Activity context, Buffer buffer) {
+	public DisplayState parseArguments(Activity context, MyBuffer buffer) {
 		text = buffer.getString(0, buffer.length()-2, state);
 		return state;
 	}

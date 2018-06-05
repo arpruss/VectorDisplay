@@ -1,9 +1,7 @@
 package mobi.omegacentauri.vectordisplay.commands;
 
 import mobi.omegacentauri.vectordisplay.DisplayState;
-import mobi.omegacentauri.vectordisplay.MainActivity;
-import mobi.omegacentauri.vectordisplay.VectorAPI.Buffer;
-import mobi.omegacentauri.vectordisplay.commands.Command;
+import mobi.omegacentauri.vectordisplay.VectorAPI.MyBuffer;
 
 import android.app.Activity;
 import android.graphics.Canvas;
@@ -29,7 +27,7 @@ public class Line extends Command {
 	}
 	
 	@Override 
-	public DisplayState parseArguments(Activity context, Buffer buffer) {
+	public DisplayState parseArguments(Activity context, MyBuffer buffer) {
 		x1 = (short)buffer.getInteger(0, 2);
 		y1 = (short)buffer.getInteger(2, 2);
 		x2 = (short)buffer.getInteger(4, 2);

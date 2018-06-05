@@ -1,10 +1,5 @@
 package mobi.omegacentauri.vectordisplay;
 
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
-
 import android.app.Activity;
 import android.util.Log;
 
@@ -14,7 +9,7 @@ public class VectorAPI {
 	public DisplayState state;
     private Class<? extends Command>[] map = new Class[256];
     private Command currentCommand = null;
-    public Buffer buffer = new Buffer();
+    public MyBuffer buffer = new MyBuffer();
     private static final int TIMEOUT = 5000;
     private long commandStartTime;
     private Activity context;
@@ -107,7 +102,7 @@ public class VectorAPI {
 		return null;
 	}
 	
-	public static class Buffer {
+	public static class MyBuffer {
 		static final int MAX_BUFFER = 1024*256;
 		public byte[] data = new byte[MAX_BUFFER];
 		int inBuffer = 0;
@@ -155,7 +150,7 @@ public class VectorAPI {
 				sum = ((data[i] & 0xFF) + sum) & 0xFF;
 			}
 			sum ^= 0xFF;
-			Log.v("VectorDisplay", "checksum "+data[inBuffer-1]+" vs "+sum);
+//			Log.v("VectorDisplay", "checksum "+data[inBuffer-1]+" vs "+sum);
 			return data[inBuffer-1] == (byte)sum;
 		}
 		

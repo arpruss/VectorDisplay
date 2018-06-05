@@ -75,22 +75,16 @@ class VectorDisplay(object):
             path += self.e16(p[0])+self.e16(p[1])
         self.command('N' if fill else 'O',path)
         
-    def bwBitmap(self,x,y,width,height,data,foreColor=0xFFFFFFFF,backColor=0xFF000000):
-        dataLen = (width*height+7)//8
-        outData = ( self.e32(8+dataLen)+(1,0)+ self.e16(x)+self.e16(y)+self.e16(width)+self.e16(height)+
-            self.e32(foreColor)+self.e32(backColor)+data[:dataLen] )
-        self.command('K',outData)
+    def bitmap(self,x,y,width,height,data,depth=1,foreColor=0xFFFFFFFF,backColor=0xFF000000):
+        if depth==1:
+            dataLen = (width*height+7)//8
+            outData = ( self.e32(8+dataLen)+(depth,0)+self.e16(x)+self.e16(y)+self.e16(width)+self.e16(height)+
+                self.e32(foreColor)+self.e32(backColor)+data[:dataLen] )
+        elif depth>=8:            
+            dataLen = width*height*(depth//8)
+            outData = ( self.e32(dataLen)+(depth,8)+self.e16(x)+self.e16(y)+self.e16(width)+self.e16(height)+
+                data[:dataLen] ) 
+        else:
+            return
 
-    def grayBitmap(self,x,y,width,height,data):
-        dataLen = width*height
-        outData = ( self.e32(dataLen)+(8,1)+self.e16(x)+self.e16(y)+self.e16(width)+self.e16(height)+
-            data[:dataLen] )
         self.command('K',outData)
-
-    def argb8888Bitmap(self,x,y,width,height,data):
-        dataLen = width*height*4
-        outData = ( self.e32(dataLen)+(24,1)+self.e16(x)+self.e16(y)+self.e16(width)+self.e16(height)+
-            data[:dataLen] )
-        self.command('K',outData)
-        
-        

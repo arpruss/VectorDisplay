@@ -7,7 +7,7 @@ import android.os.Message;
 
 import mobi.omegacentauri.vectordisplay.DisplayState;
 import mobi.omegacentauri.vectordisplay.MainActivity;
-import mobi.omegacentauri.vectordisplay.VectorAPI.Buffer;
+import mobi.omegacentauri.vectordisplay.VectorAPI.MyBuffer;
 
 public class AddButton extends Command {
 	byte cmd;
@@ -28,7 +28,7 @@ public class AddButton extends Command {
 	}
 
 	@Override
-	public DisplayState parseArguments(Activity context, Buffer buffer) {
+	public DisplayState parseArguments(Activity context, MyBuffer buffer) {
 		cmd = buffer.data[0];
 		label = buffer.getString(1, buffer.length()-1-1, state);
 		return state;

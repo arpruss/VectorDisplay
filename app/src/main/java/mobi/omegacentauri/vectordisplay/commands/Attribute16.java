@@ -1,7 +1,7 @@
 package mobi.omegacentauri.vectordisplay.commands;
 
 import mobi.omegacentauri.vectordisplay.DisplayState;
-import mobi.omegacentauri.vectordisplay.VectorAPI.Buffer;
+import mobi.omegacentauri.vectordisplay.VectorAPI.MyBuffer;
 
 import android.app.Activity;
 import android.graphics.Canvas;
@@ -19,7 +19,7 @@ public class Attribute16 extends Command {
 	}
 
 	@Override
-	public DisplayState parseArguments(Activity context, Buffer buffer) {
+	public DisplayState parseArguments(Activity context, MyBuffer buffer) {
 		switch((char)buffer.data[0]) {
 			case 'b':
 				state.backColor = buffer.getColor565(1);

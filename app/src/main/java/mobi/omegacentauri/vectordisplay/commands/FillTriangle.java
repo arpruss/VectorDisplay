@@ -6,7 +6,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 
 import mobi.omegacentauri.vectordisplay.DisplayState;
-import mobi.omegacentauri.vectordisplay.VectorAPI.Buffer;
+import mobi.omegacentauri.vectordisplay.VectorAPI.MyBuffer;
 
 public class FillTriangle extends Command {
 	short x1,y1,x2,y2,x3,y3;
@@ -30,7 +30,7 @@ public class FillTriangle extends Command {
 	}
 
 	@Override
-	public DisplayState parseArguments(Activity context, Buffer buffer) {
+	public DisplayState parseArguments(Activity context, MyBuffer buffer) {
 		x1 = (short)buffer.getInteger(0, 2);
 		y1 = (short)buffer.getInteger(2, 2);
 		x2 = (short)buffer.getInteger(4, 2);

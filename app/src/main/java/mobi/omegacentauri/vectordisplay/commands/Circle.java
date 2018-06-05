@@ -5,8 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 
 import mobi.omegacentauri.vectordisplay.DisplayState;
-import mobi.omegacentauri.vectordisplay.VectorAPI.Buffer;
-import mobi.omegacentauri.vectordisplay.commands.Command;
+import mobi.omegacentauri.vectordisplay.VectorAPI.MyBuffer;
 
 public class Circle extends Command {
 	short x,y,r;
@@ -28,7 +27,7 @@ public class Circle extends Command {
 	}
 
 	@Override
-	public DisplayState parseArguments(Activity context, Buffer buffer) {
+	public DisplayState parseArguments(Activity context, MyBuffer buffer) {
 		x = (short)buffer.getInteger(0, 2);
 		y = (short)buffer.getInteger(2, 2);
 		r = (short)buffer.getInteger(4, 2);

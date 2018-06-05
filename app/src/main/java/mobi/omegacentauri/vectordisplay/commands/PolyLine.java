@@ -3,11 +3,9 @@ package mobi.omegacentauri.vectordisplay.commands;
 import android.app.Activity;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Path;
 
 import mobi.omegacentauri.vectordisplay.DisplayState;
-import mobi.omegacentauri.vectordisplay.VectorAPI.Buffer;
-import mobi.omegacentauri.vectordisplay.commands.Command;
+import mobi.omegacentauri.vectordisplay.VectorAPI.MyBuffer;
 
 public class PolyLine extends Command {
 	int n;
@@ -29,7 +27,7 @@ public class PolyLine extends Command {
 	}
 
 	@Override
-    public boolean haveFullData(Buffer buffer) {
+    public boolean haveFullData(MyBuffer buffer) {
 	    if (buffer.length() < 2)
 	        return false;
         int n = buffer.getInteger(0,2);
@@ -37,7 +35,7 @@ public class PolyLine extends Command {
     }
 
     @Override
-	public DisplayState parseArguments(Activity context, Buffer buffer) {
+	public DisplayState parseArguments(Activity context, MyBuffer buffer) {
 	    n = buffer.getInteger(0, 2);
 	    x = new short[n];
         y = new short[n];
