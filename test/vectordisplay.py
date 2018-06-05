@@ -80,3 +80,16 @@ class VectorDisplay(object):
         outData = ( self.e32(8+dataLen)+(1,0)+ self.e16(x)+self.e16(y)+self.e16(width)+self.e16(height)+
             self.e32(foreColor)+self.e32(backColor)+data[:dataLen] )
         self.command('K',outData)
+
+    def grayBitmap(self,x,y,width,height,data):
+        dataLen = width*height
+        outData = ( self.e32(dataLen)+(8,1)+self.e16(x)+self.e16(y)+self.e16(width)+self.e16(height)+
+            data[:dataLen] )
+        self.command('K',outData)
+
+    def rgb888Bitmap(self,x,y,width,height,data):
+        dataLen = width*height*3
+        outData = ( self.e32(dataLen)+(24,1)+self.e16(x)+self.e16(y)+self.e16(width)+self.e16(height)+
+            data[:dataLen] )
+        self.command('K',outData)
+        
