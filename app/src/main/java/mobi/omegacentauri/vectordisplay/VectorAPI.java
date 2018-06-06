@@ -105,7 +105,7 @@ public class VectorAPI {
 	public static class MyBuffer {
 		static final int MAX_BUFFER = 1024*256;
 		public byte[] data = new byte[MAX_BUFFER];
-		int inBuffer = 0;
+		public int length = 0;
 		public boolean lowEndian = true;
 		public static final char[] CP437 = {
 				0x0000,0x0001,0x0002,0x0003,0x0004,0x0005,0x0006,0x0007,0x0008,0x0009,0x000a,0x000b,0x000c,0x000d,0x000e,0x000f,
@@ -127,12 +127,12 @@ public class VectorAPI {
 		};
 		
 		void clear() {
-			inBuffer = 0;
+			length = 0;
 		}
 		
 		boolean put(byte b) {
-			if (inBuffer < MAX_BUFFER) {
-				data[inBuffer++] = b;
+			if (length < MAX_BUFFER) {
+				data[length++] = b;
 				return true;
 			}
 			else {
@@ -140,48 +140,34 @@ public class VectorAPI {
 			}
 		}
 		
-		public int length() {
-			return inBuffer;
-		}
-
 		public boolean checksum() {
 			int sum = 0;
-			for (int i=0; i<inBuffer-1; i++) {
+			for (int i = 0; i< length -1; i++) {
 				sum = ((data[i] & 0xFF) + sum) & 0xFF;
 			}
 			sum ^= 0xFF;
-//			Log.v("VectorDisplay", "checksum "+data[inBuffer-1]+" vs "+sum);
-			return data[inBuffer-1] == (byte)sum;
+//			Log.v("VectorDisplay", "checksum "+data[length-1]+" vs "+sum);
+			return data[length -1] == (byte)sum;
 		}
-		
-		public int getInteger(int start, int length) {
-			try {
-				int x = 0;
-				int bits = 0;
 
-				if (lowEndian) {
-					while (length-- > 0) {
-						x = ((0xFF & (int) data[start++]) << bits) | x;
-						bits += 8;
-					}
-				}
-				else {
-					int pos = start+length-1;
-					while (length-- > 0) {
-						x = ((0xFF & (int) data[pos--]) << bits) | x;
-						bits += 8;
-					}
-				}
-
-				return x;
-			}
-			catch(Exception e) {
-				return 0;
-			}
+		public short getShort(int start) {
+			if (lowEndian)
+				return (short) ((data[start] & 0xFF) | (data[start+1] << 8));
+			else
+				return (short) ((data[start+1] & 0xFF) | (data[start] << 8));
 		}
-		
+
+		public int getInt(int start) {
+			if (lowEndian)
+				return (data[start] & 0xFF) | ((data[start+1] & 0xFF) << 8) |
+						((data[start+2] & 0xFF) << 16) | ((data[start+3] & 0xFF) << 24);
+			else
+				return (data[start+3] & 0xFF) | ((data[start+2] & 0xFF) << 8) |
+						((data[start+1] & 0xFF) << 16) | ((data[start] & 0xFF) << 24);
+		}
+
 		String getString(int start, DisplayState state) {
-			return getString(start, inBuffer-start, state);
+			return getString(start, length -start, state);
 		}
 		
 		public String getString(int start, int length, DisplayState state) {
@@ -205,12 +191,12 @@ public class VectorAPI {
 			return data[i];
 		}
 
-        public float getFixed16(int i) {
-			return getInteger(i, 2) / 256f;
+        public float getFixed16(int i) { // unsigned
+			return (0xFFFF&getShort(i)) / 256f;
         }
 
         public int getColor565(int i) {
-			int c = getInteger(i, 2);
+			int c = 0xFFFF & getShort(i);
 			int r = ((c & ((1<<5)-1)) * 255 + (1<<4)) / ((1<<5)-1);
 			int g =( ((c>>5) & ((1<<6)-1)) * 255 + (1<<5)) / ((1<<6)-1);
 			int b = ((c>>11) * 255 + (1<<4)) / ((1<<5)-1);
@@ -218,7 +204,7 @@ public class VectorAPI {
         }
 
 		public float getFixed32(int i) {
-			return getInteger(i, 4) / 65536f;
+			return getInt(i) / 65536f;
 		}
 	}
 }

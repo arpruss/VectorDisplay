@@ -40,19 +40,18 @@ public class RoundedRectangle extends Command {
 
 	@Override
 	public DisplayState parseArguments(Activity context, MyBuffer buffer) {
-		x1 = (short)buffer.getInteger(0, 3);
-		y1 = (short)buffer.getInteger(2, 2);
-		x2 = (short)buffer.getInteger(4, 2);
-		y2 = (short)buffer.getInteger(6, 2);
-		r = (short)buffer.getInteger(8, 2);
-		filled = buffer.getByte(10) != 0;
+		x1 = buffer.getShort(0);
+		y1 = buffer.getShort(2);
+		x2 = buffer.getShort(4);
+		y2 = buffer.getShort(6);
+		r = buffer.getShort(8);
+		filled = buffer.data[10] != 0;
 
 		return state;
 	}
 	
 	@Override
 	public void draw(Canvas c) {
-		Paint p;
 		float x1f,y1f,x2f,y2f;
 		if (filled) {
 			filledPaint.setColor(state.foreColor);

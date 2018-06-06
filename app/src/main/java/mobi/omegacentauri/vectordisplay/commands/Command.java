@@ -48,12 +48,12 @@ public class Command {
 
 	public boolean haveFullData(MyBuffer buffer) {
 		if (! haveStringArgument()) {
-			if (buffer.length() < fixedArgumentsLength()+1)
+			if (buffer.length < fixedArgumentsLength()+1)
 				return false;
 		}
 		else {
-			if (buffer.length() <= fixedArgumentsLength()+1 ||
-					buffer.getByte(buffer.length()-2) != 0)
+			if (buffer.length <= fixedArgumentsLength()+1 ||
+					buffer.getByte(buffer.length-2) != 0)
 				return false;
 		}
 		return true;

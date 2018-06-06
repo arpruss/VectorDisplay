@@ -23,7 +23,7 @@ public class InitializeWithResolution extends Command {
 
     @Override
     public DisplayState parseArguments(Activity context, VectorAPI.MyBuffer buffer) {
-		int e = buffer.getInteger(0, 2);
+		int e = 0xFFFF & buffer.getShort(0);
 
 		if (e == 0x1234) {
 			valid = true;
@@ -37,8 +37,8 @@ public class InitializeWithResolution extends Command {
 			state.reset();
 		}
 
-		state.width = buffer.getInteger(2, 2);
-		state.height = buffer.getInteger(4, 2);
+		state.width = buffer.getShort(2);
+		state.height = buffer.getShort(4);
 		state.pixelAspectRatio = buffer.getFixed32(6);
 
 	    return state;

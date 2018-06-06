@@ -23,7 +23,7 @@ public class Initialize extends Command {
 
     @Override
     public DisplayState parseArguments(Activity context, VectorAPI.MyBuffer buffer) {
-		int e = buffer.getInteger(0, 2);
+		int e = 0xFFFF&buffer.getShort(0);
 
 		if (e == 0x1234) {
 			valid = true;

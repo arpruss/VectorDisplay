@@ -31,12 +31,12 @@ public class FillTriangle extends Command {
 
 	@Override
 	public DisplayState parseArguments(Activity context, MyBuffer buffer) {
-		x1 = (short)buffer.getInteger(0, 2);
-		y1 = (short)buffer.getInteger(2, 2);
-		x2 = (short)buffer.getInteger(4, 2);
-		y2 = (short)buffer.getInteger(6, 2);
-		x3 = (short)buffer.getInteger(8, 2);
-		y3 = (short)buffer.getInteger(10, 2);
+		x1 = buffer.getShort(0);
+		y1 = buffer.getShort(2);
+		x2 = buffer.getShort(4);
+		y2 = buffer.getShort(6);
+		x3 = buffer.getShort(8);
+		y3 = buffer.getShort(10);
 		return state;
 	}
 	

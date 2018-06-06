@@ -15,6 +15,7 @@ public class FillPoly extends Command {
 	int pos;
 	static Paint p = DefaultPaint();
 	static Path poly = new Path();
+	int neededLength = 2;
 
 	private static Paint DefaultPaint() {
 		Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -28,20 +29,21 @@ public class FillPoly extends Command {
 
 	@Override
     public boolean haveFullData(MyBuffer buffer) {
-	    if (buffer.length() < 2)
+	    if (buffer.length < neededLength)
 	        return false;
-        int n = buffer.getInteger(0,2);
-        return buffer.length() >= 2+n*4+1;
+        int n = 0xFFFF & buffer.getShort(0);
+        neededLength = 2+n*4+1;
+        return buffer.length >= neededLength;
     }
 
     @Override
 	public DisplayState parseArguments(Activity context, MyBuffer buffer) {
-	    n = buffer.getInteger(0, 2);
+	    n = buffer.getShort(0);
 	    x = new short[n];
         y = new short[n];
 	    for (int i=0;i<n;i++) {
-	        x[i] = (short) buffer.getInteger(2+4*i,2);
-            y[i] = (short) buffer.getInteger(2+4*i+2,2);
+	        x[i] = buffer.getShort(2+4*i);
+            y[i] = buffer.getShort(2+4*i+2);
         }
 		return state;
 	}

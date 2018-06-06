@@ -33,6 +33,7 @@ public class DrawBitmap extends Command {
 	static final byte FLAG_PAD_BYTE = 4;
 	static final byte FLAG_LOW_ENDIAN_BYTES = 8; // lsbyte first
 	static final byte FLAG_IMAGE_FILE=16; // standard Android supported image file
+	int neededLength = 4;
 
 	private static Paint DefaultPaint() {
 		Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -42,10 +43,14 @@ public class DrawBitmap extends Command {
 
 	@Override
 	public boolean haveFullData(MyBuffer buffer) {
-		if (buffer.length() < 4)
+		if (buffer.length < neededLength)
 			return false;
-		int dataLength = buffer.getInteger(0,4);
-		return buffer.length() >= dataLength+1+headerSize;
+
+		if (neededLength <= 4) {
+			neededLength = buffer.getInt(0)+1+headerSize;
+		}
+
+		return buffer.length >= neededLength;
 	}
 
 	public DrawBitmap(DisplayState state) {
@@ -61,15 +66,15 @@ public class DrawBitmap extends Command {
 	public DisplayState parseArguments(Activity context, MyBuffer buffer) {
 		depth = buffer.data[4];
 		flags = buffer.data[5];
-		x = (short)buffer.getInteger(6, 2);
-		y = (short)buffer.getInteger(8, 2);
+		x = buffer.getShort(6);
+		y = buffer.getShort(8);
 
 		int bitmapLength;
 		int maskLength;
 
 		if ((flags & FLAG_IMAGE_FILE)==0) {
-			w = (short) buffer.getInteger(10, 2);
-			h = (short) buffer.getInteger(12, 2);
+			w = buffer.getShort(10);
+			h = buffer.getShort(12);
 			if (depth>=8) {
 				bitmapLength = (depth/8) * w * h;
 			}
@@ -86,14 +91,14 @@ public class DrawBitmap extends Command {
 
 		}
 		else {
-			bitmapLength = buffer.getInteger(10, 4);
+			bitmapLength = buffer.getInt(10);
 			maskLength = 0;
 		}
 
 		int bitmapOffset;
 		if (depth == MONOCHROME) {
-			foreColor = buffer.getInteger(14, 4);
-			backColor = buffer.getInteger(18, 4);
+			foreColor = buffer.getInt(14);
+			backColor = buffer.getInt(18);
 			bitmapOffset = 22;
 		}
 		else {

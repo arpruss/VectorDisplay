@@ -29,9 +29,9 @@ public class FillCircle extends Command {
 
 	@Override
 	public DisplayState parseArguments(Activity context, MyBuffer buffer) {
-		x = (short)buffer.getInteger(0, 2);
-		y = (short)buffer.getInteger(2, 2);
-		r = (short)buffer.getInteger(4, 2);
+		x = buffer.getShort(0);
+		y = buffer.getShort(2);
+		r = buffer.getShort(4);
 		return state;
 	}
 	

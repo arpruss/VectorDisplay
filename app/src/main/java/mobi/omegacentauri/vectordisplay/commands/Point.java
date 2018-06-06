@@ -9,7 +9,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Style;
 
 public class Point extends Command {
-	int x1,y1;
+	short x1,y1;
 	static Paint p = DefaultPaint();
 
 	private static Paint DefaultPaint() {
@@ -30,8 +30,8 @@ public class Point extends Command {
 
 	@Override
 	public DisplayState parseArguments(Activity context, MyBuffer buffer) {
-		x1 = buffer.getInteger(0, 2);
-		y1 = buffer.getInteger(2, 2);
+		x1 = buffer.getShort(0);
+		y1 = buffer.getShort(2);
 		return state;
 	}
 	

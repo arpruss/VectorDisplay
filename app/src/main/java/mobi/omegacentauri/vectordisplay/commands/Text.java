@@ -39,9 +39,9 @@ public class Text extends Command {
 
 	@Override
 	public DisplayState parseArguments(Activity context, MyBuffer buffer) {
-		x = (short)buffer.getInteger(0, 2);
-		y = (short)buffer.getInteger(2, 2);
-		text = buffer.getString(4, buffer.length()-1-4, state);
+		x = buffer.getShort(0);
+		y = buffer.getShort(2);
+		text = buffer.getString(4, buffer.length-1-4, state);
         MainActivity.log("parsing text: "+text);
 		return state;
 	}

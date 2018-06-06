@@ -30,8 +30,8 @@ public class Attribute32 extends Command {
                 state.thickness = buffer.getFixed32(1);
                 break;
 			case 'c':
-                state.width = buffer.getInteger(1, 2);
-                state.height = buffer.getInteger(3, 2);
+                state.width = buffer.getShort(1);
+                state.height = buffer.getShort(3);
                 ack = true;
                 resetView = true;
  				break;
@@ -40,16 +40,16 @@ public class Attribute32 extends Command {
                 resetView = true;
                 break;
 			case 's':
-				state.textSize = buffer.getInteger(1, 4)/65536f;
+				state.textSize = buffer.getFixed32(1);
 				break;
 			case 'b':
-				state.backColor = buffer.getInteger(1, 4);
+				state.backColor = buffer.getInt(1);
 				break;
 			case 'k':
-				state.textBackColor = buffer.getInteger(1, 4);
+				state.textBackColor = buffer.getInt(1);
 				break;
 			case 'f':
-				state.foreColor = buffer.getInteger(1, 4);
+				state.foreColor = buffer.getInt(1);
 				break;
 		}
 		return state;
