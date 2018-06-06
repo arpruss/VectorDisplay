@@ -163,6 +163,31 @@ public class MainActivity extends AppCompatActivity {
         builder.create().show();
     }
 
+    private void chooseFPS() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final CharSequence[] array = getResources().getStringArray(R.array.fpss);
+        final int fps = prefs.getInt(Options.PREF_FPS, 30);
+        int selected = -1;
+        for (int i=0;i<array.length;i++)
+            if (fps == Integer.parseInt((String)array[i])) {
+                selected = i;
+            }
+        final int old = selected;
+        builder.setTitle("FPS to aim for")
+                .setSingleChoiceItems(array, old, new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (which == old)
+                            return;
+                        prefs.edit().putInt(Options.PREF_FPS, Integer.parseInt((String)array[which])).commit();
+                        updateFPS();
+                        dialog.dismiss();
+                    }
+                });
+        builder.create().show();
+    }
+
     public void chooseBluetoothDevice() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         if (connectionMode() != Options.OPT_BLUETOOTH)
@@ -274,10 +299,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    void updateFPS() {
+        record.updateTimeMillis = 1000 / (long) prefs.getInt(Options.PREF_FPS, 30);
+    }
+
     @Override
     public void onResume() {
         super.onResume();
-        record.updateTimeMillis = 1000 / (long) Integer.parseInt(prefs.getString(Options.PREF_FPS, "30"));
+        updateFPS();
         connectService();
     }
 
@@ -381,8 +410,8 @@ public class MainActivity extends AppCompatActivity {
             prefs.edit().putBoolean(Options.PREF_LANDSCAPE, landscape).commit();
             setOrientation();
         }
-        else if (id == R.id.settings) {
-            startActivity(new Intent(this, Options.class));
+        else if (id == R.id.fps) {
+            chooseFPS();
         }
         else if (id == R.id.license) {
             message("The MIT License",

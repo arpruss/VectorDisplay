@@ -27,7 +27,7 @@ public class RecordAndPlay {
     boolean connected = false;
     volatile boolean forcedUpdate = false;
     String[] disconnectedStatus = new String[] { "Disconnected" };
-    public long updateTimeMillis;
+    volatile public long updateTimeMillis;
     // TODO: control update speed
     // TODO: delay rendering after view change
 

@@ -26,7 +26,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-
+<!--
         <activity android:name=".Options" android:label="Preferences"
             android:theme="@android:style/Theme.Black"
             android:configChanges="orientation">
@@ -34,7 +34,7 @@
                 <action android:name=".Options" />
                 <category android:name="android.intent.category.PREFERENCE" />
             </intent-filer>
-        </activity>
+        </activity> -->
 
         <service
             android:name="mobi.omegacentauri.vectordisplay.UsbService"

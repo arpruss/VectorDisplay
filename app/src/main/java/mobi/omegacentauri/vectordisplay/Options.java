@@ -6,17 +6,17 @@ import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 
-public class Options extends PreferenceActivity {
+public class Options {
     public static final String PREF_LANDSCAPE = "landscape";
     public static final String PREF_RESET_ON_CONNECT = "resetOnConnect";
-    public static final String PREF_FPS = "fps";
+    public static final String PREF_FPS = "fps_int";
     public static final String PREF_CONNECTION = "connection";
     public static final int OPT_USB = 0;
     public static final int OPT_IP = 1;
     public static final int OPT_BLUETOOTH = 2;
     public static final int NUM_CONNECTION_OPTS = 3;
     public static final String PREF_LAST_BLUETOOTH_ADDRESS = "lastBT";
-
+/*
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -44,5 +44,5 @@ public class Options extends PreferenceActivity {
     public void onStop() {
         super.onStop();
     }
-
+*/
 }
