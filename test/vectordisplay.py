@@ -85,7 +85,7 @@ class VectorDisplay(object):
         self.command('P',self.e16(x)+self.e16(y))
         
     def arc(self,cx,cy,r,angle1,angle2,fill=False):
-        self.command('S',self.e16(cx)+self.e16(cx)+self.e16(r)+self.e32(angle1*65536)+self.e32(angle2*65536)+(1 if fill else 0,))
+        self.command('S',self.e16(cx)+self.e16(cy)+self.e16(r)+self.e32(angle1*65536)+self.e32(angle2*65536)+(1 if fill else 0,))
         
     def poly(self,points,fill=True):
         path = self.e16(len(points))
@@ -106,3 +106,26 @@ class VectorDisplay(object):
             return
 
         self.command('K',outData)
+
+    def fillCircleHelper(self,cx,cy,r,corners,delta):
+        # this will be ugly if alpha < 1.0 in the color
+        if corners & 3:
+            self.line(cx,cy-r,cx,cy+r+delta)
+            
+        if corners & 2:
+            self.arc(cx,cy,r,90,180,fill=False)
+            self.arc(cx,cy,r,90,180,fill=True)
+            self.arc(cx,cy+delta,r,90,180,fill=False)
+            self.arc(cx,cy+delta,r,90,180,fill=True)
+            if delta>0:
+                self.rectangle(cx-r,cy,cx,cy+delta,fill=False)
+                self.rectangle(cx-r,cy,cx,cy+delta,fill=True)
+        if corners & 1:
+            self.arc(cx,cy,r,270,180,fill=False)
+            self.arc(cx,cy,r,270,180,fill=True)
+            self.arc(cx,cy+delta,r,270,180,fill=False)
+            self.arc(cx,cy+delta,r,270,180,fill=True)
+            if delta>0:
+                self.rectangle(cx,cy,cx+r,cy+delta,fill=False)
+                self.rectangle(cx,cy,cx+r,cy+delta,fill=True)
+            
