@@ -1,3 +1,5 @@
+from math import floor
+
 class VectorDisplay(object):
     def __init__(self,writer,lowendian=True):
         self._write = writer
@@ -18,12 +20,16 @@ class VectorDisplay(object):
             sent += sentNow
         
     def e16le(self, x):
+        x = int(floor(x))
         return (x&0xFF,(x>>8)&0xFF)
     def e16be(self, x):
+        x = int(floor(x))
         return ((x>>8)&0xFF,x&0xFF)
     def e32le(self, x):
+        x = int(floor(x))
         return (x&0xFF,(x>>8)&0xFF,(x>>16)&0xFF,(x>>24)&0xFF)
     def e32be(self, x):
+        x = int(floor(x))
         return ((x>>24)&0xFF, (x>>16)&0xFF, (x>>8)&0xFF, x&0xFF)
         
     def command(self,c,data):
@@ -77,6 +83,9 @@ class VectorDisplay(object):
         
     def point(self,x,y):
         self.command('P',self.e16(x)+self.e16(y))
+        
+    def arc(self,cx,cy,r,angle1,angle2,fill=False):
+        self.command('S',self.e16(cx)+self.e16(cx)+self.e16(r)+self.e32(angle1*65536)+self.e32(angle2*65536)+(1 if fill else 0,))
         
     def poly(self,points,fill=True):
         path = self.e16(len(points))
