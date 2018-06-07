@@ -14,7 +14,7 @@ import static mobi.omegacentauri.vectordisplay.commands.RoundedRectangle.rect;
 public class Arc extends Command {
 	short x, y, r;
 	float startAngle;
-	float endAngle;
+	float sweepAngle;
 	RectF oval = new RectF();
 	boolean filled;
 	static Paint filledPaint = DefaultFilledPaint();
@@ -48,7 +48,7 @@ public class Arc extends Command {
 		y = buffer.getShort(2);
 		r = buffer.getShort(4);
 		startAngle = buffer.getFixed32(6);
-		endAngle = buffer.getFixed32(10);
+		sweepAngle = buffer.getFixed32(10);
 		filled = buffer.data[14] != 0;
 
 		return state;
@@ -63,7 +63,7 @@ public class Arc extends Command {
 
 		if (filled) {
 			filledPaint.setColor(state.foreColor);
-			c.drawArc(oval, startAngle, endAngle-startAngle, true, filledPaint);
+			c.drawArc(oval, startAngle, sweepAngle, true, filledPaint);
 		}
 		else {
 			strokePaint.setColor(state.foreColor);
@@ -71,7 +71,7 @@ public class Arc extends Command {
 			strokePaint.setStrokeCap(state.rounded ? Paint.Cap.ROUND : Paint.Cap.SQUARE);
 			strokePaint.setStrokeJoin(state.rounded ? Paint.Join.ROUND : Paint.Join.MITER);
 			filledPaint.setColor(state.foreColor);
-			c.drawArc(oval, startAngle, endAngle-startAngle, false, strokePaint);
+			c.drawArc(oval, startAngle, sweepAngle, false, strokePaint);
 		}
 	}
 }
