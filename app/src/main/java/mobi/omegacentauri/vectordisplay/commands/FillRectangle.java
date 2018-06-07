@@ -39,10 +39,10 @@ public class FillRectangle extends Command {
 	@Override
 	public void draw(Canvas c) {
 		p.setColor(state.foreColor);
-/*		if (x1==0)
-			x1 = -1;
-		if (y1==0)
-			y1 = -1;
+/*		if (x==0)
+			x = -1;
+		if (y==0)
+			y = -1;
 		short w = (short) state.rotatedWidth();
 		if (x2==w-1)
 			x2 = w;

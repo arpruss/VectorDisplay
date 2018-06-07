@@ -43,6 +43,7 @@ public class VectorAPI {
         map['P'] = Point.class;
         map['Q'] = RoundedRectangle.class;
 		map['R'] = FillRectangle.class;
+		map['S'] = Arc.class;
 		map['T'] = Text.class;
         map['U'] = AddButton.class;
 		map['Y'] = Attribute8.class;

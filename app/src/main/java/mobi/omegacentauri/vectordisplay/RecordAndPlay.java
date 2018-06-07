@@ -106,6 +106,7 @@ public class RecordAndPlay {
     }
 
     synchronized public void draw(Canvas canvas) {
+        MainActivity.log("drawing");
         forcedUpdate = false;
 
         int endPos = -1;
@@ -116,12 +117,17 @@ public class RecordAndPlay {
             return;
 
         while (head != endPos) {
-            Command c = commands[head];
-            synchronized(curMatrix) {
-                curMatrix.update(canvas, c.state);
-                canvas.setMatrix(curMatrix);
+            try {
+                Command c = commands[head];
+                synchronized (curMatrix) {
+                    curMatrix.update(canvas, c.state);
+                    canvas.setMatrix(curMatrix);
+                }
+                if (MainActivity.DEBUG)
+                    MainActivity.log("" + c.getClass());
+                c.draw(canvas);
             }
-            c.draw(canvas);
+            catch (Exception e) {} // don't crash all of the rendering thread in case of bug
             commands[head] = null;
             head = (head + 1) % MAX_ITEMS;
         }

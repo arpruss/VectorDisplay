@@ -210,7 +210,6 @@ public class WifiService extends ConnectionService {
         }
 
         public void stopClient() {
-            Log.v("VectorDisplay", "adc");
             wifiService.broadcast(ACTION_DEVICE_DISCONNECTED);
             if (mClient != null) {
                 try {

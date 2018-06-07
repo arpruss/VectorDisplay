@@ -3,6 +3,7 @@ package mobi.omegacentauri.vectordisplay.commands;
 import android.app.Activity;
 import android.graphics.Canvas;
 import android.os.Handler;
+import android.util.Log;
 
 import mobi.omegacentauri.vectordisplay.DisplayState;
 import mobi.omegacentauri.vectordisplay.RecordAndPlay;
@@ -48,6 +49,7 @@ public class InitializeWithResolution extends Command {
 	public void draw(Canvas c) {
 		if (valid) {
 			Clear.clearCanvas(c, state);
+			Log.v("VectorDisplay", "+Clearing canvas");
 		}
 	}
 
