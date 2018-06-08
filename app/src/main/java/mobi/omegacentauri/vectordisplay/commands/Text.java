@@ -15,11 +15,19 @@ public class Text extends Command {
 	short x,y;
 	String text;
 	static TextPaint p = DefaultPaint();
+	static Paint fillPaint = DefaultFillPaint();
 
 	private static TextPaint DefaultPaint() {
 		TextPaint p = new TextPaint();
 		p.setStyle(Style.FILL);
 		p.setTypeface(Typeface.MONOSPACE);
+		return p;
+	}
+
+	private static Paint DefaultFillPaint() {
+		Paint p = new Paint();
+		p.setStyle(Paint.Style.FILL);
+		p.setStrokeWidth(0);
 		return p;
 	}
 
@@ -53,9 +61,10 @@ public class Text extends Command {
 		p.setTextSize(state.textSize*state.monoFontScale);
 		p.setTextScaleX(state.monoFontScaleX);
 		p.setFakeBoldText(state.bold);
-		float y1 = 	state.vAlignText == DisplayState.ALIGN_TOP ? y - p.ascent() :
-                state.vAlignText == DisplayState.ALIGN_BOTTOM ? y + p.descent() :
-                state.vAlignText == DisplayState.ALIGN_CENTER ? y + p.ascent() * 0.5f :
+		Paint.FontMetrics fm = p.getFontMetrics();
+		float y1 = 	state.vAlignText == DisplayState.ALIGN_TOP ? y - fm.top :
+                state.vAlignText == DisplayState.ALIGN_BOTTOM ? y - fm.bottom :
+                state.vAlignText == DisplayState.ALIGN_CENTER ? y - (fm.bottom + fm.top) * 0.5f :
                                 y;
 
         float w = p.measureText(text);
@@ -63,13 +72,10 @@ public class Text extends Command {
                 state.hAlignText == DisplayState.ALIGN_RIGHT ? x - w :
                 x - w * 0.5f;
 		if (state.opaqueTextBackground) {
-            float h = p.descent() - p.ascent();
-            Paint fill = new Paint();
-            fill.setColor(state.textBackColor);
-            fill.setStyle(Paint.Style.FILL);
-            fill.setStrokeWidth(0);
+            float h = fm.bottom - fm.top;
+            fillPaint.setColor(state.textBackColor);
 
-            c.drawRect(x1, y1 + p.ascent(), x1 + w + 0.5f, y1 + p.ascent() + h, fill);
+            c.drawRect(x1, y1 + fm.top, x1 + w + 0.5f, y1 + fm.top + h, fillPaint);
         }
 		c.drawText(text, x1, y1, p);
 	}

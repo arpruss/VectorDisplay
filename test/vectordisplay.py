@@ -74,6 +74,9 @@ class VectorDisplay(object):
             self.line(x2,y1,x2,y2)
             self.line(x2,y2,x1,y2)
             self.line(x1,y2,x1,y1)
+            
+    def text(self,x,y,s):
+        self.command('T', self.e16(x)+self.e16(y)+tuple(ord(x) for x in s)+(0,))        
 
     def roundedRectangle(self,x1,y1,x2,y2,r,fill=False):
         self.command('Q', self.e16(x1)+self.e16(y1)+self.e16(x2)+self.e16(y2)+self.e16(r)+(1 if fill else 0,))

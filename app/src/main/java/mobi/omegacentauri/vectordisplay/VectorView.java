@@ -145,7 +145,7 @@ public class VectorView extends SurfaceView implements SurfaceHolder.Callback {
         if (status != null) {
             int w = canvas.getWidth();
             statusPaint.setTextSize(w / 15f);
-            float lineHeight = -(statusPaint.ascent() - statusPaint.descent()) * 1.1f;
+            float lineHeight = -(statusPaint.getFontMetrics().top - statusPaint.getFontMetrics().bottom) * 1.1f;
             float y = canvas.getHeight() - lineHeight * (status.length - 1) - statusPaint.descent();
             for (String line : status) {
                 statusPaint.setTextSize(w / 15f);

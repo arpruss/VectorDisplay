@@ -62,7 +62,7 @@ public class DisplayState implements Cloneable {
         TextPaint p = new TextPaint();
         p.setTypeface(Typeface.MONOSPACE);
         p.setTextSize(8f);
-        float h = p.descent() - p.ascent();
+        float h = p.getFontMetrics().bottom - p.getFontMetrics().top;
         monoFontScale = 8f / h;
         p.setTextSize(monoFontScale * 8f);
         float w = p.measureText("0123456789")/10f;
