@@ -25,7 +25,10 @@ public class Attribute8 extends Command {
 				state.vAlignText = (char)buffer.data[1];
 				break;
 			case 'b':
-				state.bold = buffer.data[1] != 0;
+				if (buffer.data[1] != 0)
+					state.fontInfo |= DisplayState.FONT_BOLD;
+				else
+					state.fontInfo &= ~DisplayState.FONT_BOLD;
 				break;
 			case 'n':
 				state.rounded = buffer.data[1] != 0;
@@ -34,7 +37,7 @@ public class Attribute8 extends Command {
 				state.opaqueTextBackground = buffer.data[1] != 0;
 				break;
             case 'r':
-                state.rotate = (char) buffer.data[1];
+                state.rotate = (byte) buffer.data[1];
                 break;
 			case 'i':
 				state.cp437 = buffer.data[1] != 0;
@@ -43,6 +46,8 @@ public class Attribute8 extends Command {
 				state.continuousUpdate = buffer.data[1] != 0;
 //                Log.v("VectorDisplay", "cupdate "+state.continuousUpdate);
 				break;
+			case 'w':
+				state.wrap = buffer.data[1] != 0;
 		}
 		return state;
 	}

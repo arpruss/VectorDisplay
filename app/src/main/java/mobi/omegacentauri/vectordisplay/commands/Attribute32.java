@@ -48,8 +48,17 @@ public class Attribute32 extends Command {
 			case 'k':
 				state.textBackColor = buffer.getInt(1);
 				break;
+			case 'F':
+				state.textForeColor = buffer.getInt(1);
+				break;
 			case 'f':
 				state.foreColor = buffer.getInt(1);
+				break;
+			case 'x':
+				state.cursorX = buffer.getFixed32(1);
+				break;
+			case 'y':
+				state.cursorY = buffer.getFixed32(1);
 				break;
 		}
 		return state;

@@ -56,11 +56,11 @@ public class Text extends Command {
 	
 	@Override
 	public void draw(Canvas c) {
-		p.setColor(state.foreColor);
+		p.setColor(state.textForeColor);
 
 		p.setTextSize(state.textSize*state.monoFontScale);
 		p.setTextScaleX(state.monoFontScaleX);
-		p.setFakeBoldText(state.bold);
+		p.setFakeBoldText((state.fontInfo & DisplayState.FONT_BOLD) != 0);
 		Paint.FontMetrics fm = p.getFontMetrics();
 		float y1 = 	state.vAlignText == DisplayState.ALIGN_TOP ? y - fm.top :
                 state.vAlignText == DisplayState.ALIGN_BOTTOM ? y - fm.bottom :

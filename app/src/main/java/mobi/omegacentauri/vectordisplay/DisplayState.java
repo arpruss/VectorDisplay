@@ -7,6 +7,9 @@ import android.graphics.Typeface;
 import android.text.TextPaint;
 
 public class DisplayState implements Cloneable {
+    public float cursorX;
+    public float cursorY;
+    public boolean wrap;
     public int width;
     public int height;
     public float pixelAspectRatio;
@@ -17,20 +20,27 @@ public class DisplayState implements Cloneable {
     public char hAlignText;
     public char vAlignText;
     public boolean opaqueTextBackground;
-    public boolean bold;
     public boolean continuousUpdate;
     public static final char ALIGN_LEFT = 'l';
     public static final char ALIGN_RIGHT = 'r';
     public static final char ALIGN_CENTER = 'c';
     public static final char ALIGN_TOP = 't';
     public static final char ALIGN_BOTTOM = 'b';
-    static final char ALIGN_BASELINE = 'l';
+    public static final char ALIGN_BASELINE = 'l';
     public int textBackColor;
-    public char rotate;
+    public int textForeColor;
+    public byte rotate;
     public float monoFontScaleX;
     public float monoFontScale;
     public boolean cp437;
     public boolean rounded;
+    public byte fontInfo;
+    public static final byte FONT_TYPEFACE_MASK = 0x7;
+    public static final byte FONT_SERIF = 0;
+    public static final byte FONT_SANS = 1;
+    public static final byte FONT_MONO = 2;
+    public static final byte FONT_ITALIC = 8;
+    public static final byte FONT_BOLD = 16;
 
     public Object clone() throws
             CloneNotSupportedException
@@ -45,17 +55,21 @@ public class DisplayState implements Cloneable {
         foreColor = Color.WHITE;
         backColor = Color.BLACK;
         textBackColor = Color.BLACK;
+        textForeColor = Color.WHITE;
         thickness = 1f;
         textSize = 8;
         hAlignText = 'l';
         vAlignText = 't';
-        bold = false;
+        fontInfo = FONT_MONO;
         rotate = 0;
         cp437 = false;
         opaqueTextBackground = true;
         continuousUpdate = true;
         rounded = true;
         measureMonoFont();
+        wrap = true;
+        cursorX = 0f;
+        cursorY = 0f;
     }
 
     private void measureMonoFont() {

@@ -11,6 +11,7 @@ import java.nio.ShortBuffer;
 import java.util.Arrays;
 
 import mobi.omegacentauri.vectordisplay.DisplayState;
+import mobi.omegacentauri.vectordisplay.MainActivity;
 import mobi.omegacentauri.vectordisplay.VectorAPI.MyBuffer;
 
 public class DrawBitmap extends Command {
@@ -72,9 +73,11 @@ public class DrawBitmap extends Command {
 		int bitmapLength;
 		int maskLength;
 
+		MainActivity.log("flags = "+flags+" depth = "+depth);
 		if ((flags & FLAG_IMAGE_FILE)==0) {
 			w = buffer.getShort(10);
 			h = buffer.getShort(12);
+			MainActivity.log("width = "+w+" height = "+h);
 			if (depth>=8) {
 				bitmapLength = (depth/8) * w * h;
 			}
@@ -113,7 +116,7 @@ public class DrawBitmap extends Command {
 		}
 
 		if (maskLength > 0) {
-			mask = Arrays.copyOfRange(buffer.data, bitmapOffset + bitmapLength, maskLength);
+			mask = Arrays.copyOfRange(buffer.data, bitmapOffset + bitmapLength, bitmapOffset + bitmapLength+maskLength);
 		}
 		else {
 			mask = null;
@@ -288,6 +291,7 @@ public class DrawBitmap extends Command {
 
 			bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
 			bitmap.setPixels(pixels,0,w,0,0,w,h);
+			MainActivity.log(" pixel 0 0 = "+pixels[0]);
 		}
 
 		return bitmap;
@@ -305,6 +309,7 @@ public class DrawBitmap extends Command {
 			bitmap = decodeBitmap();
 
 		if (bitmap != null) {
+		    MainActivity.log("drawing bitmap of size "+bitmap.getWidth()+" "+bitmap.getHeight()+" at "+x+" "+y);
 			c.drawBitmap(bitmap, x, y, null);
 			bitmap.recycle();
 		}

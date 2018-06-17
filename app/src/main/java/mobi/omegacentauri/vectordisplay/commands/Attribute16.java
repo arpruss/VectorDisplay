@@ -27,6 +27,9 @@ public class Attribute16 extends Command {
 			case 'k':
 				state.textBackColor = buffer.getColor565(1);
 				break;
+			case 'F':
+				state.textForeColor = buffer.getColor565(1);
+				break;
 			case 'f':
 				state.foreColor = buffer.getColor565(1);
 				break;

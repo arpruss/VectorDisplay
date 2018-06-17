@@ -8,7 +8,7 @@ public class Transformation extends Matrix {
     int prevEmulatedW=-1;
     int prevCanvasH=-1;
     int prevEmulatedH=-1;
-    char prevRotate= (char) -1;
+    byte prevRotate=-1;
 
     public Transformation() {
         super();
