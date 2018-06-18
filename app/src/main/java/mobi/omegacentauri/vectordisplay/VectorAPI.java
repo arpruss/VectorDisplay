@@ -96,6 +96,7 @@ public class VectorAPI {
 			        lastChar = ch;
                 }
                 else {
+//			    	MainActivity.log("Unparsed char "+Integer.toHexString(ch&0xFF));
 			        lastChar = 0;
                 }
 			}

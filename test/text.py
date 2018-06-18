@@ -23,6 +23,7 @@ h = 100
 v = VectorDisplay(s.sendall,lowendian=False)
 v.initialize(w,h)
 v.text(0,0,"Hello, world!")
+v.font(8|16); # bold italic serif
 v.text(0,8,"Hello, world!")
 sleep(0.5) # needed on Windows
 s.close()

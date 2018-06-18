@@ -57,6 +57,9 @@ class VectorDisplay(object):
     def rounded(self,r):
         self.attr8('n',r)
         
+    def font(self,f):
+        self.attr8('f',f)
+        
     def rectangle(self,x1,y1,x2,y2,fill=False):
         if fill:
             self.command('R', self.e16(x1)+self.e16(y1)+self.e16(x2)+self.e16(y2))

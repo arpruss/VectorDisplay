@@ -14,15 +14,7 @@ import android.text.TextPaint;
 public class Text extends Command {
 	short x,y;
 	String text;
-	static TextPaint p = DefaultPaint();
 	static Paint fillPaint = DefaultFillPaint();
-
-	private static TextPaint DefaultPaint() {
-		TextPaint p = new TextPaint();
-		p.setStyle(Style.FILL);
-		p.setTypeface(Typeface.MONOSPACE);
-		return p;
-	}
 
 	private static Paint DefaultFillPaint() {
 		Paint p = new Paint();
@@ -56,11 +48,12 @@ public class Text extends Command {
 	
 	@Override
 	public void draw(Canvas c) {
+		TextPaint p = state.getTextPaint();
+
 		p.setColor(state.textForeColor);
 
 		p.setTextSize(state.textSize*state.monoFontScale);
 		p.setTextScaleX(state.monoFontScaleX);
-		p.setFakeBoldText((state.fontInfo & DisplayState.FONT_BOLD) != 0);
 		Paint.FontMetrics fm = p.getFontMetrics();
 		float y1 = 	state.vAlignText == DisplayState.ALIGN_TOP ? y - fm.top :
                 state.vAlignText == DisplayState.ALIGN_BOTTOM ? y - fm.bottom :

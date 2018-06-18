@@ -41,6 +41,8 @@ public class DisplayState implements Cloneable {
     public static final byte FONT_MONO = 2;
     public static final byte FONT_ITALIC = 8;
     public static final byte FONT_BOLD = 16;
+    public static final byte FONTINFO_MASK = 0x1F;
+    public static TextPaint[] fontPaints = new TextPaint[FONTINFO_MASK+1];
 
     public Object clone() throws
             CloneNotSupportedException
@@ -70,6 +72,55 @@ public class DisplayState implements Cloneable {
         wrap = true;
         cursorX = 0f;
         cursorY = 0f;
+    }
+
+    static public TextPaint getTextPaint(byte fontInfo) {
+        int f = fontInfo & FONTINFO_MASK;
+
+        TextPaint p = fontPaints[f];
+
+        if (p == null) {
+            p = new TextPaint();
+            p.setStyle(Paint.Style.FILL);
+            Typeface family;
+            switch (f & FONT_TYPEFACE_MASK) {
+                case FONT_SANS:
+                    family = Typeface.SANS_SERIF;
+                    break;
+                case FONT_MONO:
+                    family = Typeface.MONOSPACE;
+                    break;
+                default:
+                    family = Typeface.SERIF;
+                    break;
+            }
+
+            int style;
+
+            switch (f & (FONT_BOLD | FONT_ITALIC))  {
+                case FONT_BOLD:
+                    style = Typeface.BOLD;
+                    break;
+                case FONT_ITALIC:
+                    style = Typeface.ITALIC;
+                    break;
+                case FONT_BOLD | FONT_ITALIC:
+                    style = Typeface.BOLD_ITALIC;
+                    break;
+                default:
+                    style = Typeface.NORMAL;
+                    break;
+            }
+
+            p.setTypeface(Typeface.create(family, style));
+            fontPaints[f] = p;
+        }
+
+        return p;
+    }
+
+    public TextPaint getTextPaint() {
+        return getTextPaint(fontInfo);
     }
 
     private void measureMonoFont() {

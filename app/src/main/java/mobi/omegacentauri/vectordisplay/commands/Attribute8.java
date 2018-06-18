@@ -30,6 +30,18 @@ public class Attribute8 extends Command {
 				else
 					state.fontInfo &= ~DisplayState.FONT_BOLD;
 				break;
+			case 'I':
+				if (buffer.data[1] != 0)
+					state.fontInfo |= DisplayState.FONT_ITALIC;
+				else
+					state.fontInfo &= ~DisplayState.FONT_ITALIC;
+				break;
+			case 'f':
+				state.fontInfo = buffer.data[1];
+				break;
+			case 'F':
+				state.fontInfo = (byte) ((state.fontInfo & DisplayState.FONT_TYPEFACE_MASK) | (buffer.data[1] & DisplayState.FONT_TYPEFACE_MASK));
+				break;
 			case 'n':
 				state.rounded = buffer.data[1] != 0;
 				break;
