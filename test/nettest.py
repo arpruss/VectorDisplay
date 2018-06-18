@@ -34,7 +34,7 @@ def reader():
 thread = Thread(target = reader, args  = ())
 thread.start()
 
-out = VectorDisplay(s.send,lowendian=False)
+out = VectorDisplay(s.sendall,lowendian=False)
 
 out.initialize(240,320)
 

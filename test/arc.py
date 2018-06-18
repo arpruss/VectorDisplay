@@ -19,7 +19,9 @@ print("connected")
 
 w = 300
 h = 300
-v = VectorDisplay(s.send,lowendian=False)
+v = VectorDisplay(s.sendall,lowendian=False)
 v.initialize(w,h)
 v.arc(100,100,50,45,135)
 v.arc(100,100,50,180+45,180+135,fill=True)
+sleep(0.5) # needed on Windows
+s.close()

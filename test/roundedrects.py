@@ -16,10 +16,12 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((addr, port))
 print("connected")
 
-v = VectorDisplay(s.send,lowendian=True)
+v = VectorDisplay(s.sendall,lowendian=True)
 v.initialize() # 200,200)
 v.coordinates(200,200);
 v.foreColor(0xFFFF0000)
 v.roundedRectangle(10,10,100,100,30,fill=False)
 v.foreColor(0x3F00FF00)
 v.roundedRectangle(80,80,180,180,30,fill=True)
+sleep(0.5) # needed on Windows
+s.close()

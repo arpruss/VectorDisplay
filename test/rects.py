@@ -18,7 +18,7 @@ print("connected")
 
 w = 3
 h = 4
-v = VectorDisplay(s.send,lowendian=False)
+v = VectorDisplay(s.sendall,lowendian=False)
 v.initialize(w,h)
 v.rounded(True)
 v.foreColor(0xFFFF0000)
@@ -29,3 +29,5 @@ v.foreColor(0x7F0000FF)
 v.fillRectangle(0,0,0,0)
 v.foreColor(0x7f00007F)
 v.fillRectangle(1,0,1,0)
+sleep(0.5) # needed on Windows
+s.close()

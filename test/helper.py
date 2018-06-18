@@ -19,10 +19,12 @@ print("connected")
 
 w = 160
 h = 160
-v = VectorDisplay(s.send,lowendian=False)
+v = VectorDisplay(s.sendall,lowendian=False)
 v.initialize(w,h)
 v.rounded(True)
 v.foreColor(0xFFFF0000)
 v.fillCircleHelper(60,55,50,2,50)
 v.foreColor(0xFF00FF00)
 v.fillCircleHelper(80,55,50,1,50)
+sleep(0.5) # needed on Windows
+s.close()

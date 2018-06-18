@@ -2,7 +2,7 @@ from math import floor
 
 class VectorDisplay(object):
     def __init__(self,writer,lowendian=True):
-        self._write = writer
+        self.write = writer
         if lowendian:
             self.e16 = self.e16le
             self.e32 = self.e32le
@@ -10,15 +10,6 @@ class VectorDisplay(object):
             self.e16 = self.e16be
             self.e32 = self.e32be            
             
-    def write(self,data):
-        sent = 0
-        n = len(data)
-        while sent < n:
-            sentNow = self._write(data[sent:])
-            if sentNow == 0:
-                raise RuntimeError("socket connection failed")
-            sent += sentNow
-        
     def e16le(self, x):
         x = int(floor(x))
         return (x&0xFF,(x>>8)&0xFF)

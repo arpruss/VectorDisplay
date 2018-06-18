@@ -20,7 +20,9 @@ print("connected")
 
 w = 100
 h = 100
-v = VectorDisplay(s.send,lowendian=False)
+v = VectorDisplay(s.sendall,lowendian=False)
 v.initialize(w,h)
 v.text(0,0,"Hello, world!")
 v.text(0,8,"Hello, world!")
+sleep(0.5) # needed on Windows
+s.close()
